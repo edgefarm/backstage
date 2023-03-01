@@ -48,13 +48,13 @@ catalog:
 
 proxy:
   '/argocd/api':
-    target: https://argocd-server.argocd/api/v1/
+    target: ${ARGOCD_BASEURL}/api/v1/
     changeOrigin: true
     # only if your argocd api has self-signed cert
     secure: false
     headers:
       Cookie:
-        $env: argocd.token=${ARGOCD_AUTH_TOKEN}
+        $env: ARGOCD_AUTH_TOKEN
 
 kubernetes:
   serviceLocatorMethod:
@@ -73,3 +73,14 @@ kubernetes:
           caData: ${K8S_CONFIG_CA_DATA}
           caFile: '' # local path to CA file
 
+argocd:
+  baseUrl: ${ARGOCD_BASEURL}
+  username: ${ARGOCD_USERNAME}
+  password: ${ARGOCD_PASSWORD}
+  waitCycles: 25
+  appLocatorMethods:
+    - type: 'config'
+      instances:
+        - name: argocd
+          url: ${ARGOCD_BASEURL}
+          token: ${ARGOCD_AUTH_TOKEN}
