@@ -46,6 +46,16 @@ catalog:
       rules:
         - allow: [Template]
 
+proxy:
+  '/argocd/api':
+    target: https://argocd-server.argocd/api/v1/
+    changeOrigin: true
+    # only if your argocd api has self-signed cert
+    secure: false
+    headers:
+      Cookie:
+        $env: argocd.token=${ARGOCD_AUTH_TOKEN}
+
 kubernetes:
   serviceLocatorMethod:
     type: 'multiTenant'

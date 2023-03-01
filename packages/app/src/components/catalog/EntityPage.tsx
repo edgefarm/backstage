@@ -56,6 +56,10 @@ import {
 import { TechDocsAddons } from '@backstage/plugin-techdocs-react';
 import { ReportIssue } from '@backstage/plugin-techdocs-module-addons-contrib';
 import { EntityKubernetesContent } from '@backstage/plugin-kubernetes';
+import {
+  EntityArgoCDOverviewCard,
+  isArgocdAvailable
+} from '@roadiehq/backstage-plugin-argo-cd';
 
 const techdocsContent = (
   <EntityTechdocsContent>
@@ -124,6 +128,13 @@ const overviewContent = (
 
     <Grid item md={4} xs={12}>
       <EntityLinksCard />
+      <EntitySwitch>
+        <EntitySwitch.Case if={e => Boolean(isArgocdAvailable(e))}>
+          <Grid item sm={4}>
+            <EntityArgoCDOverviewCard />
+          </Grid>
+        </EntitySwitch.Case>
+      </EntitySwitch>
     </Grid>
     <Grid item md={8} xs={12}>
       <EntityHasSubcomponentsCard variant="gridItem" />
