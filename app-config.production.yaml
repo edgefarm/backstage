@@ -66,8 +66,7 @@ proxy:
     # only if your argocd api has self-signed cert
     secure: true
     headers:
-      Cookie:
-        $env: ARGOCD_AUTH_TOKEN
+      Cookie: argocd.token=${ARGOCD_AUTH_TOKEN}
 
 kubernetes:
   serviceLocatorMethod:
