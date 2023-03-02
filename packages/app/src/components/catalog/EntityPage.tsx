@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Grid } from '@material-ui/core';
+import { Box, Button, Divider, Grid } from '@material-ui/core';
 import {
   EntityApiDefinitionCard,
   EntityConsumedApisCard,
@@ -128,17 +128,17 @@ const overviewContent = (
 
     <Grid item md={4} xs={12}>
       <EntityLinksCard />
-      <EntitySwitch>
-        <EntitySwitch.Case if={e => Boolean(isArgocdAvailable(e))}>
-          <Grid item sm={4}>
-            <EntityArgoCDOverviewCard />
-          </Grid>
-        </EntitySwitch.Case>
-      </EntitySwitch>
     </Grid>
     <Grid item md={8} xs={12}>
       <EntityHasSubcomponentsCard variant="gridItem" />
     </Grid>
+    <EntitySwitch>
+      <EntitySwitch.Case if={e => Boolean(isArgocdAvailable(e))}>
+        <Grid item md={4} xs={12}>
+          <EntityArgoCDOverviewCard />
+        </Grid>
+      </EntitySwitch.Case>
+    </EntitySwitch>
   </Grid>
 );
 

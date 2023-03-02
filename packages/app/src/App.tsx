@@ -27,14 +27,27 @@ import { entityPage } from './components/catalog/EntityPage';
 import { searchPage } from './components/search/SearchPage';
 import { Root } from './components/Root';
 
-import { AlertDisplay, OAuthRequestDialog } from '@backstage/core-components';
+import { AlertDisplay, IdentityProviders, OAuthRequestDialog } from '@backstage/core-components';
 import { createApp } from '@backstage/app-defaults';
 import { AppRouter, FlatRoutes } from '@backstage/core-app-api';
 import { CatalogGraphPage } from '@backstage/plugin-catalog-graph';
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import { catalogEntityCreatePermission } from '@backstage/plugin-catalog-common/alpha';
-import { githubAuthApiRef } from '@backstage/core-plugin-api';
+import { configApiRef, githubAuthApiRef, useApi } from '@backstage/core-plugin-api';
 import { SignInPage } from '@backstage/core-components';
+
+function identityProvider(): IdentityProviders {
+  const providers: IdentityProviders = [
+    {
+      id: 'github-auth-provider',
+      title: 'GitHub',
+      message: 'Sign in using GitHub',
+      apiRef: githubAuthApiRef,
+    }
+  ]
+
+  return providers;
+}
 
 const app = createApp({
   apis,
@@ -43,12 +56,7 @@ const app = createApp({
       <SignInPage
         {...props}
         auto
-        providers={['guest', {
-          id: 'github-auth-provider',
-          title: 'GitHub',
-          message: 'Sign in using GitHub',
-          apiRef: githubAuthApiRef,
-        }]}
+        providers={identityProvider()}
       />
     ),
   },
