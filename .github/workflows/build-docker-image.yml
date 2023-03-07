@@ -2,9 +2,7 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    branches: [ "main", "BSTG-33--Configure-git-action-to-create-docker-image" ]
 
 jobs:
 
