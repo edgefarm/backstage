@@ -11,9 +11,13 @@ backend:
   baseUrl: http://localhost:7007
   # The listener can also be expressed as a single <host>:<port> string. In this case we bind to
   # all interfaces, the most permissive setting. The right value depends on your specific deployment.
-  listen: ':7007'
+  listen: 
+    port: '7007'
 
   # config options: https://node-postgres.com/api/client
+  # database:
+  #   client: better-sqlite3
+  #   connection: ':memory:'
   database:
     client: pg
     connection:
@@ -28,8 +32,67 @@ backend:
       #   ca: # if you have a CA file and want to verify it you can uncomment this section
       #     $file: <file-path>/ca/server.crt
 
+auth:
+  # see https://backstage.io/docs/auth/ to learn about auth providers
+  environment: production
+  providers:
+    github:
+      production:
+        clientId: ${GITHUB_CLIENT_ID}
+        clientSecret: ${GITHUB_SECRET}
+
 catalog:
   # Overrides the default list locations from app-config.yaml as these contain example data.
   # See https://backstage.io/docs/features/software-catalog/software-catalog-overview#adding-components-to-the-catalog for more details
   # on how to get entities into the catalog.
-  locations: []
+  locations: 
+    - type: url
+      target: https://github.com/edgefarm/backstage-workflows/blob/main/network/create/template.yaml
+      rules:
+        - allow: [Template]
+    - type: url
+      target: https://github.com/edgefarm/backstage-workflows/blob/main/network/patch/template.yaml
+      rules:
+        - allow: [Template]
+    - type: url
+      target: https://github.com/matmah/backstage-eval-user/blob/main/ci4rail.yaml
+      rules:
+        - allow: [User, Group]
+
+proxy:
+  '/argocd/api':
+    target: ${ARGOCD_BASEURL}/api/v1/
+    changeOrigin: true
+    # only if your argocd api has self-signed cert
+    secure: true
+    headers:
+      Cookie: argocd.token=${ARGOCD_AUTH_TOKEN}
+
+kubernetes:
+  serviceLocatorMethod:
+    type: 'multiTenant'
+  clusterLocatorMethods:
+    - type: 'config'
+      clusters:
+        - url: ${K8S_URL}
+          name: minikube
+          authProvider: 'serviceAccount'
+          skipTLSVerify: true
+          skipMetricsLookup: true
+          serviceAccountToken: ${K8S_SA_TOKEN}
+          # dashboardUrl: http://127.0.0.1:64713 # url copied from running the command: minikube service kubernetes-dashboard -n kubernetes-dashboard
+          # dashboardApp: standard
+          # caData: ${K8S_CONFIG_CA_DATA}
+          # caFile: '' # local path to CA file
+
+argocd:
+  baseUrl: ${ARGOCD_BASEURL}
+  username: ${ARGOCD_USERNAME}
+  password: ${ARGOCD_PASSWORD}
+  waitCycles: 25
+  appLocatorMethods:
+    - type: 'config'
+      instances:
+        - name: argocd
+          url: ${ARGOCD_BASEURL}
+          token: ${ARGOCD_AUTH_TOKEN}
