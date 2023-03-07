@@ -12,7 +12,5 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag ci4rail/backstage:$(date +%s)
+      run: DOCKER_BUILDKIT=1 docker build . --file Dockerfile --tag ci4rail/backstage:$(date +%s)
