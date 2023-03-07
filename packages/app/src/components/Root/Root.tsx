@@ -26,6 +26,9 @@ import {
 } from '@backstage/core-components';
 import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
+import DeviceIcon from '@material-ui/icons/Memory';
+import NetworkIcon from '@material-ui/icons/DeviceHub';
+import ApplicationsIcon from '@material-ui/icons/SettingsApplications';
 
 const useSidebarLogoStyles = makeStyles({
   root: {
@@ -65,15 +68,19 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
       <SidebarDivider />
       <SidebarGroup label="Menu" icon={<MenuIcon />}>
         {/* Global nav, not org-specific */}
-        <SidebarItem icon={HomeIcon} to="catalog" text="Home" />
-        <SidebarItem icon={ExtensionIcon} to="api-docs" text="APIs" />
-        <SidebarItem icon={LibraryBooks} to="docs" text="Docs" />
+        <SidebarItem icon={DeviceIcon} to="catalog?filters[kind]=Device" text="Devices" />
+        <SidebarItem icon={ApplicationsIcon} to="catalog?filters[kind]=Application" text="Applications" />
+        <SidebarItem icon={NetworkIcon} to="catalog?filters[kind]=Network" text="Networks" />
+
+        {/* <SidebarItem icon={HomeIcon} to="catalog" text="Home" /> */}
+        {/* <SidebarItem icon={ExtensionIcon} to="api-docs" text="APIs" /> */}
+        {/* <SidebarItem icon={LibraryBooks} to="docs" text="Docs" /> */}
         <SidebarItem icon={CreateComponentIcon} to="create" text="Create..." />
         {/* End global nav */}
         <SidebarDivider />
-        <SidebarScrollWrapper>
+        {/* <SidebarScrollWrapper>
           <SidebarItem icon={MapIcon} to="tech-radar" text="Tech Radar" />
-        </SidebarScrollWrapper>
+        </SidebarScrollWrapper> */}
       </SidebarGroup>
       <SidebarSpace />
       <SidebarDivider />
