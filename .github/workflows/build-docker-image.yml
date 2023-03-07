@@ -12,5 +12,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Build the Docker image
-      run: DOCKER_BUILDKIT=1 docker build . --file Dockerfile --tag ci4rail/backstage:$(date +%s)
+    # - name: Build the Docker image
+    #   run: DOCKER_BUILDKIT=1 docker build . --file Dockerfile --tag ci4rail/backstage:$(date +%s)
+    - name: Build and push
+      uses: docker/build-push-action@v4
+      with:
+        push: true
+        tags: ci4rail/backstage:latest
