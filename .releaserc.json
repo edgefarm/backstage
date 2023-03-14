@@ -13,13 +13,13 @@
       [
         "@semantic-release/exec",
         {
-          "prepareCmd": "docker build -t backstage/backstage -f Dockerfile ."
+          "prepareCmd": "DOCKER_BUILDKIT=1 docker build -t backstage/backstage -f Dockerfile ."
         }
       ],
       [
         "@semantic-release/exec",
         {
-          "prepareCmd": "docker build -t backstage/backstage-dev -f Dockerfile.dev ."
+          "prepareCmd": "DOCKER_BUILDKIT=1 docker build -t backstage/backstage-dev -f Dockerfile.dev ."
         }
       ],
       [
