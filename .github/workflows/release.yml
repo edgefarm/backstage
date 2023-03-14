@@ -27,6 +27,7 @@ jobs:
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_USER: yoda
         run: |-
           #!/bin/bash
           set -e
