@@ -36,7 +36,7 @@
     "@backstage/plugin-techdocs-backend": "^1.5.3",
     "@roadiehq/backstage-plugin-argo-cd-backend": "^2.7.1",
     "@roadiehq/scaffolder-backend-argocd": "^1.1.5",
-    "app": "file:../app",
+    "app": "link:../app",
     "better-sqlite3": "^8.0.0",
     "dockerode": "^3.3.1",
     "express": "^4.17.1",
