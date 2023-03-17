@@ -47,7 +47,7 @@ catalog:
   # on how to get entities into the catalog.
   locations:
     - type: url
-      target: https://github.com/edgefarm/backstage-workflows/blob/main/nodes/create/template.yaml
+      target: https://github.com/edgefarm/backstage-workflows/blob/main/all.yaml
       rules:
         - allow: [Template]
     - type: url
