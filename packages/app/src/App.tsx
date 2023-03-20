@@ -35,6 +35,7 @@ import { RequirePermission } from '@backstage/plugin-permission-react';
 import { catalogEntityCreatePermission } from '@backstage/plugin-catalog-common/alpha';
 import { githubAuthApiRef } from '@backstage/core-plugin-api';
 import { SignInPage } from '@backstage/core-components';
+import { EdgefarmPage } from '@internal/plugin-edgefarm';
 
 function identityProvider(): IdentityProviders {
   const providers: IdentityProviders = [
@@ -115,6 +116,7 @@ const routes = (
     </Route>
     <Route path="/settings" element={<UserSettingsPage />} />
     <Route path="/catalog-graph" element={<CatalogGraphPage />} />
+    <Route path="/edgefarm" element={<EdgefarmPage />} />
   </FlatRoutes>
 );
 
