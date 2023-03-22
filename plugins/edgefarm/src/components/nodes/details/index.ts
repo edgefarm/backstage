@@ -1,0 +1,1 @@
+export { NodeDetailsComponent } from './DetailsComponent';
