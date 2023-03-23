@@ -33,6 +33,7 @@ import { ServerPermissionClient } from '@backstage/plugin-permission-node';
 import { DefaultIdentityClient } from '@backstage/plugin-auth-node';
 import kubernetes from './plugins/kubernetes';
 import argocd from './plugins/argocd';
+import edgefarm from './plugins/edgefarm';
 
 function makeCreateEnv(config: Config) {
   const root = getRootLogger();
@@ -89,6 +90,7 @@ async function main() {
   const appEnv = useHotMemoize(module, () => createEnv('app'));
   const argocdEnv = useHotMemoize(module, () => createEnv('argocd'));
   const kubernetesEnv = useHotMemoize(module, () => createEnv('kubernetes'));
+  const edgefarmEnv = useHotMemoize(module, () => createEnv('edgefarm'));
 
   const apiRouter = Router();
   apiRouter.use('/catalog', await catalog(catalogEnv));
@@ -99,6 +101,7 @@ async function main() {
   apiRouter.use('/search', await search(searchEnv));
   apiRouter.use('/kubernetes', await kubernetes(kubernetesEnv));
   apiRouter.use('/argocd', await argocd(argocdEnv));
+  apiRouter.use('/edgefarm', await edgefarm(edgefarmEnv));
 
   // Add backends ABOVE this line; this 404 handler is the catch-all fallback
   apiRouter.use(notFoundHandler());

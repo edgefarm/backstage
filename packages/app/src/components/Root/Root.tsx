@@ -24,6 +24,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import NodeIcon from '@material-ui/icons/Memory';
 import NetworkIcon from '@material-ui/icons/DeviceHub';
 import ApplicationsIcon from '@material-ui/icons/SettingsApplications';
+import HomeIcon from '@material-ui/icons/Home';
 
 const useSidebarLogoStyles = makeStyles({
   root: {
@@ -68,6 +69,7 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
         <SidebarItem icon={NodeIcon} to="catalog?filters[kind]=Component&filters[type]=node" text="Nodes" />
         <SidebarItem icon={ApplicationsIcon} to="catalog?filters[kind]=Component&filters[type]=application" text="Applications" />
         <SidebarItem icon={NetworkIcon} to="catalog?filters[kind]=Component&filters[type]=network" text="Networks" />
+        <SidebarItem icon={HomeIcon} to="catalog?filters[kind]=Location" text="Locations" />
 
         {/* <SidebarItem icon={HomeIcon} to="catalog" text="Home" /> */}
         {/* <SidebarItem icon={ExtensionIcon} to="api-docs" text="APIs" /> */}
