@@ -31,7 +31,7 @@ export async function createRouter(
 
     try {
       const resp = await api.getNodeDetails(nodeName)
-      response.json()
+      response.json(resp)
     } catch (e: any) {
       response.status(500).json({error: e.message})
     }
