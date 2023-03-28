@@ -24,7 +24,7 @@ export class Client {
             throw new Error(data.message);
         }
 
-        return data;
+        return new NodeDetails(data);
     }
 
     private pepareRequest = (
