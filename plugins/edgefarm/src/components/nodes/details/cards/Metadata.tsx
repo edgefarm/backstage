@@ -1,40 +1,57 @@
-import { StatusOK, StatusError, StructuredMetadataTable } from '@backstage/core-components';
+import { StatusOK, StatusError, StructuredMetadataTable, WarningPanel } from '@backstage/core-components';
 import { Chip } from '@material-ui/core';
 import React from 'react'
 import { useEntity } from "@backstage/plugin-catalog-react";
 
-const Metadata = () => {
+const recordToJSXElement = (obj: any) => {
+    if (!obj) return <></>
+    const tmpArray: string[] = []
+    Object.keys(obj).forEach(function (key) {
+        tmpArray.push(key + ": " + obj[key])
+    });
+    if (tmpArray.length > 0) {
+        return tmpArray.map((item) => <Chip label={item} size="small" />).reduce((result, item) => <>{result} {item}</>)
+    } else {
+        return <></>
+    }
+}
+
+const Metadata = (props: { nodeDetails: any }) => {
+    if (!props.nodeDetails || !props.nodeDetails.metadata) return (
+        <WarningPanel
+            title="Data is missing"
+            message="We were unable to find any data for this node."
+        />
+    )
+
     const isOnline = Math.random() >= 0.5;
 
     const { entity } = useEntity();
 
-    const label = ['beta.kubernetes.io/arch: amd64',
-        'beta.kubernetes.io/os: linux',
-        'kubernetes.io/arch: amd64',
-        "kubernetes.io/hostname: backstage",
-        'kubernetes.io/os: linux',
-        'minikube.k8s.io/name: backstage',
-        'minikube.k8s.io/primary: "true"',
-        'minikube.k8s.io/version: v1.28.0',
-        'node-role.kubernetes.io/control-plane: ""',
-    ]
+
+
+    const labels: JSX.Element = recordToJSXElement(props.nodeDetails?.metadata.labels)
+    const annotations: JSX.Element = recordToJSXElement(props.nodeDetails?.metadata.annotations)
 
     const metadata = {
         Status: isOnline ? <><StatusOK /> Online</> : <><StatusError /> Offline</>,
         Name: entity.metadata.name,
-        'OS Version': 'Ubuntu 20.04',
+        'OS Version': props.nodeDetails?.status.nodeInfo.osImage ?? '',
         Uptime: '1 day',
         Roles: 'control-plane',
-        'Kernel-Version': '5.4.0-1031-aws',
-        'Container-Runtime-Version': 'docker://19.3.13',
-        'Kubelet-Version': 'v1.20.2',
-        'Kube-Proxy-Version': 'v1.20.2',
-        Architecture: 'amd64',
-        Labels: label.map((item) => <Chip label={item} size="small" />).reduce((result, item) => <>{result} {item}</>)
+        'Kernel-Version': props.nodeDetails?.status.nodeInfo.kernelVersion ?? '',
+        'Container-Runtime-Version': props.nodeDetails?.status.nodeInfo.containerRuntimeVersion ?? '',
+        'Kubelet-Version': props.nodeDetails?.status.nodeInfo.kubeletVersion ?? '',
+        'Kube-Proxy-Version': props.nodeDetails?.status.nodeInfo.kubeProxyVersion ?? '',
+        Architecture: props.nodeDetails?.status.nodeInfo.architecture ?? '',
+        Labels: labels,
+        Annotations: annotations,
     };
 
     return (
-        <StructuredMetadataTable metadata={metadata} />
+        <>
+            <StructuredMetadataTable metadata={metadata} />
+        </>
     )
 }
 
