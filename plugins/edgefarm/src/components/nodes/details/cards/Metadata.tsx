@@ -1,8 +1,8 @@
 import { StatusOK, StatusError, StructuredMetadataTable, WarningPanel } from '@backstage/core-components';
-import { Chip } from '@material-ui/core';
+import { Chip, CircularProgress } from '@material-ui/core';
 import React from 'react'
 import { useEntity } from "@backstage/plugin-catalog-react";
-import { NodeDetails } from '@internal/plugin-edgefarm-backend';
+import { NodeDetails } from '../DetailsComponent';
 
 
 
@@ -19,39 +19,34 @@ const recordToJSXElement = (record: Record<string, string>) => {
     }
 }
 
-const Metadata = (props: { nodeDetails: NodeDetails }) => {
+const Metadata = (props: { nodeDetails: NodeDetails | null, isLoading: boolean }) => {
+    if (props.isLoading) return (<CircularProgress />)
+
     const nodeDetails = props.nodeDetails;
-    const nodeMetadata = nodeDetails?.Metadata;
-    const nodeInfo = nodeDetails?.Status?.NodeInfo;
-    if (!nodeDetails || !nodeMetadata || !nodeInfo) return (
+    if (!nodeDetails) return (
         <WarningPanel
             title="Data is missing"
             message="We were unable to find any data for this node."
         />
     )
 
-    const isOnline = Math.random() >= 0.5;
-
     const { entity } = useEntity();
 
+    const labels: JSX.Element = recordToJSXElement(nodeDetails.Labels)
+    const annotations: JSX.Element = recordToJSXElement(nodeDetails.Annotations)
 
-
-    const labels: JSX.Element = recordToJSXElement(nodeMetadata.Labels)
-    const annotations: JSX.Element = recordToJSXElement(nodeMetadata.Annotations)
-
-    // const isOnline = props.nodeDetails.status.conditions.filter(
+    const isOnline = nodeDetails.isOnline;
 
     const metadata = {
         Status: isOnline ? <><StatusOK /> Online</> : <><StatusError /> Offline</>,
         Name: entity.metadata.name,
-        'OS Version': nodeInfo.OsImage ?? '',
-        Uptime: '1 day',
-        Roles: 'control-plane',
-        'Kernel-Version': nodeInfo.KernelVersion ?? '',
-        'Container-Runtime-Version': nodeInfo.ContainerRuntimeVersion ?? '',
-        'Kubelet-Version': nodeInfo.KubeletVersion ?? '',
-        'Kube-Proxy-Version': nodeInfo.KubeProxyVersion ?? '',
-        Architecture: nodeInfo.Architecture ?? '',
+        'OS Version': nodeDetails.OsImage ?? '',
+        Uptime: '1 day (still mocked)',
+        'Kernel-Version': nodeDetails.KernelVersion ?? '',
+        'Container-Runtime-Version': nodeDetails.ContainerRuntimeVersion ?? '',
+        'Kubelet-Version': nodeDetails.KubeletVersion ?? '',
+        'Kube-Proxy-Version': nodeDetails.KubeProxyVersion ?? '',
+        Architecture: nodeDetails.Architecture ?? '',
         Labels: labels,
         Annotations: annotations,
     };

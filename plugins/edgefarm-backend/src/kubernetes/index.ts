@@ -19,7 +19,7 @@ export class Client {
         return this.handleErrorResponse(data);
     }
 
-    handleErrorResponse(data: any): NodeDetails | PromiseLike<NodeDetails> {
+    handleErrorResponse(data: any): NodeDetails  {
         if(data.code >= 400){
             throw new Error(data.message);
         }

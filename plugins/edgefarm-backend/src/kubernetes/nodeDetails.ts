@@ -1,38 +1,8 @@
 export class NodeDetails {
-    Metadata: NodeDetailsMetadata;
-    Status: NodeDetailsStatus;
-
-    constructor(nodeDetailsDto: NodeDetailsDto) {
-        this.Metadata = new NodeDetailsMetadata(nodeDetailsDto.metadata)
-        this.Status = new NodeDetailsStatus(nodeDetailsDto.status);
-    }
-}
-
-class NodeDetailsMetadata {
-    Name: string;
-    Namespace?: string;
     Labels: Record<string, string>;
     Annotations: Record<string, string>;
-
-    constructor(metadata: NodeDetailsMetadataDto) {
-        this.Name = metadata.name;
-        this.Namespace = metadata.namespace;
-        this.Labels = metadata.labels;
-        this.Annotations = metadata.annotations;
-    }
-}
-class NodeDetailsStatus {
-    Conditions: NodeDetailsStatusCondition[];
-    NodeInfo: NodeDetailsStatusNodeInfo;
-
-    constructor(status: NodeDetailsStatusDto) {
-        this.Conditions = status.conditions.map((condition) => {
-            return new NodeDetailsStatusCondition(condition);
-        });
-        this.NodeInfo = new NodeDetailsStatusNodeInfo(status.nodeInfo);
-    }
-}
-class NodeDetailsStatusNodeInfo {
+    Name: string;
+    Namespace?: string;
     KernelVersion: string;
     OsImage: string;
     ContainerRuntimeVersion: string;
@@ -40,35 +10,29 @@ class NodeDetailsStatusNodeInfo {
     KubeProxyVersion: string;
     Architecture: string;
     OperatingSystem: string;
+    isOnline: boolean;
+    originData: NodeDetailsDto;
 
-    constructor(nodeInfo: NodeDetailsStatusNodeInfoDto) {
-        this.KernelVersion = nodeInfo.kernelVersion;
-        this.OsImage = nodeInfo.osImage;
-        this.ContainerRuntimeVersion = nodeInfo.containerRuntimeVersion;
-        this.KubeletVersion = nodeInfo.kubeletVersion;
-        this.KubeProxyVersion = nodeInfo.kubeProxyVersion;
-        this.Architecture = nodeInfo.architecture;
-        this.OperatingSystem = nodeInfo.operatingSystem;
+    constructor(nodeDetailsDto: NodeDetailsDto) {
+        this.originData = nodeDetailsDto;
+        this.Name = nodeDetailsDto.metadata.name;
+        this.Labels = nodeDetailsDto.metadata.labels;
+        this.Annotations = nodeDetailsDto.metadata.annotations;
+        this.KernelVersion = nodeDetailsDto.status.nodeInfo.kernelVersion;
+        this.OsImage = nodeDetailsDto.status.nodeInfo.osImage;
+        this.ContainerRuntimeVersion = nodeDetailsDto.status.nodeInfo.containerRuntimeVersion;
+        this.KubeletVersion = nodeDetailsDto.status.nodeInfo.kubeletVersion;
+        this.KubeProxyVersion = nodeDetailsDto.status.nodeInfo.kubeProxyVersion;
+        this.Architecture = nodeDetailsDto.status.nodeInfo.architecture;
+        this.OperatingSystem = nodeDetailsDto.status.nodeInfo.operatingSystem;
+
+        if (!nodeDetailsDto.status.conditions || nodeDetailsDto.status.conditions.length === 0) {
+            this.isOnline = false;
+        } else {
+            const item = nodeDetailsDto.status.conditions.find((cond) => cond.type === 'Ready' && cond.status === 'True')
+            this.isOnline = !!item;
+        }
     }
-}
-
-class NodeDetailsStatusCondition {
-    Type: string;
-    Status: string;
-    LastHeartbeatTime: string;
-    LastTransitionTime: string;
-    Reason: string;
-    Message: string;
-
-    constructor(condition: NodeDetailsStatusConditionDto) {
-        this.Type = condition.type;
-        this.Status = condition.status;
-        this.LastHeartbeatTime = condition.lastHeartbeatTime;
-        this.LastTransitionTime = condition.lastTransitionTime;
-        this.Reason = condition.reason;
-        this.Message = condition.message;
-    }
-
 }
 
 interface NodeDetailsMetadataDto {
@@ -84,6 +48,7 @@ interface NodeDetailsMetadataDto {
         [key: string]: string;
     };
 }
+
 interface NodeDetailsStatusDto {
     addresses: {
         type: string;

@@ -12,6 +12,32 @@ import { useEntity } from "@backstage/plugin-catalog-react";
 
 type Props = {}
 
+export class NodeDetails {
+    Labels: Record<string, string> = {}
+    Annotations: Record<string, string>  = {}
+    Name?: string;
+    OsImage?: string
+    KernelVersion?: string
+    ContainerRuntimeVersion?: string
+    KubeletVersion?: string
+    KubeProxyVersion?: string
+    Architecture?: string
+    isOnline: boolean = false
+
+    constructor(payload: any) {
+        this.Labels = payload.Labels
+        this.Annotations = payload.Annotations
+        this.Name = payload.Name
+        this.OsImage = payload.OsImage
+        this.KernelVersion = payload.KernelVersion
+        this.ContainerRuntimeVersion = payload.ContainerRuntimeVersion
+        this.KubeletVersion = payload.KubeletVersion
+        this.KubeProxyVersion = payload.KubeProxyVersion
+        this.Architecture = payload.Architecture
+        this.isOnline = payload.isOnline
+    }
+}
+
 export const NodeDetailsComponent = (props: Props) => {
   const config = useApi(configApiRef);
   const backendUrl = config.getString('backend.baseUrl');
@@ -20,12 +46,14 @@ export const NodeDetailsComponent = (props: Props) => {
   const clusterName = annotations['edgefarm.io/cluster'] ?? '';
   const nodeName = entity.metadata.name;
 
-  const [nodeDetails, setNodeDetails] = useState(null);
+  const [nodeDetails, setNodeDetails] = useState<NodeDetails|null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     const getMetadata = async () => {
       const response = await fetch(`${backendUrl}/api/edgefarm/${clusterName}/nodes/${nodeName}`);
       const payload = await response.json();
-      setNodeDetails(payload);
+      setNodeDetails(new NodeDetails(payload));
+      setIsLoading(false);
     }
     getMetadata()
   }, [])
@@ -53,7 +81,7 @@ export const NodeDetailsComponent = (props: Props) => {
         </Grid>
         <Grid item xs={12} md={6}>
           <InfoCard title="Metadata" variant="gridItem" >
-            <Metadata nodeDetails={nodeDetails} />
+            <Metadata nodeDetails={nodeDetails} isLoading={isLoading}/>
           </InfoCard>
         </Grid>
       </Grid>
