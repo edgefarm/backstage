@@ -57,7 +57,6 @@ import {
   isArgocdAvailable
 } from '@roadiehq/backstage-plugin-argo-cd';
 import { nodeEntityPage } from './pages/node';
-import { entityWarningContent } from './pages/warningContent';
 import { EntityWarningContentComponent } from '@internal/plugin-edgefarm/src/components/warning';
 
 const techdocsContent = (

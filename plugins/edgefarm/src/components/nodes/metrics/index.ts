@@ -1,0 +1,1 @@
+export { NodeMetricsComponent } from './MetricsComponent';
