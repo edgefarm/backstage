@@ -10,8 +10,6 @@ import NetworkList from './cards/NetworkList'
 import { useApi, configApiRef } from '@backstage/core-plugin-api';
 import { useEntity } from "@backstage/plugin-catalog-react";
 
-type Props = {}
-
 export class NodeDetails {
     Labels: Record<string, string> = {}
     Annotations: Record<string, string>  = {}
@@ -38,7 +36,7 @@ export class NodeDetails {
     }
 }
 
-export const NodeDetailsComponent = (props: Props) => {
+export const NodeDetailsComponent = () => {
   const config = useApi(configApiRef);
   const backendUrl = config.getString('backend.baseUrl');
   const { entity } = useEntity();

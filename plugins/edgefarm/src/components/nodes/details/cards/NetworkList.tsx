@@ -1,9 +1,7 @@
 import { Link, Table, TableColumn } from '@backstage/core-components'
 import React from 'react'
 
-type Props = {}
-
-const NetworkList = (props: Props) => {
+const NetworkList = () => {
   const dummyData = ['Network 1', 'Network 2', 'Network 3', 'Network 4', 'Network 5']
   .map((item) => { return { title: <Link to={`/default/component/${item}`}>{item}</Link> } })
   const columns: TableColumn[] = [

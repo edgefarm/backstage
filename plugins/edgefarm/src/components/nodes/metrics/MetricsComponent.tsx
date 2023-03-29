@@ -2,9 +2,7 @@ import { InfoCard, TrendLine } from '@backstage/core-components'
 import { Grid } from '@material-ui/core'
 import React from 'react'
 
-type Props = {}
-
-export const NodeMetricsComponent = (props: Props) => {
+export const NodeMetricsComponent = () => {
 
   return (
     <Grid container alignItems="stretch">
