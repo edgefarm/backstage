@@ -52,8 +52,10 @@ export const NodeDetailsComponent = () => {
   useEffect(() => {
     const getMetadata = async () => {
       const response = await fetch(`${backendUrl}/api/edgefarm/${clusterName}/nodes/${nodeName}`);
-      const payload = await response.json();
-      setNodeDetails(new NodeDetails(payload));
+      if(response.status === 200){
+        const payload = await response.json();
+        setNodeDetails(new NodeDetails(payload));
+      }
       setIsLoading(false);
     }
     getMetadata()
