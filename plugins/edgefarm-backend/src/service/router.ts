@@ -37,6 +37,25 @@ export async function createRouter(
     }
   });
 
+  router.get('/:clusterName/nodes/:nodeName/quota', async (req, response) => {
+    const { nodeName, clusterName } = req.params;
+
+    const clusterDetails = (new ClusterLocator(config)).getClusterDetails(clusterName);
+    if(clusterDetails === undefined) {
+      response.status(400).json({ error: `Cluster config for ${clusterName} not found` });
+      return;
+    }
+
+    const api = new Client(clusterDetails);
+
+    try {
+      const resp = await api.getNodeQuota(nodeName)
+      response.json(resp)
+    } catch (e: any) {
+      response.status(500).json({error: e.message})
+    }
+  });
+
   router.get('/health', (_, response) => {
     logger.info('PONG!');
     response.json({ status: 'ok' });
