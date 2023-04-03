@@ -44,7 +44,7 @@ const Quota = () => {
   if (!quota) return (
     <WarningPanel
       title="Data is missing"
-      message="We were unable to find any data for this node."
+      message="We were unable to find any quota data for this node."
     />
   )
 
@@ -72,7 +72,7 @@ const Quota = () => {
   ]
 
   return (
-    <InfoCard title="Quota" >
+    < >
       <Grid container direction='row' spacing={0}>
         <Grid item xs={6} sm={6} lg={3}>
           <QuotaItem
@@ -82,7 +82,7 @@ const Quota = () => {
             value={quota.cpu.allocatable?.value!}
             limit={quota!.cpu.allocatable?.raw!}
             actual={quota.cpu.request.raw!}
-            />
+          />
         </Grid>
         <Grid item xs={6} sm={6} lg={3}>
           <QuotaItem
@@ -92,7 +92,7 @@ const Quota = () => {
             value={quota.memory.allocatable?.value!}
             limit={quota.memory.allocatable?.raw!}
             actual={quota.memory.request.raw!}
-            />
+          />
         </Grid>
         <Grid item xs={6} sm={6} lg={3}>
           <QuotaItem
@@ -102,7 +102,7 @@ const Quota = () => {
             value={quota.cpu.allocatable?.value!}
             limit={quota.cpu.allocatable?.raw!}
             actual={quota.cpu.limit.raw!}
-            />
+          />
         </Grid>
         <Grid item xs={6} sm={6} lg={3}>
           <QuotaItem
@@ -112,7 +112,7 @@ const Quota = () => {
             value={quota.memory.allocatable?.value!}
             limit={quota.memory.allocatable?.raw!}
             actual={quota.memory.limit.raw!}
-            />
+          />
         </Grid>
       </Grid>
       <Container className={classes.tableWrapper}>
@@ -122,7 +122,7 @@ const Quota = () => {
           columns={columns}
         />
       </Container>
-    </InfoCard>
+    </>
   )
 }
 

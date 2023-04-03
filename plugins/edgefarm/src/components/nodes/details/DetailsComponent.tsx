@@ -49,7 +49,7 @@ export const NodeDetailsComponent = () => {
   useEffect(() => {
     const getMetadata = async () => {
       const response = await fetch(`${backendUrl}/api/edgefarm/${clusterName}/nodes/${nodeName}`);
-      if(response.status === 200){
+      if (response.status === 200) {
         const payload = await response.json();
         setNodeDetails(new NodeDetails(payload));
       }
@@ -72,7 +72,9 @@ export const NodeDetailsComponent = () => {
         </InfoCard>
       </Grid>
       <Grid item xs={12}>
-        <Quota />
+        <InfoCard title="Quota" variant="gridItem" >
+          <Quota />
+        </InfoCard>
       </Grid>
       <Grid item xs={12} md={6}>
         <ApplicationList />
