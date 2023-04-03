@@ -1,16 +1,13 @@
-import { Gauge, InfoCard, ItemCardGrid, ItemCardHeader, LinkButton } from '@backstage/core-components'
-import { Card, CardActions, CardContent, CardMedia, Grid } from '@material-ui/core'
+import { InfoCard } from '@backstage/core-components'
+import { Grid } from '@material-ui/core'
 import React, { useEffect, useState } from 'react'
 import { EntityWarningContentComponent } from '../../warning'
-import Workload from './cards/Workload'
 import { EntityAboutCard } from "@backstage/plugin-catalog";
 import Metadata from './cards/Metadata'
 import ApplicationList from './cards/ApplicationList'
 import NetworkList from './cards/NetworkList'
 import { useApi, configApiRef } from '@backstage/core-plugin-api';
 import { useEntity } from "@backstage/plugin-catalog-react";
-import { text } from 'stream/consumers'
-import { useMeter } from 'react-aria'
 import Quota from './cards/Quota'
 
 export class NodeDetails {

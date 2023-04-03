@@ -12,6 +12,8 @@ export class NodeDetails {
     OperatingSystem: string;
     isOnline: boolean;
     originData: NodeDetailsDto;
+    allocatableCPU: string;
+    allocatableMemory: string;
 
     constructor(nodeDetailsDto: NodeDetailsDto) {
         this.originData = nodeDetailsDto;
@@ -25,6 +27,8 @@ export class NodeDetails {
         this.KubeProxyVersion = nodeDetailsDto.status.nodeInfo.kubeProxyVersion;
         this.Architecture = nodeDetailsDto.status.nodeInfo.architecture;
         this.OperatingSystem = nodeDetailsDto.status.nodeInfo.operatingSystem;
+        this.allocatableCPU = nodeDetailsDto.status.allocatable.cpu;
+        this.allocatableMemory = nodeDetailsDto.status.allocatable.memory;
 
         if (!nodeDetailsDto.status.conditions || nodeDetailsDto.status.conditions.length === 0) {
             this.isOnline = false;

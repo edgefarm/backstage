@@ -1,7 +1,7 @@
 import React from 'react'
 import { Circle } from 'rc-progress';
-import { Box, Container, makeStyles, createStyles, Theme, useTheme, Paper } from '@material-ui/core';
-import { BackstagePalette, BackstageTheme } from '@backstage/theme';
+import { Box, Container, makeStyles, Paper } from '@material-ui/core';
+import { BackstageTheme } from '@backstage/theme';
 
 const useStyles = makeStyles<BackstageTheme>(theme => ({
   root: {
@@ -13,13 +13,17 @@ const useStyles = makeStyles<BackstageTheme>(theme => ({
     top: '55%',
     left: '49%',
     transform: 'translate(-50%, -50%)',
-    fontSize: theme.typography.pxToRem(45),
     color: theme.palette.textContrast,
+  },
+  overlayValue: {
+    position: 'relative',
+    fontSize: '1.2rem',
+    textAlign: 'center',
   },
   overlayUnit: {
     position: 'relative',
-    marginTop: '2.5rem',
-    fontSize: theme.typography.pxToRem(20),
+    marginTop: '1.5rem',
+    fontSize: '0.8rem',
     textAlign: 'center',
   },
   title: {
@@ -66,10 +70,11 @@ type Props = {
   unit: string;
   limit: number;
   actual: number;
+  value: number;
 }
 
 const QuotaItem = (props: Props) => {
-  const {limit, actual, unit} = props;
+  const {limit, actual, unit, value} = props;
 
   const classes = useStyles(props);
   return (
@@ -88,7 +93,7 @@ const QuotaItem = (props: Props) => {
         strokeColor="#FF6016"
         className={classes.circle} />
       <Box className={classes.overlay}>
-        {limit}
+        <Paper className={classes.overlayValue}>{value}</Paper>
         <Paper className={classes.overlayUnit}>{unit}</Paper>
       </Box>
       <Box className={classes.legend}>
