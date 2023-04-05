@@ -1,5 +1,5 @@
 
-name: Lint Commit Messages
+name: TSC Lint
 on:
   pull_request:
     branches:
