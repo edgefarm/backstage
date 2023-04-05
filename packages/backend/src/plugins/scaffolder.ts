@@ -1,5 +1,8 @@
 import { CatalogClient } from '@backstage/catalog-client';
-import { createRouter, createBuiltinActions } from '@backstage/plugin-scaffolder-backend';
+import {
+  createRouter,
+  createBuiltinActions,
+} from '@backstage/plugin-scaffolder-backend';
 import { createArgoCdResources } from '@roadiehq/scaffolder-backend-argocd';
 import { Router } from 'express';
 import type { PluginEnvironment } from '../types';
