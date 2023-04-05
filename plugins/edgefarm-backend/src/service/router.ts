@@ -21,38 +21,46 @@ export async function createRouter(
   router.get('/:clusterName/nodes/:nodeName', async (req, response) => {
     const { nodeName, clusterName } = req.params;
 
-    const clusterDetails = (new ClusterLocator(config)).getClusterDetails(clusterName);
-    if(clusterDetails === undefined) {
-      response.status(400).json({ error: `Cluster config for ${clusterName} not found` });
+    const clusterDetails = new ClusterLocator(config).getClusterDetails(
+      clusterName,
+    );
+    if (clusterDetails === undefined) {
+      response
+        .status(400)
+        .json({ error: `Cluster config for ${clusterName} not found` });
       return;
     }
 
     const api = new Client(clusterDetails);
 
     try {
-      const resp = await api.getNodeDetails(nodeName)
-      response.json(resp)
+      const resp = await api.getNodeDetails(nodeName);
+      response.json(resp);
     } catch (e: any) {
-      response.status(500).json({error: e.message})
+      response.status(500).json({ error: e.message });
     }
   });
 
   router.get('/:clusterName/nodes/:nodeName/quota', async (req, response) => {
     const { nodeName, clusterName } = req.params;
 
-    const clusterDetails = (new ClusterLocator(config)).getClusterDetails(clusterName);
-    if(clusterDetails === undefined) {
-      response.status(400).json({ error: `Cluster config for ${clusterName} not found` });
+    const clusterDetails = new ClusterLocator(config).getClusterDetails(
+      clusterName,
+    );
+    if (clusterDetails === undefined) {
+      response
+        .status(400)
+        .json({ error: `Cluster config for ${clusterName} not found` });
       return;
     }
 
     const api = new Client(clusterDetails);
 
     try {
-      const resp = await api.getNodeQuota(nodeName)
-      response.json(resp)
+      const resp = await api.getNodeQuota(nodeName);
+      response.json(resp);
     } catch (e: any) {
-      response.status(500).json({error: e.message})
+      response.status(500).json({ error: e.message });
     }
   });
 

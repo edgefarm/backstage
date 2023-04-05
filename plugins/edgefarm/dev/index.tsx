@@ -7,6 +7,6 @@ createDevApp()
   .addPage({
     element: <EdgefarmPage />,
     title: 'Root Page',
-    path: '/edgefarm'
+    path: '/edgefarm',
   })
   .render();

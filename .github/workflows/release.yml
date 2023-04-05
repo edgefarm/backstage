@@ -2,7 +2,7 @@ name: Release
 
 on:
   workflow_run:
-    workflows: ["Lint Commit Messages"]
+    workflows: ['Lint Commit Messages']
     branches:
       - main
       - beta
@@ -22,7 +22,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: "lts/*"
+          node-version: 'lts/*'
 
       - name: Release
         env:

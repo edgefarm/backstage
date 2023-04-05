@@ -54,10 +54,10 @@ import { ReportIssue } from '@backstage/plugin-techdocs-module-addons-contrib';
 import { EntityKubernetesContent } from '@backstage/plugin-kubernetes';
 import {
   EntityArgoCDOverviewCard,
-  isArgocdAvailable
+  isArgocdAvailable,
 } from '@roadiehq/backstage-plugin-argo-cd';
 import { nodeEntityPage } from './pages/node';
-import { EntityWarningContentComponent } from '@internal/plugin-edgefarm/src/components/warning';
+import { EntityWarningContentComponent } from '@internal/plugin-edgefarm';
 
 const techdocsContent = (
   <EntityTechdocsContent>
@@ -93,7 +93,6 @@ const cicdContent = (
     </EntitySwitch.Case>
   </EntitySwitch>
 );
-
 
 const overviewContent = (
   <Grid container spacing={3} alignItems="stretch">

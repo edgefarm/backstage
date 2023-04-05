@@ -64,12 +64,32 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
       <SidebarDivider />
       <SidebarGroup label="Menu" icon={<MenuIcon />}>
         {/* Global nav, not org-specific */}
-        <SidebarItem icon={NodeIcon} to="gettingstarted" text="Getting Started" />
+        <SidebarItem
+          icon={NodeIcon}
+          to="gettingstarted"
+          text="Getting Started"
+        />
         <SidebarItem icon={NodeIcon} to="dashboard" text="Dashboard" />
-        <SidebarItem icon={NodeIcon} to="catalog?filters[kind]=Component&filters[type]=node" text="Nodes" />
-        <SidebarItem icon={ApplicationsIcon} to="catalog?filters[kind]=Component&filters[type]=application" text="Applications" />
-        <SidebarItem icon={NetworkIcon} to="catalog?filters[kind]=Component&filters[type]=network" text="Networks" />
-        <SidebarItem icon={HomeIcon} to="catalog?filters[kind]=Location" text="Locations" />
+        <SidebarItem
+          icon={NodeIcon}
+          to="catalog?filters[kind]=Component&filters[type]=node"
+          text="Nodes"
+        />
+        <SidebarItem
+          icon={ApplicationsIcon}
+          to="catalog?filters[kind]=Component&filters[type]=application"
+          text="Applications"
+        />
+        <SidebarItem
+          icon={NetworkIcon}
+          to="catalog?filters[kind]=Component&filters[type]=network"
+          text="Networks"
+        />
+        <SidebarItem
+          icon={HomeIcon}
+          to="catalog?filters[kind]=Location"
+          text="Locations"
+        />
 
         {/* <SidebarItem icon={HomeIcon} to="catalog" text="Home" /> */}
         {/* <SidebarItem icon={ExtensionIcon} to="api-docs" text="APIs" /> */}
