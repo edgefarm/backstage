@@ -1,4 +1,4 @@
-import { InfoCard, Table, TableColumn, WarningPanel } from '@backstage/core-components'
+import { Table, TableColumn, WarningPanel } from '@backstage/core-components'
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { BackstageTheme } from '@backstage/theme';
 import { CircularProgress, Container, Grid, makeStyles } from '@material-ui/core'
