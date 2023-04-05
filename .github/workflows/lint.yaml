@@ -22,10 +22,10 @@ jobs:
         uses: borales/actions-yarn@v4
         with:
           cmd: tsc
-      - name: Run 'yarn lint'
+      - name: Run 'yarn lint:all'
         uses: borales/actions-yarn@v4
         with:
-          cmd: lint
+          cmd: lint:all
       - name: Run 'yarn prettier --check .'
         uses: borales/actions-yarn@v4
         with:
