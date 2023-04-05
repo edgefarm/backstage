@@ -1,172 +1,39 @@
 import {
-  HomePageToolkit,
-  HomePageCompanyLogo,
-  HomePageStarredEntities,
-  TemplateBackstageLogo,
-  TemplateBackstageLogoIcon,
-} from '@backstage/plugin-home';
-import { wrapInTestApp, TestApiProvider } from '@backstage/test-utils';
-import { Content, Page, InfoCard } from '@backstage/core-components';
-import {
-  starredEntitiesApiRef,
-  MockStarredEntitiesApi,
-  entityRouteRef,
-  catalogApiRef,
-} from '@backstage/plugin-catalog-react';
-import { configApiRef } from '@backstage/core-plugin-api';
-import { ConfigReader } from '@backstage/config';
-import { HomePageSearchBar, searchPlugin } from '@backstage/plugin-search';
-import {
-  searchApiRef,
-  SearchContextProvider,
-} from '@backstage/plugin-search-react';
-import { Grid, makeStyles } from '@material-ui/core';
-import React, { ComponentType } from 'react';
-
-const entities = [
-  {
-    apiVersion: '1',
-    kind: 'Component',
-    metadata: {
-      name: 'mock-starred-entity',
-      title: 'Mock Starred Entity!',
-    },
-  },
-  {
-    apiVersion: '1',
-    kind: 'Component',
-    metadata: {
-      name: 'mock-starred-entity-2',
-      title: 'Mock Starred Entity 2!',
-    },
-  },
-  {
-    apiVersion: '1',
-    kind: 'Component',
-    metadata: {
-      name: 'mock-starred-entity-3',
-      title: 'Mock Starred Entity 3!',
-    },
-  },
-  {
-    apiVersion: '1',
-    kind: 'Component',
-    metadata: {
-      name: 'mock-starred-entity-4',
-      title: 'Mock Starred Entity 4!',
-    },
-  },
-];
-
-const mockCatalogApi = {
-  getEntities: async () => ({ items: entities }),
-};
-
-const starredEntitiesApi = new MockStarredEntitiesApi();
-starredEntitiesApi.toggleStarred('component:default/example-starred-entity');
-starredEntitiesApi.toggleStarred('component:default/example-starred-entity-2');
-starredEntitiesApi.toggleStarred('component:default/example-starred-entity-3');
-starredEntitiesApi.toggleStarred('component:default/example-starred-entity-4');
-
-export default {
-  title: 'Plugins/Home/Templates',
-  decorators: [
-    (Story: ComponentType<{}>) =>
-      wrapInTestApp(
-        <>
-          <TestApiProvider
-            apis={[
-              [catalogApiRef, mockCatalogApi],
-              [starredEntitiesApiRef, starredEntitiesApi],
-              [searchApiRef, { query: () => Promise.resolve({ results: [] }) }],
-              [
-                configApiRef,
-                new ConfigReader({
-                  stackoverflow: {
-                    baseUrl: 'https://api.stackexchange.com/2.2',
-                  },
-                }),
-              ],
-            ]}
-          >
-            <Story />
-          </TestApiProvider>
-        </>,
-        {
-          mountedRoutes: {
-            '/hello-company': searchPlugin.routes.root,
-            '/catalog/:namespace/:kind/:name': entityRouteRef,
-          },
-        },
-      ),
-  ],
-};
-
-const useStyles = makeStyles(theme => ({
-  searchBar: {
-    display: 'flex',
-    maxWidth: '60vw',
-    backgroundColor: theme.palette.background.paper,
-    boxShadow: theme.shadows[1],
-    padding: '8px 0',
-    borderRadius: '50px',
-    margin: 'auto',
-  },
-}));
-
-const useLogoStyles = makeStyles(theme => ({
-  container: {
-    margin: theme.spacing(5, 0),
-  },
-  svg: {
-    width: 'auto',
-    height: 100,
-  },
-  path: {
-    fill: '#7df3e1',
-  },
-}));
+  Content,
+  MarkdownContent,
+  Page,
+  Progress,
+  ResponseErrorPanel,
+} from '@backstage/core-components';
+import { SearchContextProvider } from '@backstage/plugin-search-react';
+import React from 'react';
+import { useApi, fetchApiRef } from '@backstage/core-plugin-api';
+import useAsync from 'react-use/lib/useAsync';
 
 export const GettingStartedPage = () => {
-  const classes = useStyles();
-  const { svg, path, container } = useLogoStyles();
+  const { fetch } = useApi(fetchApiRef);
+  const { value, loading, error } = useAsync(async (): Promise<any> => {
+    const response = await fetch(
+      'https://raw.githubusercontent.com/edgefarm/edgefarm/beta/docs/gettingstarted/index.md',
+    );
+    if (response.status >= 400) {
+      throw new Error('Error loading getting started page');
+    }
+
+    return response.text();
+  }, []);
+
+  if (loading) {
+    return <Progress />;
+  } else if (error) {
+    return <ResponseErrorPanel error={error} />;
+  }
 
   return (
     <SearchContextProvider>
       <Page themeId="home">
         <Content>
-          <Grid container justifyContent="center" spacing={6}>
-            <HomePageCompanyLogo
-              className={container}
-              logo={<TemplateBackstageLogo classes={{ svg, path }} />}
-            />
-            <Grid container item xs={12} alignItems="center" direction="row">
-              <HomePageSearchBar
-                classes={{ root: classes.searchBar }}
-                placeholder="Search"
-              />
-            </Grid>
-            <Grid container item xs={12}>
-              <Grid item xs={12} md={6}>
-                <HomePageStarredEntities />
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <HomePageToolkit
-                  tools={Array(8).fill({
-                    url: '#',
-                    label: 'link',
-                    icon: <TemplateBackstageLogoIcon />,
-                  })}
-                />
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <InfoCard title="Composable Section">
-                  {/* placeholder for content */}
-                  <div style={{ height: 370 }} />
-                </InfoCard>
-              </Grid>
-            </Grid>
-          </Grid>
+          <MarkdownContent content={value} dialect="gfm" />
         </Content>
       </Page>
     </SearchContextProvider>
