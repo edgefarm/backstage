@@ -22,4 +22,4 @@ jobs:
             - name: Run 'yarn tsc'
               uses: borales/actions-yarn@v4
               with:
-                cmd: tsc # will run `yarn test` command
+                cmd: tsc # will run `yarn tsc` command
