@@ -1,1 +1,1 @@
-export { EntityWarningContentComponent } from './WarningContentComponent'
+export { EntityWarningContentComponent } from './WarningContentComponent';

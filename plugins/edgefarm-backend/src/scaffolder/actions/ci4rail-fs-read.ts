@@ -18,7 +18,10 @@ export const readFileAction = () => {
       },
     },
     async handler(ctx) {
-      const fileBuf = fs.readFileSync(`${ctx.workspacePath}/${ctx.input.path}`, 'utf8');
+      const fileBuf = fs.readFileSync(
+        `${ctx.workspacePath}/${ctx.input.path}`,
+        'utf8',
+      );
       ctx.output('content', fileBuf.toString());
     },
   });

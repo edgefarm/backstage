@@ -1,5 +1,5 @@
 import React from 'react';
-import {  Route } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import { apiDocsPlugin, ApiExplorerPage } from '@backstage/plugin-api-docs';
 import {
   CatalogEntityPage,
@@ -27,7 +27,11 @@ import { entityPage } from './components/catalog/EntityPage';
 import { searchPage } from './components/search/SearchPage';
 import { Root } from './components/Root';
 
-import { AlertDisplay, IdentityProviders, OAuthRequestDialog } from '@backstage/core-components';
+import {
+  AlertDisplay,
+  IdentityProviders,
+  OAuthRequestDialog,
+} from '@backstage/core-components';
 import { createApp } from '@backstage/app-defaults';
 import { AppRouter, FlatRoutes } from '@backstage/core-app-api';
 import { CatalogGraphPage } from '@backstage/plugin-catalog-graph';
@@ -51,8 +55,8 @@ function identityProvider(): IdentityProviders {
       title: 'GitHub',
       message: 'Sign in using GitHub',
       apiRef: githubAuthApiRef,
-    }
-  ]
+    },
+  ];
 
   return providers;
 }
@@ -61,11 +65,7 @@ const app = createApp({
   apis,
   components: {
     SignInPage: props => (
-      <SignInPage
-        {...props}
-        auto
-        providers={identityProvider()}
-      />
+      <SignInPage {...props} auto providers={identityProvider()} />
     ),
   },
   bindRoutes({ bind }) {
@@ -106,7 +106,7 @@ const app = createApp({
         </ThemeProvider>
       ),
     },
-  ]
+  ],
 });
 
 const routes = (

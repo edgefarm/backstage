@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import { Circle } from 'rc-progress';
 import { Box, Container, makeStyles, Paper } from '@material-ui/core';
 import { BackstageTheme } from '@backstage/theme';
@@ -71,36 +71,42 @@ type Props = {
   limit: number;
   actual: number;
   value: number;
-}
+};
 
 const QuotaItem = (props: Props) => {
-  const {limit, actual, unit, value} = props;
+  const { limit, actual, unit, value } = props;
 
   const classes = useStyles(props);
   return (
     <Box className={classes.root}>
       <Container className={classes.title}>
         {props.title}
-        <small className={classes.subtitle}>
-          {props.subtitle}
-        </small>
+        <small className={classes.subtitle}>{props.subtitle}</small>
       </Container>
       <Circle
-        percent={actual / limit * 100}
+        percent={(actual / limit) * 100}
         strokeWidth={12}
         trailWidth={12}
         strokeLinecap="butt"
         strokeColor="#FF6016"
-        className={classes.circle} />
+        className={classes.circle}
+      />
       <Box className={classes.overlay}>
         <Paper className={classes.overlayValue}>{value}</Paper>
         <Paper className={classes.overlayUnit}>{unit}</Paper>
       </Box>
       <Box className={classes.legend}>
-        <Paper variant="outlined" square className={classes.indicatorUsed}></Paper>Used <Paper variant="outlined" square className={classes.indicatorAvailable}></Paper>Available
+        <Paper variant="outlined" square className={classes.indicatorUsed} />
+        Used{' '}
+        <Paper
+          variant="outlined"
+          square
+          className={classes.indicatorAvailable}
+        />
+        Available
       </Box>
     </Box>
-  )
-}
+  );
+};
 
-export default QuotaItem
+export default QuotaItem;

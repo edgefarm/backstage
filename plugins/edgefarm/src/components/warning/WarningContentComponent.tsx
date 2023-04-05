@@ -1,7 +1,12 @@
-import { EntitySwitch, isOrphan, EntityOrphanWarning, hasCatalogProcessingErrors, EntityProcessingErrorsPanel } from "@backstage/plugin-catalog";
-import { Grid } from "@material-ui/core";
-import React from "react";
-
+import {
+  EntitySwitch,
+  isOrphan,
+  EntityOrphanWarning,
+  hasCatalogProcessingErrors,
+  EntityProcessingErrorsPanel,
+} from '@backstage/plugin-catalog';
+import { Grid } from '@material-ui/core';
+import React from 'react';
 
 export const EntityWarningContentComponent = () => {
   return (
@@ -22,5 +27,5 @@ export const EntityWarningContentComponent = () => {
         </EntitySwitch.Case>
       </EntitySwitch>
     </>
-  )
-}
+  );
+};

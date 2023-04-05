@@ -1,55 +1,55 @@
 {
-    "branches": [
+  "branches": [
+    {
+      "name": "main"
+    },
+    {
+      "name": "beta",
+      "prerelease": true
+    }
+  ],
+  "plugins": [
+    "@semantic-release/commit-analyzer",
+    [
+      "@semantic-release/exec",
       {
-        "name": "main"
-      },
-      {
-        "name": "beta",
-        "prerelease": true
+        "prepareCmd": "DOCKER_BUILDKIT=1 docker build -t backstage/backstage -f Dockerfile ."
       }
     ],
-    "plugins": [
-      "@semantic-release/commit-analyzer",
-      [
-        "@semantic-release/exec",
-        {
-          "prepareCmd": "DOCKER_BUILDKIT=1 docker build -t backstage/backstage -f Dockerfile ."
-        }
-      ],
-      [
-        "@semantic-release/exec",
-        {
-          "prepareCmd": "DOCKER_BUILDKIT=1 docker build -t backstage/backstage-dev -f Dockerfile.dev ."
-        }
-      ],
-      [
-        "@eclass/semantic-release-docker",
-        {
-          "baseImageName": "backstage/backstage",
-          "registries": [
-            {
-              "url": "ghcr.io",
-              "imageName": "ghcr.io/edgefarm/backstage/backstage",
-              "user": "GITHUB_USER",
-              "password": "GITHUB_TOKEN"
-            }
-          ]
-        }
-      ],
-      [
-        "@eclass/semantic-release-docker",
-        {
-          "baseImageName": "backstage/backstage-dev",
-          "registries": [
-            {
-              "url": "ghcr.io",
-              "imageName": "ghcr.io/edgefarm/backstage/backstage-dev",
-              "user": "GITHUB_USER",
-              "password": "GITHUB_TOKEN"
-            }
-          ]
-        }
-      ],
-      "@semantic-release/release-notes-generator"
-    ]
-  }
+    [
+      "@semantic-release/exec",
+      {
+        "prepareCmd": "DOCKER_BUILDKIT=1 docker build -t backstage/backstage-dev -f Dockerfile.dev ."
+      }
+    ],
+    [
+      "@eclass/semantic-release-docker",
+      {
+        "baseImageName": "backstage/backstage",
+        "registries": [
+          {
+            "url": "ghcr.io",
+            "imageName": "ghcr.io/edgefarm/backstage/backstage",
+            "user": "GITHUB_USER",
+            "password": "GITHUB_TOKEN"
+          }
+        ]
+      }
+    ],
+    [
+      "@eclass/semantic-release-docker",
+      {
+        "baseImageName": "backstage/backstage-dev",
+        "registries": [
+          {
+            "url": "ghcr.io",
+            "imageName": "ghcr.io/edgefarm/backstage/backstage-dev",
+            "user": "GITHUB_USER",
+            "password": "GITHUB_TOKEN"
+          }
+        ]
+      }
+    ],
+    "@semantic-release/release-notes-generator"
+  ]
+}
