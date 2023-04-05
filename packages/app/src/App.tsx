@@ -1,5 +1,5 @@
 import React from 'react';
-import { Navigate, Route } from 'react-router-dom';
+import {  Route } from 'react-router-dom';
 import { apiDocsPlugin, ApiExplorerPage } from '@backstage/plugin-api-docs';
 import {
   CatalogEntityPage,
@@ -36,6 +36,13 @@ import { catalogEntityCreatePermission } from '@backstage/plugin-catalog-common/
 import { githubAuthApiRef } from '@backstage/core-plugin-api';
 import { SignInPage } from '@backstage/core-components';
 import { EdgefarmPage } from '@internal/plugin-edgefarm';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import LightIcon from '@material-ui/icons/WbSunny';
+import { ThemeProvider } from '@material-ui/core/styles';
+import { lightTheme, darkTheme } from './theme/edgefarm';
+import { DashboardPage } from './components/pages/dashboard';
+import { GettingStartedPage } from './components/pages/gettingstarted';
+import { HomepageCompositionRoot } from '@backstage/plugin-home';
 
 function identityProvider(): IdentityProviders {
   const providers: IdentityProviders = [
@@ -76,12 +83,41 @@ const app = createApp({
       catalogIndex: catalogPlugin.routes.catalogIndex,
     });
   },
+  themes: [
+    {
+      id: 'dark-theme',
+      title: 'Dark Theme',
+      variant: 'dark',
+      icon: <LightIcon />,
+      Provider: ({ children }) => (
+        <ThemeProvider theme={darkTheme}>
+          <CssBaseline>{children}</CssBaseline>
+        </ThemeProvider>
+      ),
+    },
+    {
+      id: 'light-theme',
+      title: 'Light Theme',
+      variant: 'light',
+      icon: <LightIcon />,
+      Provider: ({ children }) => (
+        <ThemeProvider theme={lightTheme}>
+          <CssBaseline>{children}</CssBaseline>
+        </ThemeProvider>
+      ),
+    },
+  ]
 });
 
 const routes = (
   <FlatRoutes>
-    <Route path="/" element={<Navigate to="catalog" />} />
+    {/* <Route path="/" element={<Navigate to="gettingstarted" />} /> */}
+    <Route path="/" element={<HomepageCompositionRoot />}>
+      <GettingStartedPage />
+    </Route>
     <Route path="/catalog" element={<CatalogIndexPage />} />
+    <Route path="/gettingstarted" element={<GettingStartedPage />} />
+    <Route path="/dashboard" element={<DashboardPage />} />
     <Route
       path="/catalog/:namespace/:kind/:name"
       element={<CatalogEntityPage />}

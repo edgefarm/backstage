@@ -3236,6 +3236,23 @@
     luxon "^3.0.0"
     react-use "^17.2.4"
 
+"@backstage/plugin-home@^0.4.32":
+  version "0.4.32"
+  resolved "https://registry.yarnpkg.com/@backstage/plugin-home/-/plugin-home-0.4.32.tgz#81f633ab0dbd9d723da3825681d09053a857e122"
+  integrity sha512-guKwviutP2NcBg2AtZMzJTCAsksGgDmh4wc7DrnhHYs2pCMU2PqAP8Xzxia//JhxfXzoUFl8YrR6z4vs3LBadQ==
+  dependencies:
+    "@backstage/catalog-model" "^1.2.1"
+    "@backstage/config" "^1.0.7"
+    "@backstage/core-components" "^0.12.5"
+    "@backstage/core-plugin-api" "^1.5.0"
+    "@backstage/plugin-catalog-react" "^1.4.0"
+    "@backstage/theme" "^0.2.18"
+    "@material-ui/core" "^4.12.2"
+    "@material-ui/icons" "^4.9.1"
+    "@material-ui/lab" "4.0.0-alpha.57"
+    lodash "^4.17.21"
+    react-use "^17.2.4"
+
 "@backstage/plugin-kubernetes-backend@^0.9.3":
   version "0.9.3"
   resolved "https://registry.yarnpkg.com/@backstage/plugin-kubernetes-backend/-/plugin-kubernetes-backend-0.9.3.tgz#4a923a5d97ca328b3068d3f949fd1b42a8595e13"
