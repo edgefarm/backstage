@@ -16,15 +16,18 @@ export default async function createPlugin(
     discoveryApi: env.discovery,
   });
   const integrations = ScmIntegrations.fromConfig(env.config);
+
+  const builtInActions = createBuiltinActions({
+    integrations,
+    catalogClient,
+    config: env.config,
+    reader: env.reader,
+  });
+
   const actions = [
     createArgoCdResources(env.config, env.logger),
     createReadFileAction(),
-    ...createBuiltinActions({
-      integrations,
-      catalogClient,
-      config: env.config,
-      reader: env.reader,
-    }),
+    ...builtInActions,
   ];
 
   return await createRouter({

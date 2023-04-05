@@ -86,14 +86,16 @@ const Quota = () => {
     {
       type: 'Memory (Request)',
       used: `${quota.memory.request.value}${quota.memory.request.unit}`,
-      max: `${quota!.memory.allocatable?.value}${quota.memory.allocatable
-        ?.unit}`,
+      max: `${quota!.memory.allocatable?.value}${
+        quota.memory.allocatable?.unit
+      }`,
     },
     {
       type: 'Memory (Limit)',
       used: `${quota.memory.limit.value}${quota.memory.limit.unit}`,
-      max: `${quota!.memory.allocatable?.value}${quota.memory.allocatable
-        ?.unit}`,
+      max: `${quota!.memory.allocatable?.value}${
+        quota.memory.allocatable?.unit
+      }`,
     },
   ];
 
