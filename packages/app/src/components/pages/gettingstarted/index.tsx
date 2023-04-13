@@ -1,5 +1,6 @@
 import {
   Content,
+  Header,
   MarkdownContent,
   Page,
   Progress,
@@ -32,6 +33,10 @@ export const GettingStartedPage = () => {
   return (
     <SearchContextProvider>
       <Page themeId="home">
+        <Header
+          title="Getting Started"
+          subtitle="Learn how to start with your EdgeFarm"
+        />
         <Content>
           <MarkdownContent content={value} dialect="gfm" />
         </Content>
