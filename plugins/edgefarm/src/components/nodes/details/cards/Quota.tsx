@@ -44,7 +44,7 @@ const Quota = () => {
       setIsLoading(false);
     };
     getQuota();
-  });
+  }, [backendUrl, clusterName, nodeName]);
 
   if (isLoading) return <CircularProgress />;
 

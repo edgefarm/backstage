@@ -58,7 +58,7 @@ export const NodeDetailsComponent = () => {
       setIsLoading(false);
     };
     getMetadata();
-  });
+  }, [backendUrl, clusterName, nodeName]);
 
   return (
     <Grid container alignItems="stretch">
