@@ -9,6 +9,7 @@ import NetworkList from './cards/NetworkList';
 import { useApi, configApiRef } from '@backstage/core-plugin-api';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import Quota from './cards/Quota';
+import { EntityCatalogGraphCard } from '@backstage/plugin-catalog-graph';
 
 export class NodeDetails {
   Labels: Record<string, string> = {};
@@ -65,12 +66,17 @@ export const NodeDetailsComponent = () => {
       <EntityWarningContentComponent />
 
       <Grid item xs={12} md={6}>
-        <EntityAboutCard variant="gridItem" />
-      </Grid>
-      <Grid item xs={12} md={6}>
         <InfoCard title="Metadata" variant="gridItem">
           <Metadata nodeDetails={nodeDetails} isLoading={isLoading} />
         </InfoCard>
+      </Grid>
+      <Grid item xs={12} md={6}>
+        <Grid item xs={12}>
+          <EntityAboutCard variant="gridItem" />
+        </Grid>
+        <Grid item xs={12}>
+          <EntityCatalogGraphCard variant="gridItem" height={400} />
+        </Grid>
       </Grid>
       <Grid item xs={12}>
         <InfoCard title="Quota" variant="gridItem">
