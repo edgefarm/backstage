@@ -1,4 +1,4 @@
-import { Link, Table, TableColumn } from '@backstage/core-components';
+import { EmptyState, InfoCard, LinkButton } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 import {
   catalogApiRef,
@@ -7,10 +7,14 @@ import {
 } from '@backstage/plugin-catalog-react';
 import { Entity } from '@backstage/catalog-model';
 import React, { useEffect, useState } from 'react';
+import { List, ListItem, ListItemIcon } from '@material-ui/core';
+import NetworkIcon from '@material-ui/icons/DeviceHub';
 
 type EntityLinkListProps = {
   type: string;
   title: string;
+  createUrl: string;
+  emptyTitle: string;
 };
 
 const SystemChildEntitiesLinkList = (props: EntityLinkListProps) => {
@@ -18,7 +22,9 @@ const SystemChildEntitiesLinkList = (props: EntityLinkListProps) => {
   const { entity } = useEntity();
   const systemRef = entity.spec?.system as string;
 
-  const [tableItems, setTableItems] = useState<{ title: JSX.Element }[]>([]);
+  const [tableItems, setTableItems] = useState<
+    { id: string; title: JSX.Element }[]
+  >([]);
   useEffect(() => {
     const getNetworks = async () => {
       if (!systemRef) return;
@@ -37,6 +43,7 @@ const SystemChildEntitiesLinkList = (props: EntityLinkListProps) => {
       setTableItems(
         networkEntities.map(item => {
           return {
+            id: item.metadata.uid ?? item.metadata.name,
             title: (
               <EntityRefLink entityRef={item} title={item.metadata.name} />
             ),
@@ -47,26 +54,38 @@ const SystemChildEntitiesLinkList = (props: EntityLinkListProps) => {
     getNetworks();
   }, [api, props.type, systemRef]);
 
-  const columns: TableColumn[] = [
-    {
-      title: 'Name',
-      field: 'title',
-      highlight: true,
-    },
-  ];
+  if (tableItems.length === 0) {
+    return (
+      <InfoCard title={props.title} variant="gridItem">
+        <EmptyState
+          missing="data"
+          title={props.emptyTitle}
+          description="Click here to create one"
+          action={
+            <LinkButton to={props.createUrl} color="primary" variant="outlined">
+              Add {props.type}
+            </LinkButton>
+          }
+        />
+      </InfoCard>
+    );
+  }
 
   return (
-    <Table
-      title={props.title}
-      options={{
-        paging: false,
-        padding: 'dense',
-        search: false,
-        sorting: false,
-      }}
-      data={tableItems}
-      columns={columns}
-    />
+    <>
+      <InfoCard title={props.title} variant="gridItem">
+        <List dense>
+          {tableItems.map(item => (
+            <ListItem key={item.id}>
+              <ListItemIcon>
+                <NetworkIcon />
+              </ListItemIcon>
+              {item.title}
+            </ListItem>
+          ))}
+        </List>
+      </InfoCard>
+    </>
   );
 };
 
