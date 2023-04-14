@@ -4,8 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { EntityWarningContentComponent } from '../../warning';
 import { EntityAboutCard } from '@backstage/plugin-catalog';
 import Metadata from './cards/Metadata';
-import ApplicationList from './cards/ApplicationList';
-import NetworkList from './cards/NetworkList';
+import SystemChildEntitiesLinkList from './cards/SystemChildEntitiesLinkList';
 import { useApi, configApiRef } from '@backstage/core-plugin-api';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import Quota from './cards/Quota';
@@ -84,10 +83,20 @@ export const NodeDetailsComponent = () => {
         </InfoCard>
       </Grid>
       <Grid item xs={12} md={6}>
-        <ApplicationList />
+        <SystemChildEntitiesLinkList
+          type="application"
+          title="Applications"
+          createUrl="/create/templates/default/edgefarm-application-add"
+          emptyTitle="No applications found for this node"
+        />
       </Grid>
       <Grid item xs={12} md={6}>
-        <NetworkList />
+        <SystemChildEntitiesLinkList
+          type="network"
+          title="Networks"
+          createUrl="/create/templates/default/edgefarm-network-add"
+          emptyTitle="No networks found for this node"
+        />
       </Grid>
     </Grid>
   );
