@@ -5,7 +5,7 @@ import { EntityWarningContentComponent } from '../../warning';
 import { EntityAboutCard } from '@backstage/plugin-catalog';
 import Metadata from './cards/Metadata';
 import ApplicationList from './cards/ApplicationList';
-import NetworkList from './cards/NetworkList';
+import SystemChildEntitiesLinkList from './cards/SystemChildEntitiesLinkList';
 import { useApi, configApiRef } from '@backstage/core-plugin-api';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import Quota from './cards/Quota';
@@ -84,10 +84,10 @@ export const NodeDetailsComponent = () => {
         </InfoCard>
       </Grid>
       <Grid item xs={12} md={6}>
-        <ApplicationList />
+        <SystemChildEntitiesLinkList type="application" title="Applications" />
       </Grid>
       <Grid item xs={12} md={6}>
-        <NetworkList />
+        <SystemChildEntitiesLinkList type="network" title="Networks" />
       </Grid>
     </Grid>
   );
