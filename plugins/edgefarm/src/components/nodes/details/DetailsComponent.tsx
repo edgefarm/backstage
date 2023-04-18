@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { EntityWarningContentComponent } from '../../warning';
 import { EntityAboutCard } from '@backstage/plugin-catalog';
 import Metadata from './cards/Metadata';
-import SystemChildEntitiesLinkList from './cards/SystemChildEntitiesLinkList';
+import SystemChildEntitiesLinkList from '../../shared/SystemChildEntitiesLinkList';
 import { useApi, configApiRef } from '@backstage/core-plugin-api';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import Quota from './cards/Quota';
@@ -36,7 +36,7 @@ export class NodeDetails {
   }
 }
 
-export const NodeDetailsComponent = () => {
+export const DetailsComponent = () => {
   const config = useApi(configApiRef);
   const backendUrl = config.getString('backend.baseUrl');
   const { entity } = useEntity();

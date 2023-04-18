@@ -27,7 +27,7 @@ import NodeIcon from '@material-ui/icons/Memory';
 import NetworkIcon from '@material-ui/icons/DeviceHub';
 import ApplicationsIcon from '@material-ui/icons/SettingsApplications';
 import GettingStartedIcon from '@material-ui/icons/PlayArrowOutlined';
-import DashboardIcon from '@material-ui/icons/DashboardTwoTone';
+// import DashboardIcon from '@material-ui/icons/DashboardTwoTone';
 import CatalogIcon from '@material-ui/icons/ViewList';
 import LocationIcon from '@material-ui/icons/Place';
 
@@ -66,7 +66,6 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
       <SidebarGroup label="Search" icon={<SearchIcon />} to="/search">
         <SidebarSearchModal />
       </SidebarGroup>
-      <SidebarDivider />
       <SidebarGroup label="Menu" icon={<MenuIcon />}>
         {/* Global nav, not org-specific */}
         <SidebarItem
@@ -74,33 +73,7 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
           to="gettingstarted"
           text="Getting Started"
         />
-        <SidebarItem icon={DashboardIcon} to="dashboard" text="Dashboard" />
-        <SidebarItem icon={CatalogIcon} to="catalog" text="Catalog">
-          <SidebarSubmenu>
-            <SidebarSubmenuItem
-              icon={NodeIcon}
-              to="catalog?filters[kind]=Component&filters[type]=node"
-              title="Nodes"
-            />
-
-            <SidebarSubmenuItem
-              icon={ApplicationsIcon}
-              to="catalog?filters[kind]=Component&filters[type]=application"
-              title="Applications"
-            />
-            <SidebarSubmenuItem
-              icon={NetworkIcon}
-              to="catalog?filters[kind]=Component&filters[type]=network"
-              title="Networks"
-            />
-            <SidebarDivider />
-            <SidebarSubmenuItem
-              icon={LocationIcon}
-              to="catalog?filters[kind]=Location"
-              title="Locations"
-            />
-          </SidebarSubmenu>
-        </SidebarItem>
+        {/* <SidebarItem icon={DashboardIcon} to="dashboard" text="Dashboard" /> */}
         <SidebarDivider />
         <SidebarItem
           icon={NodeIcon}
@@ -118,6 +91,16 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
           to="catalog?filters[kind]=Component&filters[type]=network"
           text="Networks"
         />
+        <SidebarDivider />
+        <SidebarItem icon={CatalogIcon} text="Others">
+          <SidebarSubmenu>
+            <SidebarSubmenuItem
+              icon={LocationIcon}
+              to="catalog?filters[kind]=Location"
+              title="Locations"
+            />
+          </SidebarSubmenu>
+        </SidebarItem>
 
         {/* <SidebarItem icon={HomeIcon} to="catalog" text="Home" /> */}
         {/* <SidebarItem icon={ExtensionIcon} to="api-docs" text="APIs" /> */}
