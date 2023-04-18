@@ -1,11 +1,11 @@
 import { EntityLayout } from '@backstage/plugin-catalog';
-import { NodeDetailsComponent } from '@internal/plugin-edgefarm';
+import { ApplicationDetailsComponent } from '@internal/plugin-edgefarm';
 import React from 'react';
 
-export const nodeEntityPage = (
+export const applicationEntityPage = (
   <EntityLayout>
     <EntityLayout.Route path="/" title="Overview">
-      <NodeDetailsComponent />
+      <ApplicationDetailsComponent />
     </EntityLayout.Route>
   </EntityLayout>
 );

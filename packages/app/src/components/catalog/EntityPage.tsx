@@ -58,6 +58,8 @@ import {
 } from '@roadiehq/backstage-plugin-argo-cd';
 import { nodeEntityPage } from './pages/node';
 import { EntityWarningContentComponent } from '@internal/plugin-edgefarm';
+import { applicationEntityPage } from './pages/application';
+import { networkEntityPage } from './pages/network';
 
 const techdocsContent = (
   <EntityTechdocsContent>
@@ -195,7 +197,6 @@ const websiteEntityPage = (
  * since this does not default. If no breakpoints are used, the items will equitably share the available space.
  * https://material-ui.com/components/grid/#basic-grid.
  */
-
 const defaultEntityPage = (
   <EntityLayout>
     <EntityLayout.Route path="/" title="Overview">
@@ -220,6 +221,14 @@ const componentPage = (
 
     <EntitySwitch.Case if={isComponentType('node')}>
       {nodeEntityPage}
+    </EntitySwitch.Case>
+
+    <EntitySwitch.Case if={isComponentType('network')}>
+      {networkEntityPage}
+    </EntitySwitch.Case>
+
+    <EntitySwitch.Case if={isComponentType('application')}>
+      {applicationEntityPage}
     </EntitySwitch.Case>
 
     <EntitySwitch.Case>{defaultEntityPage}</EntitySwitch.Case>

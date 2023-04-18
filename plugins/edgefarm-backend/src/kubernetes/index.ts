@@ -5,12 +5,13 @@ import * as https from 'https';
 import { NodeDetails } from './nodeDetails';
 import { NodeQuota } from './nodeQuota';
 import { MemoryQuotaAggregator, CpuQuotaAggregator } from './quotaAggregator';
+import { ApplicationDetails } from './applicationDetails';
 
 export class Client {
   constructor(readonly cluster: ClusterDetails) {}
 
   async getNodeDetails(nodeName: string): Promise<NodeDetails> {
-    const [url, requestInit] = this.pepareRequest(this.cluster);
+    const [url, requestInit] = this.prepareRequest(this.cluster);
     url.pathname = `/api/v1/nodes/${nodeName}`;
 
     const resp = await fetch(url, requestInit);
@@ -20,7 +21,7 @@ export class Client {
   }
 
   async getNodeQuota(nodeName: string): Promise<NodeQuota> {
-    const [url, requestInit] = this.pepareRequest(this.cluster);
+    const [url, requestInit] = this.prepareRequest(this.cluster);
     url.pathname = `/api/v1/pods`;
     url.search = `fieldSelector=spec.nodeName=${nodeName},status.phase!=Failed,status.phase!=Succeeded&limit=500`;
 
@@ -45,6 +46,22 @@ export class Client {
     return { memory, cpu };
   }
 
+  async getApplicationDetails(appName: string): Promise<ApplicationDetails> {
+    const [url, requestInit] = this.prepareRequest(this.cluster);
+
+    const namespace = 'default';
+    url.pathname = `/apis/core.oam.dev/v1beta1/namespaces/${namespace}/applications/${appName}`;
+
+    const resp = await fetch(url, requestInit);
+    const data = await resp.json();
+
+    if (data.code >= 400) {
+      throw new Error(data.message);
+    }
+
+    return new ApplicationDetails(data);
+  }
+
   handleErrorResponse(data: any): NodeDetails {
     if (data.code >= 400) {
       throw new Error(data.message);
@@ -53,7 +70,7 @@ export class Client {
     return new NodeDetails(data);
   }
 
-  private pepareRequest = (
+  private prepareRequest = (
     clusterDetails: ClusterDetails,
   ): [URL, RequestInit] => {
     const requestInit: RequestInit = {
