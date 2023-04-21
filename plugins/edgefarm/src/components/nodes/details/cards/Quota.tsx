@@ -75,13 +75,17 @@ const Quota = () => {
   const tableData = [
     {
       type: 'CPU (Request)',
-      used: `${quota.cpu.request.value}${quota.cpu.request.unit}`,
-      max: `${quota!.cpu.allocatable?.value}${quota.cpu.allocatable?.unit}`,
+      used: `${Math.floor(quota.cpu.request.value!)}${quota.cpu.request.unit}`,
+      max: `${Math.floor(quota!.cpu.allocatable?.value!)}${
+        quota.cpu.allocatable?.unit
+      }`,
     },
     {
       type: 'CPU (Limit)',
-      used: `${quota.cpu.limit.value}${quota.cpu.limit.unit}`,
-      max: `${quota!.cpu.allocatable?.value}${quota.cpu.allocatable?.unit}`,
+      used: `${Math.floor(quota.cpu.limit.value!)}${quota.cpu.limit.unit}`,
+      max: `${Math.floor(quota!.cpu.allocatable?.value!)}${
+        quota.cpu.allocatable?.unit
+      }`,
     },
     {
       type: 'Memory (Request)',
