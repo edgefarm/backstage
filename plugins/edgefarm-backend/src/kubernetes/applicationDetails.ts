@@ -1,3 +1,5 @@
+import { MetadataDto } from './common';
+
 export class ApplicationComponent {
   Name: string;
   Properties: {
@@ -36,13 +38,13 @@ export class ApplicationStatus {
 }
 
 export class ApplicationDetails {
-  originData: ApplicationDetailsDto;
   Name: string;
   Namespace?: string;
   Labels: Record<string, string>;
   Annotations: Record<string, string>;
   Components: ApplicationComponent[];
   Status: string;
+  rawData: ApplicationDetailsDto;
 
   constructor(dto: ApplicationDetailsDto) {
     this.Name = dto.metadata.name;
@@ -54,30 +56,16 @@ export class ApplicationDetails {
       component => new ApplicationComponent(component, dto.status),
     );
 
-    this.originData = dto;
+    this.rawData = dto;
   }
 }
 
 interface ApplicationDetailsDto {
   apiVersion: string;
   kind: string;
-  metadata: ApplicationDetailsMetadataDto;
+  metadata: MetadataDto;
   spec: ApplicationDetailsSpecDto;
   status: ApplicationStatusDto;
-}
-
-interface ApplicationDetailsMetadataDto {
-  name: string;
-  namespace?: string;
-  uid: string;
-  resourceVersion: string;
-  creationTimestamp: string;
-  labels: {
-    [key: string]: string;
-  };
-  annotations: {
-    [key: string]: string;
-  };
 }
 
 interface ApplicationDetailsSpecDto {

@@ -1,5 +1,7 @@
 export * from './service/router';
 export { NodeDetails } from './kubernetes/nodeDetails';
+export { Details as NetworkDetails } from './kubernetes/networkDetails';
+export type { Stream, Subnetwork, User } from './kubernetes/networkDetails';
 export {
   ApplicationDetails,
   ApplicationComponent,

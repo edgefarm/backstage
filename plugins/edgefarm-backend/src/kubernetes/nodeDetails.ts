@@ -1,3 +1,5 @@
+import { MetadataDto } from './common';
+
 export class NodeDetails {
   Labels: Record<string, string>;
   Annotations: Record<string, string>;
@@ -11,12 +13,12 @@ export class NodeDetails {
   Architecture: string;
   OperatingSystem: string;
   isOnline: boolean;
-  originData: NodeDetailsDto;
   allocatableCPU: string;
   allocatableMemory: string;
+  rawData: NodeDetailsDto;
 
   constructor(nodeDetailsDto: NodeDetailsDto) {
-    this.originData = nodeDetailsDto;
+    this.rawData = nodeDetailsDto;
     this.Name = nodeDetailsDto.metadata.name;
     this.Labels = nodeDetailsDto.metadata.labels;
     this.Annotations = nodeDetailsDto.metadata.annotations;
@@ -43,20 +45,6 @@ export class NodeDetails {
       this.isOnline = !!item;
     }
   }
-}
-
-interface NodeDetailsMetadataDto {
-  name: string;
-  namespace?: string;
-  uid: string;
-  resourceVersion: string;
-  creationTimestamp: string;
-  labels: {
-    [key: string]: string;
-  };
-  annotations: {
-    [key: string]: string;
-  };
 }
 
 interface NodeDetailsStatusDto {
@@ -112,7 +100,7 @@ interface NodeDetailsStatusNodeInfoDto {
 interface NodeDetailsDto {
   apiVersion: string;
   kind: string;
-  metadata: NodeDetailsMetadataDto;
+  metadata: MetadataDto;
   spec: {
     podCIDR: string;
     podCIDRs: string[];
