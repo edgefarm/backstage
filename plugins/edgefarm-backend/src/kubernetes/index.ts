@@ -2,10 +2,11 @@ import { ClusterDetails } from '../cluster-locator';
 import fetch, { RequestInit } from 'node-fetch';
 import { bufferFromFileOrString } from '@kubernetes/client-node';
 import * as https from 'https';
-import { NodeDetails } from './nodeDetails';
+import { NodeDetails as NodeDetails } from './nodeDetails';
 import { NodeQuota } from './nodeQuota';
 import { MemoryQuotaAggregator, CpuQuotaAggregator } from './quotaAggregator';
-import { ApplicationDetails } from './applicationDetails';
+import { ApplicationDetails as ApplicationDetails } from './applicationDetails';
+import { Details as NetworkDetails } from './networkDetails';
 
 export class Client {
   constructor(readonly cluster: ClusterDetails) {}
@@ -17,7 +18,7 @@ export class Client {
     const resp = await fetch(url, requestInit);
     const data = await resp.json();
 
-    return this.handleErrorResponse(data);
+    return this.handleErrorResponse<NodeDetails>(NodeDetails, data);
   }
 
   async getNodeQuota(nodeName: string): Promise<NodeQuota> {
@@ -31,6 +32,7 @@ export class Client {
     if (data.code >= 400) {
       throw new Error(data.message);
     }
+
     const memQuotaAggregator = new MemoryQuotaAggregator();
     const cpuQuotaAggregator = new CpuQuotaAggregator();
 
@@ -55,19 +57,30 @@ export class Client {
     const resp = await fetch(url, requestInit);
     const data = await resp.json();
 
-    if (data.code >= 400) {
-      throw new Error(data.message);
-    }
-
-    return new ApplicationDetails(data);
+    return this.handleErrorResponse<ApplicationDetails>(
+      ApplicationDetails,
+      data,
+    );
   }
 
-  handleErrorResponse(data: any): NodeDetails {
+  async getNetworkDetails(name: string): Promise<NetworkDetails> {
+    const [url, requestInit] = this.prepareRequest(this.cluster);
+
+    const namespace = 'default';
+    url.pathname = `/apis/streams.network.edgefarm.io/v1alpha1/namespaces/${namespace}/networks/${name}`;
+
+    const resp = await fetch(url, requestInit);
+    const data = await resp.json();
+
+    return this.handleErrorResponse<NetworkDetails>(NetworkDetails, data);
+  }
+
+  handleErrorResponse<T>(Type: { new (data: any): T }, data: any): T {
     if (data.code >= 400) {
       throw new Error(data.message);
     }
 
-    return new NodeDetails(data);
+    return new Type(data);
   }
 
   private prepareRequest = (
