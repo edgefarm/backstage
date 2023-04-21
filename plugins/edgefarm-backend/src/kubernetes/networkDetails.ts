@@ -114,7 +114,7 @@ interface StreamDto {
     duplicates: string;
     maxAge: number;
     maxBytes: number;
-    maxConsumer: number;
+    maxConsumers: number;
     maxMsgSize: number;
     maxMsgs: number;
     maxMsgsPerSubject: number;
