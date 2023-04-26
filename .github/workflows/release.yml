@@ -1,16 +1,13 @@
 name: Release
 
 on:
-  workflow_run:
+  push:
     branches:
       - main
-      - beta
       - fix-release-build-pipeline
-    types:
-      - completed
 
 jobs:
-  on-success:
+  do-release:
     name: Release
     runs-on: ubuntu-latest
     steps:
