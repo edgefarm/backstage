@@ -1,16 +1,12 @@
 name: Release
 
 on:
-  workflow_run:
-    workflows: ['Lint Commit Messages']
+  push:
     branches:
       - main
-      - beta
-    types:
-      - completed
 
 jobs:
-  on-success:
+  do-release:
     name: Release
     runs-on: ubuntu-latest
     steps:
@@ -24,6 +20,18 @@ jobs:
         with:
           node-version: 'lts/*'
 
+      - name: Install yarn
+        run: |-
+          #!/bin/bash
+          set -e
+          npm install --global yarn
+
+      - name: Install dependencies
+        run: |-
+          #!/bin/bash
+          set -e
+          yarn install --non-interactive
+
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -31,8 +39,7 @@ jobs:
         run: |-
           #!/bin/bash
           set -e
-          npm install --global yarn
-          yarn add @semantic-release/exec @eclass/semantic-release-docker -D -W
+          yarn add semantic-release @semantic-release/exec @eclass/semantic-release-docker -D -W
           # the ... || true is to prevent the script from failing caused by a bug in semantic-release regarding
           # rate limit changes on github. See https://github.com/semantic-release/github/pull/487
-          npx -c semantic-release || true
+          npx semantic-release || true
