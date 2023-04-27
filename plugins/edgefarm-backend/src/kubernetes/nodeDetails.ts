@@ -15,31 +15,35 @@ export class NodeDetails {
   isOnline: boolean;
   allocatableCPU: string;
   allocatableMemory: string;
+  Hostname?: string;
+  IPAddress?: string;
   rawData: NodeDetailsDto;
 
-  constructor(nodeDetailsDto: NodeDetailsDto) {
-    this.rawData = nodeDetailsDto;
-    this.Name = nodeDetailsDto.metadata.name;
-    this.Labels = nodeDetailsDto.metadata.labels;
-    this.Annotations = nodeDetailsDto.metadata.annotations;
-    this.KernelVersion = nodeDetailsDto.status.nodeInfo.kernelVersion;
-    this.OsImage = nodeDetailsDto.status.nodeInfo.osImage;
-    this.ContainerRuntimeVersion =
-      nodeDetailsDto.status.nodeInfo.containerRuntimeVersion;
-    this.KubeletVersion = nodeDetailsDto.status.nodeInfo.kubeletVersion;
-    this.KubeProxyVersion = nodeDetailsDto.status.nodeInfo.kubeProxyVersion;
-    this.Architecture = nodeDetailsDto.status.nodeInfo.architecture;
-    this.OperatingSystem = nodeDetailsDto.status.nodeInfo.operatingSystem;
-    this.allocatableCPU = nodeDetailsDto.status.allocatable.cpu;
-    this.allocatableMemory = nodeDetailsDto.status.allocatable.memory;
+  constructor(dto: NodeDetailsDto) {
+    this.rawData = dto;
+    this.Name = dto.metadata.name;
+    this.Labels = dto.metadata.labels;
+    this.Annotations = dto.metadata.annotations;
+    this.KernelVersion = dto.status.nodeInfo.kernelVersion;
+    this.OsImage = dto.status.nodeInfo.osImage;
+    this.ContainerRuntimeVersion = dto.status.nodeInfo.containerRuntimeVersion;
+    this.KubeletVersion = dto.status.nodeInfo.kubeletVersion;
+    this.KubeProxyVersion = dto.status.nodeInfo.kubeProxyVersion;
+    this.Architecture = dto.status.nodeInfo.architecture;
+    this.OperatingSystem = dto.status.nodeInfo.operatingSystem;
+    this.allocatableCPU = dto.status.allocatable.cpu;
+    this.allocatableMemory = dto.status.allocatable.memory;
+    this.Hostname = dto.status.addresses.find(
+      a => a.type === 'Hostname',
+    )?.address;
+    this.IPAddress = dto.status.addresses.find(
+      a => a.type === 'InternalIP',
+    )?.address;
 
-    if (
-      !nodeDetailsDto.status.conditions ||
-      nodeDetailsDto.status.conditions.length === 0
-    ) {
+    if (!dto.status.conditions || dto.status.conditions.length === 0) {
       this.isOnline = false;
     } else {
-      const item = nodeDetailsDto.status.conditions.find(
+      const item = dto.status.conditions.find(
         cond => cond.type === 'Ready' && cond.status === 'True',
       );
       this.isOnline = !!item;
