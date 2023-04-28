@@ -51,7 +51,7 @@ catalog:
       rules:
         - allow: [Template]
     - type: url
-      target: https://github.com/matmah/backstage-eval-user/blob/main/ci4rail.yaml
+      target: https://github.com/edgefarm-hands-on/backstage-user/blob/main/ci4rail.yaml
       rules:
         - allow: [User, Group]
 
