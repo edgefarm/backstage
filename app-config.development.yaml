@@ -58,7 +58,7 @@ kubernetes:
     - type: 'config'
       clusters:
         - url: ${K8S_URL}
-          name: minikube
+          name: default
           authProvider: 'serviceAccount'
           skipTLSVerify: true
           skipMetricsLookup: true
