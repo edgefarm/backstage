@@ -7,7 +7,6 @@ import {
   Settings as SidebarSettings,
   UserSettingsSignInAvatar,
 } from '@backstage/plugin-user-settings';
-import { SidebarSearchModal } from '@backstage/plugin-search';
 import {
   Sidebar,
   sidebarConfig,
@@ -22,8 +21,7 @@ import {
   SidebarSubmenuItem,
 } from '@backstage/core-components';
 import MenuIcon from '@material-ui/icons/Menu';
-import SearchIcon from '@material-ui/icons/Search';
-import NodeIcon from '@material-ui/icons/Memory';
+import DeviceIcon from '@material-ui/icons/Memory';
 import NetworkIcon from '@material-ui/icons/DeviceHub';
 import ApplicationsIcon from '@material-ui/icons/SettingsApplications';
 import GettingStartedIcon from '@material-ui/icons/PlayArrowOutlined';
@@ -63,9 +61,9 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
   <SidebarPage>
     <Sidebar>
       <SidebarLogo />
-      <SidebarGroup label="Search" icon={<SearchIcon />} to="/search">
+      {/* <SidebarGroup label="Search" icon={<SearchIcon />} to="/search">
         <SidebarSearchModal />
-      </SidebarGroup>
+      </SidebarGroup> */}
       <SidebarGroup label="Menu" icon={<MenuIcon />}>
         {/* Global nav, not org-specific */}
         <SidebarItem
@@ -76,19 +74,19 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
         {/* <SidebarItem icon={DashboardIcon} to="dashboard" text="Dashboard" /> */}
         <SidebarDivider />
         <SidebarItem
-          icon={NodeIcon}
-          to="catalog?filters[kind]=Component&filters[type]=node"
-          text="Nodes"
+          icon={DeviceIcon}
+          to="catalog?filters[kind]=Component&filters[type]=Device"
+          text="Devices"
         />
 
         <SidebarItem
           icon={ApplicationsIcon}
-          to="catalog?filters[kind]=Component&filters[type]=application"
+          to="catalog?filters[kind]=Component&filters[type]=Application"
           text="Applications"
         />
         <SidebarItem
           icon={NetworkIcon}
-          to="catalog?filters[kind]=Component&filters[type]=network"
+          to="catalog?filters[kind]=Component&filters[type]=Network"
           text="Networks"
         />
         <SidebarDivider />

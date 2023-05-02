@@ -5,7 +5,7 @@ import {
 } from '@internal/plugin-edgefarm';
 import React from 'react';
 
-export const nodeEntityPage = (
+export const deviceEntityPage = (
   <EntityLayout>
     <EntityLayout.Route path="/" title="Overview">
       <NodeDetailsComponent />
