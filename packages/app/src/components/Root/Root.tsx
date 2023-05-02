@@ -7,7 +7,6 @@ import {
   Settings as SidebarSettings,
   UserSettingsSignInAvatar,
 } from '@backstage/plugin-user-settings';
-import { SidebarSearchModal } from '@backstage/plugin-search';
 import {
   Sidebar,
   sidebarConfig,
@@ -22,7 +21,6 @@ import {
   SidebarSubmenuItem,
 } from '@backstage/core-components';
 import MenuIcon from '@material-ui/icons/Menu';
-import SearchIcon from '@material-ui/icons/Search';
 import DeviceIcon from '@material-ui/icons/Memory';
 import NetworkIcon from '@material-ui/icons/DeviceHub';
 import ApplicationsIcon from '@material-ui/icons/SettingsApplications';
