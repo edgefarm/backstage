@@ -56,7 +56,7 @@ import {
   EntityArgoCDOverviewCard,
   isArgocdAvailable,
 } from '@roadiehq/backstage-plugin-argo-cd';
-import { nodeEntityPage } from './pages/node';
+import { deviceEntityPage } from './pages/device';
 import { EntityWarningContentComponent } from '@internal/plugin-edgefarm';
 import { applicationEntityPage } from './pages/application';
 import { networkEntityPage } from './pages/network';
@@ -219,8 +219,8 @@ const componentPage = (
       {websiteEntityPage}
     </EntitySwitch.Case>
 
-    <EntitySwitch.Case if={isComponentType('node')}>
-      {nodeEntityPage}
+    <EntitySwitch.Case if={isComponentType('device')}>
+      {deviceEntityPage}
     </EntitySwitch.Case>
 
     <EntitySwitch.Case if={isComponentType('network')}>
