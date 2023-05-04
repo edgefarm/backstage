@@ -16,10 +16,9 @@ const Deployments = () => {
   const [tableItems, setTableItems] = useState<Plan[]>([]);
   useEffect(() => {
     const getPlans = async () => {
-      // const planEntities: Plan[] = [
-      //   { id: '1', status: 'Running', target: 'foo=bar' },
-      // ];
       const planEntities: Plan[] = [];
+
+      // planEntities.push({ id: '1', status: 'Running', target: 'foo=bar' });
 
       setTableItems(
         planEntities.map(item => {
