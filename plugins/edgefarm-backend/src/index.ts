@@ -8,3 +8,4 @@ export {
 } from './kubernetes/applicationDetails';
 export type { NodeQuota } from './kubernetes/nodeQuota';
 export { readFileAction as createReadFileAction } from './scaffolder/actions/ci4rail-fs-read';
+export { uniqueReleaseNameAction as createUniqueReleaseNameAction } from './scaffolder/actions/edgefarm-unique-release-name';
