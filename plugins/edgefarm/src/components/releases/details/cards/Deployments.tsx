@@ -2,12 +2,9 @@ import {
   EmptyState,
   InfoCard,
   LinkButton,
-  StructuredMetadataTable,
   Table,
 } from '@backstage/core-components';
 import React, { useEffect, useState } from 'react';
-import { ApplicationDetails } from '@internal/plugin-edgefarm-backend';
-import { EntityRefLink, useEntity } from '@backstage/plugin-catalog-react';
 
 type Plan = {
   id: string;
@@ -16,8 +13,6 @@ type Plan = {
 };
 
 const Deployments = () => {
-  const { entity } = useEntity();
-
   const [tableItems, setTableItems] = useState<Plan[]>([]);
   useEffect(() => {
     const getPlans = async () => {
@@ -78,16 +73,6 @@ const Deployments = () => {
         columns={columns}
         title="Deployments"
       />
-      {/* <List dense>
-        {tableItems.map(item => (
-          <ListItem key={item.id}>
-            <ListItemIcon>
-              <NetworkIcon />
-            </ListItemIcon>
-            {item.title}
-          </ListItem>
-        ))}
-      </List> */}
     </>
   );
 };
