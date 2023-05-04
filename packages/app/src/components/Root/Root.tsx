@@ -76,23 +76,23 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
         <SidebarDivider />
         <SidebarItem
           icon={DeviceIcon}
-          to="catalog?filters[kind]=Component&filters[type]=Device"
+          to="catalog?filters[kind]=Component&filters[type]=device"
           text="Devices"
         />
 
         <SidebarItem
           icon={ApplicationsIcon}
-          to="catalog?filters[kind]=Component&filters[type]=Application"
+          to="catalog?filters[kind]=Component&filters[type]=application"
           text="Applications"
         />
         <SidebarItem
           icon={NetworkIcon}
-          to="catalog?filters[kind]=Component&filters[type]=Network"
+          to="catalog?filters[kind]=Component&filters[type]=network"
           text="Networks"
         />
         <SidebarItem
           icon={ReleaseIcon}
-          to="catalog?filters[kind]=Component&filters[type]=Release"
+          to="catalog?filters[kind]=Component&filters[type]=release"
           text="Firmware"
         />
         <SidebarDivider />

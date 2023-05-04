@@ -2,7 +2,7 @@ import { Grid } from '@material-ui/core';
 import React from 'react';
 import { EntityWarningContentComponent } from '../../warning';
 import Metadata from './cards/Metadata';
-import Deployments from './cards/Deployments';
+import Rollouts from './cards/Deployments';
 import { InfoCard } from '@backstage/core-components';
 
 export const DetailsComponent = () => {
@@ -15,7 +15,7 @@ export const DetailsComponent = () => {
         </InfoCard>
       </Grid>
       <Grid item xs={12} md={6}>
-        <Deployments />
+        <Rollouts />
       </Grid>
     </Grid>
   );

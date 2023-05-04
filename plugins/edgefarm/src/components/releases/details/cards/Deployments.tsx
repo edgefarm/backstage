@@ -12,7 +12,7 @@ type Plan = {
   target: string;
 };
 
-const Deployments = () => {
+const Rollouts = () => {
   const [tableItems, setTableItems] = useState<Plan[]>([]);
   useEffect(() => {
     const getPlans = async () => {
@@ -35,18 +35,18 @@ const Deployments = () => {
 
   if (tableItems.length === 0) {
     return (
-      <InfoCard title="Deployments" variant="gridItem">
+      <InfoCard title="Rollouts" variant="gridItem">
         <EmptyState
           missing="data"
-          title="No deployments found"
-          description="Click here to create one"
+          title="No rollouts available"
+          description="There are currently no rollouts planned for this firmware"
           action={
             <LinkButton
-              to="/create/templates/default/edgefarm-deployment-add"
+              to="/create/templates/default/edgefarm-rollout-add"
               color="primary"
-              variant="outlined"
+              variant="contained"
             >
-              Add upgrade plan
+              Plan a rollout
             </LinkButton>
           }
         />
@@ -76,4 +76,4 @@ const Deployments = () => {
   );
 };
 
-export default Deployments;
+export default Rollouts;
