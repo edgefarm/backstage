@@ -11,3 +11,7 @@ export interface MetadataDto {
     [key: string]: string;
   };
 }
+
+export type NodeDetailsDto = {
+  metadata: MetadataDto;
+};
