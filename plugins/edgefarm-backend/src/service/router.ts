@@ -110,6 +110,55 @@ export async function createRouter(
     }
   });
 
+  router.get(
+    '/:clusterName/rollouts/:rolloutName/status',
+    async (req, response) => {
+      const { rolloutName, clusterName } = req.params;
+
+      const clusterDetails = new ClusterLocator(config).getClusterDetails(
+        clusterName,
+      );
+      if (clusterDetails === undefined) {
+        response
+          .status(400)
+          .json({ error: `Cluster config for ${clusterName} not found` });
+        return;
+      }
+
+      const api = new Client(clusterDetails);
+
+      try {
+        const resp = await api.getRolloutStatus(rolloutName);
+        response.json(resp);
+      } catch (e: any) {
+        response.status(500).json({ error: e.message });
+      }
+    },
+  );
+
+  router.get('/:clusterName/rollouts/:rolloutName', async (req, response) => {
+    const { rolloutName, clusterName } = req.params;
+
+    const clusterDetails = new ClusterLocator(config).getClusterDetails(
+      clusterName,
+    );
+    if (clusterDetails === undefined) {
+      response
+        .status(400)
+        .json({ error: `Cluster config for ${clusterName} not found` });
+      return;
+    }
+
+    const api = new Client(clusterDetails);
+
+    try {
+      const resp = await api.getRolloutDetails(rolloutName);
+      response.json(resp);
+    } catch (e: any) {
+      response.status(500).json({ error: e.message });
+    }
+  });
+
   router.get('/health', (_, response) => {
     logger.info('PONG!');
     response.json({ status: 'ok' });

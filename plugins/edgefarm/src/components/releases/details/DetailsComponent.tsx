@@ -2,7 +2,7 @@ import { Grid } from '@material-ui/core';
 import React from 'react';
 import { EntityWarningContentComponent } from '../../warning';
 import Metadata from './cards/Metadata';
-import Rollouts from './cards/Deployments';
+import Rollouts from './cards/RolloutList';
 import { InfoCard } from '@backstage/core-components';
 
 export const DetailsComponent = () => {
