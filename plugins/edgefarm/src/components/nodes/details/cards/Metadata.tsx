@@ -61,7 +61,6 @@ const Metadata = (props: {
     ),
     Name: entity.metadata.name,
     'OS Version': nodeDetails.OsImage ?? '',
-    Uptime: '1 day (still mocked)',
     'Kernel-Version': nodeDetails.KernelVersion ?? '',
     'Container-Runtime-Version': nodeDetails.ContainerRuntimeVersion ?? '',
     'Kubelet-Version': nodeDetails.KubeletVersion ?? '',

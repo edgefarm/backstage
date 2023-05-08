@@ -7,7 +7,10 @@ import { createArgoCdResources } from '@roadiehq/scaffolder-backend-argocd';
 import { Router } from 'express';
 import type { PluginEnvironment } from '../types';
 import { ScmIntegrations } from '@backstage/integration';
-import { createReadFileAction } from '@internal/plugin-edgefarm-backend';
+import {
+  createReadFileAction,
+  createUniqueReleaseNameAction,
+} from '@internal/plugin-edgefarm-backend';
 
 export default async function createPlugin(
   env: PluginEnvironment,
@@ -27,6 +30,7 @@ export default async function createPlugin(
   const actions = [
     createArgoCdResources(env.config, env.logger),
     createReadFileAction(),
+    createUniqueReleaseNameAction(),
     ...builtInActions,
   ];
 

@@ -7,6 +7,9 @@ import { NodeQuota } from './nodeQuota';
 import { MemoryQuotaAggregator, CpuQuotaAggregator } from './quotaAggregator';
 import { ApplicationDetails as ApplicationDetails } from './applicationDetails';
 import { Details as NetworkDetails } from './networkDetails';
+import { Details as RolloutDetails } from './rolloutDetails';
+import { RolloutStatus } from './rolloutStatus';
+import { NodeDetailsDto } from './common';
 
 export class Client {
   constructor(readonly cluster: ClusterDetails) {}
@@ -73,6 +76,53 @@ export class Client {
     const data = await resp.json();
 
     return this.handleErrorResponse<NetworkDetails>(NetworkDetails, data);
+  }
+
+  async getRolloutDetails(name: string): Promise<RolloutDetails> {
+    const [url, requestInit] = this.prepareRequest(this.cluster);
+
+    const namespace = 'system-upgrade';
+    url.pathname = `/apis/upgrade.cattle.io/v1/namespaces/${namespace}/plans/${name}`;
+
+    const resp = await fetch(url, requestInit);
+    const data = await resp.json();
+
+    return this.handleErrorResponse<RolloutDetails>(RolloutDetails, data);
+  }
+
+  async getRolloutStatus(name: string): Promise<RolloutStatus> {
+    const planDetails = await this.getRolloutDetails(name);
+
+    const nodeList: {
+      name: string;
+      status: boolean;
+    }[] = [];
+
+    for (const v of planDetails.NodeSelector) {
+      const [url, requestInit] = this.prepareRequest(this.cluster);
+      const selector = v.replace(/ exists/g, '');
+      url.pathname = `/api/v1/nodes`;
+      url.search = `labelSelector=${encodeURI(selector)}&limit=500`;
+
+      const resp = await fetch(url, requestInit);
+      const data: { code: number; items?: NodeDetailsDto[] } =
+        await resp.json();
+
+      if (data.code >= 400) {
+        continue;
+      }
+
+      data.items!.forEach(node => {
+        nodeList.push({
+          name: node.metadata.name,
+          status: !!node.metadata.labels[`plan.upgrade.cattle.io/${name}`],
+        });
+      });
+    }
+
+    return this.handleErrorResponse<RolloutStatus>(RolloutStatus, {
+      nodes: nodeList,
+    });
   }
 
   handleErrorResponse<T>(Type: { new (data: any): T }, data: any): T {

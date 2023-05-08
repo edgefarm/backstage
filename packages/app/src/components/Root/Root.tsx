@@ -28,6 +28,7 @@ import GettingStartedIcon from '@material-ui/icons/PlayArrowOutlined';
 // import DashboardIcon from '@material-ui/icons/DashboardTwoTone';
 import CatalogIcon from '@material-ui/icons/ViewList';
 import LocationIcon from '@material-ui/icons/Place';
+import ReleaseIcon from '@material-ui/icons/SystemUpdate';
 
 const useSidebarLogoStyles = makeStyles({
   root: {
@@ -75,19 +76,24 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
         <SidebarDivider />
         <SidebarItem
           icon={DeviceIcon}
-          to="catalog?filters[kind]=Component&filters[type]=Device"
+          to="catalog?filters[kind]=Component&filters[type]=device"
           text="Devices"
         />
 
         <SidebarItem
           icon={ApplicationsIcon}
-          to="catalog?filters[kind]=Component&filters[type]=Application"
+          to="catalog?filters[kind]=Component&filters[type]=application"
           text="Applications"
         />
         <SidebarItem
           icon={NetworkIcon}
-          to="catalog?filters[kind]=Component&filters[type]=Network"
+          to="catalog?filters[kind]=Component&filters[type]=network"
           text="Networks"
+        />
+        <SidebarItem
+          icon={ReleaseIcon}
+          to="catalog?filters[kind]=Component&filters[type]=release"
+          text="Firmware"
         />
         <SidebarDivider />
         <SidebarItem icon={CatalogIcon} text="Others">

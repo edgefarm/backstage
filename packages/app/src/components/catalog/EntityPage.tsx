@@ -60,6 +60,8 @@ import { deviceEntityPage } from './pages/device';
 import { EntityWarningContentComponent } from '@internal/plugin-edgefarm';
 import { applicationEntityPage } from './pages/application';
 import { networkEntityPage } from './pages/network';
+import { releaseEntityPage } from './pages/release';
+import { rolloutEntityPage } from './pages/rollout';
 
 const techdocsContent = (
   <EntityTechdocsContent>
@@ -229,6 +231,14 @@ const componentPage = (
 
     <EntitySwitch.Case if={isComponentType('application')}>
       {applicationEntityPage}
+    </EntitySwitch.Case>
+
+    <EntitySwitch.Case if={isComponentType('release')}>
+      {releaseEntityPage}
+    </EntitySwitch.Case>
+
+    <EntitySwitch.Case if={isComponentType('rollout')}>
+      {rolloutEntityPage}
     </EntitySwitch.Case>
 
     <EntitySwitch.Case>{defaultEntityPage}</EntitySwitch.Case>
