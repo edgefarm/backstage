@@ -6,7 +6,7 @@ import {
 } from '@backstage/core-components';
 import { Chip, CircularProgress } from '@material-ui/core';
 import React from 'react';
-import { useEntity } from '@backstage/plugin-catalog-react';
+import { EntityRefLink, useEntity } from '@backstage/plugin-catalog-react';
 import { NodeDetails } from '../DetailsComponent';
 
 const recordToJSXElement = (record: Record<string, string>) => {
@@ -25,6 +25,25 @@ const recordToJSXElement = (record: Record<string, string>) => {
       ));
   }
   return <></>;
+};
+
+const getLastAppliedUpgradeElement = (record: Record<string, string>) => {
+  if (!record) return <>N/A</>;
+  const tmpArray: string[] = [];
+  for (const [key] of Object.entries(record)) {
+    if (key.startsWith('plan.upgrade.cattle.io')) {
+      tmpArray.push(key);
+    }
+  }
+
+  if (tmpArray.length === 0) return <>N/A</>;
+
+  const planName = tmpArray.sort().reverse()[0].substring(23);
+  return (
+    <>
+      <EntityRefLink entityRef={`component:${planName}`} title={planName} />
+    </>
+  );
 };
 
 const Metadata = (props: {
@@ -60,6 +79,7 @@ const Metadata = (props: {
       </>
     ),
     Name: entity.metadata.name,
+    'Last applied upgrade': getLastAppliedUpgradeElement(nodeDetails.Labels),
     'OS Version': nodeDetails.OsImage ?? '',
     'Kernel-Version': nodeDetails.KernelVersion ?? '',
     'Container-Runtime-Version': nodeDetails.ContainerRuntimeVersion ?? '',
