@@ -85,17 +85,6 @@ const app = createApp({
   },
   themes: [
     {
-      id: 'dark-theme',
-      title: 'Dark Theme',
-      variant: 'dark',
-      icon: <LightIcon />,
-      Provider: ({ children }) => (
-        <ThemeProvider theme={darkTheme}>
-          <CssBaseline>{children}</CssBaseline>
-        </ThemeProvider>
-      ),
-    },
-    {
       id: 'light-theme',
       title: 'Light Theme',
       variant: 'light',
