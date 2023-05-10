@@ -9,15 +9,16 @@ export const NodeMetricsComponent = () => {
   const nodeName = entity.metadata.name;
 
   const dashboards = {
-    'CPU Usage': `/d-solo/fb4a337e-b439-4b49-b99a-eb101cd17c55/edge-nodes?orgId=1&refresh=30s&theme=light&var-instance=${nodeName}&panelId=${2}`,
-    'Load Average': `/d-solo/fb4a337e-b439-4b49-b99a-eb101cd17c55/edge-nodes?orgId=1&refresh=30s&theme=light&var-instance=${nodeName}&panelId=${43}`,
-    'Memory Usage': `/d-solo/fb4a337e-b439-4b49-b99a-eb101cd17c55/edge-nodes?orgId=1&refresh=30s&theme=light&var-instance=${nodeName}&panelId=${4}`,
-    'Memory Usage Gauge': `/d-solo/fb4a337e-b439-4b49-b99a-eb101cd17c55/edge-nodes?orgId=1&refresh=30s&theme=light&var-instance=${nodeName}&panelId=${5}`,
-    'Hardware Temperature': `/d-solo/fb4a337e-b439-4b49-b99a-eb101cd17c55/edge-nodes?orgId=1&refresh=30s&theme=light&var-instance=${nodeName}&panelId=${41}`,
-    'Disc I/O': `/d-solo/fb4a337e-b439-4b49-b99a-eb101cd17c55/edge-nodes?orgId=1&refresh=30s&theme=light&var-instance=${nodeName}&panelId=${6}`,
-    'Disc Space Usage': `/d-solo/fb4a337e-b439-4b49-b99a-eb101cd17c55/edge-nodes?orgId=1&refresh=30s&theme=light&var-instance=${nodeName}&panelId=${7}`,
-    'Network Received': `/d-solo/fb4a337e-b439-4b49-b99a-eb101cd17c55/edge-nodes?orgId=1&refresh=30s&theme=light&var-instance=${nodeName}&panelId=${8}`,
-    'Network Transmitted': `/d-solo/fb4a337e-b439-4b49-b99a-eb101cd17c55/edge-nodes?orgId=1&refresh=30s&theme=light&var-instance=${nodeName}&panelId=${9}`,
+    'CPU Usage Gauge': `/d-solo/9041c477-8dd9-4bb7-88ae-d35dee62cbfb/edge-nodes?orgId=1&refresh=30s&theme=light&var-instance=${nodeName}&panelId=${14}`,
+    'CPU Usage': `/d-solo/9041c477-8dd9-4bb7-88ae-d35dee62cbfb/edge-nodes?orgId=1&refresh=30s&theme=light&var-instance=${nodeName}&panelId=${2}`,
+    'Load Average': `/d-solo/9041c477-8dd9-4bb7-88ae-d35dee62cbfb/edge-nodes?orgId=1&refresh=30s&theme=light&var-instance=${nodeName}&panelId=${43}`,
+    'Memory Usage': `/d-solo/9041c477-8dd9-4bb7-88ae-d35dee62cbfb/edge-nodes?orgId=1&refresh=30s&theme=light&var-instance=${nodeName}&panelId=${4}`,
+    'Memory Usage Gauge': `/d-solo/9041c477-8dd9-4bb7-88ae-d35dee62cbfb/edge-nodes?orgId=1&refresh=30s&theme=light&var-instance=${nodeName}&panelId=${5}`,
+    'Hardware Temperature': `/d-solo/9041c477-8dd9-4bb7-88ae-d35dee62cbfb/edge-nodes?orgId=1&refresh=30s&theme=light&var-instance=${nodeName}&panelId=${41}`,
+    'Disc I/O': `/d-solo/9041c477-8dd9-4bb7-88ae-d35dee62cbfb/edge-nodes?orgId=1&refresh=30s&theme=light&var-instance=${nodeName}&panelId=${6}`,
+    'Disc Space Usage': `/d-solo/9041c477-8dd9-4bb7-88ae-d35dee62cbfb/edge-nodes?orgId=1&refresh=30s&theme=light&var-instance=${nodeName}&panelId=${7}`,
+    'Network Received': `/d-solo/9041c477-8dd9-4bb7-88ae-d35dee62cbfb/edge-nodes?orgId=1&refresh=30s&theme=light&var-instance=${nodeName}&panelId=${8}`,
+    'Network Transmitted': `/d-solo/9041c477-8dd9-4bb7-88ae-d35dee62cbfb/edge-nodes?orgId=1&refresh=30s&theme=light&var-instance=${nodeName}&panelId=${9}`,
   };
 
   return (
@@ -27,7 +28,7 @@ export const NodeMetricsComponent = () => {
           <iframe
             title={dashboardName}
             src={`${grafanaHost}${dashboardUrl}`}
-            width="450"
+            width="600"
             height="200"
             frameBorder={0}
           />
