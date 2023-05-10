@@ -1,4 +1,4 @@
-export { edgefarmPlugin, EdgefarmPage } from './plugin';
+export { edgefarmPlugin } from './plugin';
 export { DetailsComponent as NodeDetailsComponent } from './components/nodes/details/DetailsComponent';
 export { DetailsComponent as ApplicationDetailsComponent } from './components/applications/details/DetailsComponent';
 export { DetailsComponent as NetworkDetailsComponent } from './components/networks/details/DetailsComponent';
