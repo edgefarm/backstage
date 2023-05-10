@@ -17,17 +17,12 @@ import {
   SidebarSpace,
   useSidebarOpenState,
   Link,
-  SidebarSubmenu,
-  SidebarSubmenuItem,
 } from '@backstage/core-components';
 import MenuIcon from '@material-ui/icons/Menu';
 import DeviceIcon from '@material-ui/icons/Memory';
 import NetworkIcon from '@material-ui/icons/DeviceHub';
 import ApplicationsIcon from '@material-ui/icons/SettingsApplications';
 import GettingStartedIcon from '@material-ui/icons/PlayArrowOutlined';
-// import DashboardIcon from '@material-ui/icons/DashboardTwoTone';
-import CatalogIcon from '@material-ui/icons/ViewList';
-import LocationIcon from '@material-ui/icons/Place';
 import ReleaseIcon from '@material-ui/icons/SystemUpdate';
 
 const useSidebarLogoStyles = makeStyles({
@@ -74,28 +69,16 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
         />
         {/* <SidebarItem icon={DashboardIcon} to="dashboard" text="Dashboard" /> */}
         <SidebarDivider />
-        <SidebarItem
-          icon={DeviceIcon}
-          to="catalog?filters[kind]=Component&filters[type]=device"
-          text="Devices"
-        />
+        <SidebarItem icon={DeviceIcon} to="devices" text="Devices" />
 
         <SidebarItem
           icon={ApplicationsIcon}
-          to="catalog?filters[kind]=Component&filters[type]=application"
+          to="applications"
           text="Applications"
         />
-        <SidebarItem
-          icon={NetworkIcon}
-          to="catalog?filters[kind]=Component&filters[type]=network"
-          text="Networks"
-        />
-        <SidebarItem
-          icon={ReleaseIcon}
-          to="catalog?filters[kind]=Component&filters[type]=release"
-          text="Firmware"
-        />
-        <SidebarDivider />
+        <SidebarItem icon={NetworkIcon} to="networks" text="Networks" />
+        <SidebarItem icon={ReleaseIcon} to="releases" text="Firmware" />
+        {/* <SidebarDivider />
         <SidebarItem icon={CatalogIcon} text="Others">
           <SidebarSubmenu>
             <SidebarSubmenuItem
@@ -104,7 +87,7 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
               title="Locations"
             />
           </SidebarSubmenu>
-        </SidebarItem>
+        </SidebarItem> */}
 
         {/* <SidebarItem icon={HomeIcon} to="catalog" text="Home" /> */}
         {/* <SidebarItem icon={ExtensionIcon} to="api-docs" text="APIs" /> */}
