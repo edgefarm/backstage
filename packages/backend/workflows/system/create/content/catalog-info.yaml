@@ -1,0 +1,27 @@
+apiVersion: backstage.io/v1alpha1
+kind: Location
+metadata:
+  name: ${{ values.systemName }}
+spec:
+  owner: ${{ values.owner }}
+  targets:
+    - ./devices/*/catalog-info.yaml
+    - ./networks/*/catalog-info.yaml
+    - ./applications/*/catalog-info.yaml
+    - ./releases/*/catalog-info.yaml
+    - ./releases/rollouts/*/catalog-info.yaml
+---
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: ${{ values.systemName }}
+  description: This system contains all components for a EdgeFarm
+  tags:
+    - edgefarm
+    - project
+  annotations:
+    'edgefarm.io/cluster': ${{ values.clusterName }}
+    'edgefarm.io/repo': ${{ values.repoUrl }}
+spec:
+  lifecycle: production
+  owner: ${{ values.owner }}

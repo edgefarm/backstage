@@ -1,0 +1,173 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: edgefarm-application-add
+  title: Register your Application
+  description: Register your application to the edgefarm
+  tags:
+    - edgefarm
+    - application
+    - deployment
+    - recommended
+    - kubernetes
+  links:
+    - title: Documentation
+      url: https://edgefarm.github.io/edgefarm/
+spec:
+  type: service
+  parameters:
+    - title: Fill in some steps
+      required:
+        - name
+        - system
+      properties:
+        system:
+          title: Select your system
+          description: Here you can select one of your existing systems. If you don't have any, you need to create one first.
+          type: string
+          ui:field: EntityPicker
+          ui:options:
+            catalogFilter:
+              - kind: system
+            defaultKind: System
+        name:
+          title: Name of the application
+          type: string
+          description: Unique name of the kubernetes application
+          maxLength: 253 # DNS subdomain name rules: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#dns-subdomain-names
+          pattern: '^[a-z0-9][a-z0-9-]*$'
+          ui:autofocus: true
+          ui:options:
+            rows: 5
+
+    - title: Application component
+      required:
+        - component
+      properties:
+        component:
+          type: object
+          title: Component
+          description: Define the component of this application
+          required:
+            - name
+            - image
+            - target
+            - cpu
+            - memory
+            - network
+          properties:
+            name:
+              type: string
+              title: Name of component
+              ui:autofocus: true
+            image:
+              type: string
+              description: Full path if an docker image location
+            target:
+              type: string
+              title: Target Label Selector
+              description: The target label selector for this component. e.g. "app=my-app"
+            command:
+              type: string
+              title: Container startup command
+              description: 'Give your container a special command to start.'
+              ui:widget: hidden
+            args:
+              type: string
+              title: Command arguments
+              description: 'Give your container command some arguments to start with.'
+              ui:widget: hidden
+            cpu:
+              type: string
+              title: CPU
+              description: 'Specify the amount of cpu for requests and limits. E.g.: 0.4'
+              default: '0.25'
+              ui:widget: hidden
+            memory:
+              type: string
+              title: Memory
+              description: 'Specify the amount of memory for requests and limits. E.g.: 512Mi'
+              pattern: '^([1-9][0-9]{0,63})(E|P|T|G|M|K|Ei|Pi|Ti|Gi|Mi|Ki)$'
+              default: '256Mi'
+              ui:widget: hidden
+            network:
+              type: object
+              title: Network
+              description: 'Specify where the component should connect to.'
+              required:
+                - network
+                - subnetwork
+                - user
+              properties:
+                network:
+                  type: string
+                  title: Network
+                  description: 'Define the network name to connect to.'
+                subnetwork:
+                  type: string
+                  title: Subnetwork
+                  description: 'Define the subnetwork within the network to use.'
+                user:
+                  type: string
+                  title: Username
+                  description: 'Define the username within your network your component uses.'
+  steps:
+    - id: system-fetch
+      name: Fetch system entity
+      action: catalog:fetch
+      input:
+        entityRef: ${{ parameters.system }}
+    - id: fetch-base
+      name: Fetch Base
+      action: fetch:template
+      input:
+        url: ./content
+        targetPath: applications/${{ parameters.name }}
+        values:
+          clusterName: ${{ steps['system-fetch'].output.entity.metadata.annotations['edgefarm.io/cluster'] }}
+          name: ${{ parameters.name }}
+          component: ${{ parameters.component }}
+          owner: ${{ user.entity.metadata.namespace }}/${{ user.entity.metadata.name }}
+          system: ${{ parameters.system }}
+    # - id: list-workspace
+    #   name: List Workspace
+    #   action: debug:log
+    #   input:
+    #     listWorkspace: true
+    # - id: read-catalog-info
+    #   name: Read generated catalog-into.yaml
+    #   action: ci4rail:fs:read
+    #   input:
+    #     path: ./applications/${{ parameters.name }}/catalog-info.yaml
+    # - id: log-catalog-info
+    #   name: Log generated catalog-into.yaml
+    #   action: debug:log
+    #   input:
+    #     message: ${{ steps['read-catalog-info'].output.content }}
+    # - id: read-manifest
+    #   name: Read generated manifest
+    #   action: ci4rail:fs:read
+    #   input:
+    #     path: ./applications/${{ parameters.name }}/manifests/application.yaml
+    # - id: log-manifest
+    #   name: Log  generated manifest
+    #   action: debug:log
+    #   input:
+    #     message: ${{ steps['read-manifest'].output.content }}
+
+    - id: pull-request
+      name: Persist changes on Github
+      action: publish:github:pull-request
+      input:
+        token: ${{ secrets.USER_OAUTH_TOKEN }}
+        repoUrl: ${{ steps['system-fetch'].output.entity.metadata.annotations['edgefarm.io/repo'] }}
+        branchName: add-application-${{ parameters.name }}-definition
+        title: Add application ${{ parameters.name }} definition
+        description: Adds a new application with name ${{ parameters.name }}
+        gitAuthorName: ${{ user.entity.metadata.name }}
+        gitAuthorEmail: ${{ user.entity.spec.profile.email }}
+
+  output:
+    links:
+      - title: Verify on Github
+        url: ${{ steps['pull-request'].output.remoteUrl }}

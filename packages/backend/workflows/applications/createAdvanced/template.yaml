@@ -1,0 +1,137 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: edgefarm-application-add
+  title: New Application
+  description: Add a new application to the edgefarm
+  tags:
+    - edgefarm
+    - application
+    - deployment
+    - recommended
+    - kubernetes
+  links:
+    - title: Documentation
+      url: https://edgefarm.io/docs/applications
+spec:
+  type: service
+  parameters:
+    - title: Fill in some steps
+      required:
+        - name
+        - system
+      properties:
+        system:
+          title: Select your system
+          description: Here you can select one of your existing systems. If you don't have any, you need to create one first.
+          type: string
+          ui:field: EntityPicker
+          ui:options:
+            catalogFilter:
+              - kind: system
+            defaultKind: System
+        name:
+          title: Name of the application
+          type: string
+          description: Unique name of the kubernetes application
+          maxLength: 253 # DNS subdomain name rules: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#dns-subdomain-names
+          pattern: '^[a-z0-9][a-z0-9-]*$'
+          ui:autofocus: true
+          ui:options:
+            rows: 5
+
+    - title: Define your components of the application
+      required:
+        - components
+      properties:
+        components:
+          type: array
+          title: Components
+          description: Define the components of your application
+          minItems: 1
+          ui:options:
+            orderable: false
+          items:
+            type: object
+            required:
+              - name
+              - type
+              - image
+            properties:
+              name:
+                type: string
+                title: Name of component
+                ui:autofocus: true
+              type:
+                type: string
+                enum: [cron-worker, daemon, k8s-objects, task, webservice]
+                default: webservice
+                description: See https://kubevela.io/docs/end-user/components/references for more details
+              image:
+                type: string
+                description: Full path if an docker image location
+                default: crccheck/hello-world
+              port:
+                type: integer
+                default: 8080
+
+  steps:
+    - id: system-fetch
+      name: Fetch system entity
+      action: catalog:fetch
+      input:
+        entityRef: ${{ parameters.system }}
+    - id: fetch-base
+      name: Fetch Base
+      action: fetch:template
+      input:
+        url: ./content
+        targetPath: applications/${{ parameters.name }}
+        values:
+          clusterName: ${{ steps['system-fetch'].output.entity.metadata.annotations['edgefarm.io/cluster'] }}
+          name: ${{ parameters.name }}
+          components: ${{ parameters.components }}
+          owner: ${{ user.entity.metadata.namespace }}/${{ user.entity.metadata.name }}
+          system: ${{ parameters.system }}
+    # - id: list-workspace
+    #   name: List Workspace
+    #   action: debug:log
+    #   input:
+    #     listWorkspace: true
+    # - id: read-catalog-info
+    #   name: Read generated catalog-into.yaml
+    #   action: ci4rail:fs:read
+    #   input:
+    #     path: ./applications/${{ parameters.name }}/catalog-info.yaml
+    # - id: log-catalog-info
+    #   name: Log generated catalog-into.yaml
+    #   action: debug:log
+    #   input:
+    #     message: ${{ steps['read-catalog-info'].output.content }}
+    # - id: read-manifest
+    #   name: Read generated manifest
+    #   action: ci4rail:fs:read
+    #   input:
+    #     path: ./applications/${{ parameters.name }}/manifests/application.yaml
+    # - id: log-manifest
+    #   name: Log  generated manifest
+    #   action: debug:log
+    #   input:
+    #     message: ${{ steps['read-manifest'].output.content }}
+
+    - id: pull-request
+      name: Persist changes on Github
+      action: publish:github:pull-request
+      input:
+        token: ${{ secrets.USER_OAUTH_TOKEN }}
+        repoUrl: ${{ steps['system-fetch'].output.entity.metadata.annotations['edgefarm.io/repo'] }}
+        branchName: add-application-${{ parameters.name }}-definition
+        title: Add application ${{ parameters.name }} definition
+        description: Adds a new application with name ${{ parameters.name }}
+        gitAuthorName: ${{ user.entity.metadata.name }}
+        gitAuthorEmail: ${{ user.entity.spec.profile.email }}
+
+  output:
+    links:
+      - title: Verify on Github
+        url: ${{ steps['pull-request'].output.remoteUrl }}

@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Node
+metadata:
+  labels:
+    kubernetes.io/hostname: ${{ values.deviceName }}
+    openyurt.io/is-edge-worker: 'true'
+    apps.openyurt.io/desired-nodepool: ${{ values.deviceName }}
+  name: ${{ values.deviceName }}
+spec:
+  taints:
+    - effect: NoSchedule
+      key: edgefarm.io
+---
+apiVersion: apps.openyurt.io/v1beta1
+kind: NodePool
+metadata:
+  name: ${{ values.deviceName }}
+spec:
+  selector:
+    matchLabels:
+      apps.openyurt.io/nodepool: ${{ values.deviceName }}
+  type: Edge

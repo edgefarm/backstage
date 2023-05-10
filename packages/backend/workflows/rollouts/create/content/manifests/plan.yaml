@@ -1,0 +1,31 @@
+apiVersion: upgrade.cattle.io/v1
+kind: Plan
+metadata:
+  name: ${{ values.name }}
+  namespace: system-upgrade
+spec:
+  concurrency: 1
+  nodeSelector:
+    matchExpressions:
+      - {
+          key: kubernetes.io/hostname,
+          operator: In,
+          values: ['${{ values.target }}'],
+        }
+  serviceAccountName: system-upgrade
+  drain:
+    force: false
+    disableEviction: true
+  version: bar
+  tolerations:
+    - key: 'edgefarm.io'
+      operator: 'Exists'
+      effect: 'NoSchedule'
+  upgrade:
+    image: ${{ values.image }}
+    command: ['/entrypoint.sh']
+    args: ['/tmp/concurrent', 'bar', '/tmp/successfile']
+    volumes:
+      - name: tmp
+        source: /tmp
+        destination: /tmp

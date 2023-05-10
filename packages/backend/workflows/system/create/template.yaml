@@ -1,0 +1,97 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: edgefarm-system-add
+  title: New System
+  description: |
+    Create a new EdgeFarm system. This will then be registered here in the catalog. The process will also create a new Git repository.
+
+    This is the entry point for every new EdgeFarm. A system is like a workspace, where all your configurations lives.
+  tags:
+    - edgefarm
+    - project
+    - recommended
+    - git
+spec:
+  type: service
+  parameters:
+    - title: Fill in some steps
+      required:
+        - name
+        - clusterName
+      properties:
+        clusterName:
+          title: Target cluster
+          type: string
+          description: The target cluster the system will be related to
+          default: minikube
+          enum:
+            - default
+          enumNames:
+            - 'Default'
+        name:
+          title: Name of the system
+          type: string
+          description: Unique name of the EdgeFarm system
+          maxLength: 63
+          pattern: '^[a-z0-9A-Z-_.]+$'
+          ui:autofocus: true
+          ui:options:
+            rows: 5
+
+    - title: Choose a git location
+      required:
+        - repoUrl
+      properties:
+        repoUrl:
+          title: Repository Location
+          type: string
+          ui:autofocus: true
+          ui:field: RepoUrlPicker
+          ui:options:
+            requestUserCredentials:
+              secretsKey: USER_OAUTH_TOKEN
+            allowedHosts:
+              - github.com
+
+  steps:
+    - id: fetch-base
+      name: Fetch Base
+      action: fetch:template
+      input:
+        url: ./content
+        values:
+          clusterName: ${{ parameters.clusterName }}
+          repoUrl: ${{ parameters.repoUrl }}
+          systemName: ${{ parameters.name }}
+          owner: ${{ user.entity.metadata.namespace }}/${{ user.entity.metadata.name }}
+    - id: publish
+      name: Create a new repository
+      action: publish:github
+      input:
+        allowedHosts: ['github.com']
+        token: ${{ secrets.USER_OAUTH_TOKEN }}
+        description: This is ${{ parameters.name }}
+        repoUrl: ${{ parameters.repoUrl }}
+        repoVisibility: public
+        requiredApprovingReviewCount: 0
+        deleteBranchOnMerge: true
+        gitAuthorName: ${{ user.entity.metadata.name }}
+        gitAuthorEmail: ${{ user.entity.spec.profile.email }}
+        allowAutoMerge: true
+        defaultBranch: main
+
+    - id: register
+      name: Register in catalog
+      action: catalog:register
+      input:
+        repoContentsUrl: ${{ steps['publish'].output.repoContentsUrl }}
+        catalogInfoPath: '/catalog-info.yaml'
+
+  output:
+    links:
+      - title: Verify on Github
+        url: ${{ steps['publish'].output.remoteUrl }}
+      - title: Open in catalog
+        icon: catalog
+        entityRef: ${{ steps['register'].output.entityRef }}

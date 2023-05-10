@@ -1,0 +1,12 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: ${{ values.name }}
+  annotations:
+    'edgefarm.io/cluster': ${{ values.clusterName }}
+    'edgefarm.io/release-image': '${{ values.image }}'
+spec:
+  type: Release
+  owner: ${{ values.owner }}
+  lifecycle: production
+  system: ${{ values.system }}

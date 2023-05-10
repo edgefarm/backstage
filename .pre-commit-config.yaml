@@ -16,7 +16,11 @@ repos:
       - id: trailing-whitespace
         args: [--markdown-linebreak-ext=md]
       - id: check-yaml
-        exclude: ^charts/
+        exclude: |
+          (?x)^(
+              packages/backend/workflows/.*|
+              charts/
+          )$
         args: [--allow-multiple-documents]
       - id: check-merge-conflict
       - id: check-executables-have-shebangs
@@ -32,6 +36,10 @@ repos:
         additional_dependencies:
           - prettier@^2.3.2
           - '@spotify/prettier-config@^12.0.0'
+        exclude: |
+          (?x)^(
+              packages/backend/workflows/.*
+          )$
   - repo: https://github.com/pre-commit/mirrors-eslint
     rev: 'v8.37.0' # Use the sha / tag you want to point at
     hooks:
