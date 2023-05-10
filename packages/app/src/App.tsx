@@ -46,6 +46,10 @@ import { lightTheme } from './theme/edgefarm';
 import { DashboardPage } from './components/pages/dashboard';
 import { GettingStartedPage } from './components/pages/gettingstarted';
 import { HomepageCompositionRoot } from '@backstage/plugin-home';
+import { DeviceListPage } from './components/pages/devices';
+import { ApplicationListPage } from './components/pages/applications';
+import { ReleaseListPage } from './components/pages/releases';
+import { NetworkListPage } from './components/pages/networks';
 
 function identityProvider(): IdentityProviders {
   const providers: IdentityProviders = [
@@ -106,6 +110,10 @@ const routes = (
     <Route path="/catalog" element={<CatalogIndexPage />} />
     <Route path="/gettingstarted" element={<GettingStartedPage />} />
     <Route path="/dashboard" element={<DashboardPage />} />
+    <Route path="/devices" element={<DeviceListPage />} />
+    <Route path="/applications" element={<ApplicationListPage />} />
+    <Route path="/networks" element={<NetworkListPage />} />
+    <Route path="/releases" element={<ReleaseListPage />} />
     <Route
       path="/catalog/:namespace/:kind/:name"
       element={<CatalogEntityPage />}
