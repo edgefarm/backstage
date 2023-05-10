@@ -43,7 +43,7 @@ import { EdgefarmPage } from '@internal/plugin-edgefarm';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import LightIcon from '@material-ui/icons/WbSunny';
 import { ThemeProvider } from '@material-ui/core/styles';
-import { lightTheme, darkTheme } from './theme/edgefarm';
+import { lightTheme } from './theme/edgefarm';
 import { DashboardPage } from './components/pages/dashboard';
 import { GettingStartedPage } from './components/pages/gettingstarted';
 import { HomepageCompositionRoot } from '@backstage/plugin-home';
@@ -84,17 +84,6 @@ const app = createApp({
     });
   },
   themes: [
-    {
-      id: 'dark-theme',
-      title: 'Dark Theme',
-      variant: 'dark',
-      icon: <LightIcon />,
-      Provider: ({ children }) => (
-        <ThemeProvider theme={darkTheme}>
-          <CssBaseline>{children}</CssBaseline>
-        </ThemeProvider>
-      ),
-    },
     {
       id: 'light-theme',
       title: 'Light Theme',
