@@ -76,6 +76,14 @@ const Rollouts = () => {
             </ListItem>
           ))}
         </List>
+        <LinkButton
+          to={`/create/templates/default/edgefarm-rollout-add?formData={"release"%3A"component%3Adefault%2F${entity.metadata.name}"}`}
+          color="primary"
+          variant="contained"
+          style={{ marginTop: '2rem' }}
+        >
+          Create a new rollout
+        </LinkButton>
       </InfoCard>
     </>
   );

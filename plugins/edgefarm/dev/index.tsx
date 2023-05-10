@@ -1,11 +1,11 @@
 import React from 'react';
 import { createDevApp } from '@backstage/dev-utils';
-import { edgefarmPlugin, EdgefarmPage } from '../src/plugin';
+import { edgefarmPlugin } from '../src/plugin';
 
 createDevApp()
   .registerPlugin(edgefarmPlugin)
   .addPage({
-    element: <EdgefarmPage />,
+    element: <>Root Page</>,
     title: 'Root Page',
     path: '/edgefarm',
   })
