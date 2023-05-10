@@ -1,0 +1,96 @@
+apiVersion: streams.network.edgefarm.io/v1alpha1
+kind: Network
+metadata:
+  name: ${{ values.name }}
+  {% if values.namespace -%}
+  namespace: ${{ values.namespace }}
+  {%- endif %}
+spec:
+  compositeDeletePolicy: Foreground
+  parameters:
+    users:
+    {% for user in values.users %}
+      - name: ${{ user.name }}
+        limits:
+          payload: ${{ user.limits.payload }}
+          data: ${{ user.limits.data }}
+          subscriptions: ${{ user.limits.subscriptions }}
+        permissions:
+          pub:
+            {% if not user.permissions.pub.allow|length -%}
+            allow: []
+            {% else -%}
+            allow:
+            {% for value in user.permissions.pub.allow -%}
+              - ${{ value }}
+            {% endfor -%}
+            {% endif -%}
+            {% if not user.permissions.pub.deny|length -%}
+            deny: []
+            {% else -%}
+            deny:
+            {% for value in user.permissions.pub.deny -%}
+              - ${{ value }}
+            {% endfor -%}
+            {%- endif %}
+          sub:
+            {% if not user.permissions.sub.allow|length -%}
+            allow: []
+            {% else -%}
+            allow:
+            {% for value in user.permissions.sub.allow -%}
+              - ${{ value }}
+            {% endfor -%}
+            {% endif -%}
+            {% if not user.permissions.sub.deny|length -%}
+            deny: []
+            {% else -%}
+            deny:
+            {% for value in user.permissions.sub.deny -%}
+              - ${{ value }}
+            {% endfor -%}
+            {%- endif %}
+    {% endfor -%}
+    subNetworks:
+    {%- for subnetwork in values.subnetworks %}
+      - name: ${{ subnetwork.name }}
+        limits:
+          fileStorage: ${{ subnetwork.fileStorage }}
+          inMemoryStorage: ${{ subnetwork.inMemoryStorage }}
+        tolerations: []
+        nodeSelectorTerm:
+          matchExpressions:
+            {%- for labelSelector in subnetwork.nodepoolSelector %}
+            - key: ${{ labelSelector.key }}
+              operator: ${{ labelSelector.operator }}
+            {% endfor %}
+    {% endfor -%}
+    streams:
+    {% for stream in values.streams %}
+      - name: ${{ stream.name }}
+        type: ${{ stream.config.streamType }}
+        {% if stream.config.subNetworkRef -%}
+        subNetworkRef: ${{ stream.config.subNetworkRef }}
+        {%- endif %}
+        config:
+          {% if stream.config.streamType == "Standard" -%}
+          subjects:
+          {% for subject in stream.config.subjects -%}
+            - ${{ subject }}
+          {% endfor %}
+          {%- endif %}
+          discard: ${{ stream.config.discard }}
+          retention: Limits
+          storage: ${{ stream.config.storage }}
+          maxConsumers: -1
+          maxMsgSize: -1
+          maxMsgs: ${{ stream.config.maxMsgs }}
+          maxMsgsPerSubject: ${{ stream.config.maxMsgsPerSubject }}
+          maxBytes: ${{ stream.config.maxBytes }}
+        {% if stream.config.streamType == "Aggregate" -%}
+        references:
+        {% for reference in stream.config.references -%}
+          - ${{ reference }}
+        {%- endfor %}
+        {%- endif %}
+    {% endfor %}

@@ -16,7 +16,11 @@ repos:
       - id: trailing-whitespace
         args: [--markdown-linebreak-ext=md]
       - id: check-yaml
-        exclude: ^charts/
+        exclude: |
+          (?x)^(
+              packages/backend/workflows/.*|
+              charts/
+          )$
         args: [--allow-multiple-documents]
       - id: check-merge-conflict
       - id: check-executables-have-shebangs

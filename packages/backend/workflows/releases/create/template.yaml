@@ -1,0 +1,94 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: edgefarm-firmware-add
+  title: Add a new Firmware
+  description: Add a new Firmware to the edgefarm. Later on you are able to create a upgrade plan for this Firmware.
+  tags:
+    - edgefarm
+    - firmware
+    - upgrade
+    - recommended
+  links:
+    - title: Documentation
+      url: https://edgefarm.io/docs/releases
+spec:
+  type: service
+  parameters:
+    - title: Fill in some steps
+      required:
+        - name
+        - system
+        - image
+      properties:
+        system:
+          title: Select your system
+          description: Here you can select one of your existing systems. If you don't have any, you need to create one first.
+          type: string
+          ui:field: EntityPicker
+          ui:options:
+            catalogFilter:
+              - kind: system
+            defaultKind: System
+        name:
+          title: Name of the release
+          type: string
+          description: Unique name of the kubernetes device
+          ui:autofocus: true
+          maxLength: 63
+          pattern: '^[a-z0-9A-Z-_.]+$'
+        image:
+          title: Docker image of the Firmware
+          type: string
+          description: Full path of the docker image which contains the release. e.g. registry.com/image:1.2.43
+
+  steps:
+    - id: system-fetch
+      name: Fetch system entity
+      action: catalog:fetch
+      input:
+        entityRef: ${{ parameters.system }}
+    - id: fetch-base
+      name: Fetch Base
+      action: fetch:template
+      input:
+        url: ./content
+        targetPath: releases/${{ parameters.name }}
+        values:
+          clusterName: ${{ steps['system-fetch'].output.entity.metadata.annotations['edgefarm.io/cluster'] }}
+          name: ${{ parameters.name }}
+          image: ${{ parameters.image }}
+          owner: ${{ user.entity.metadata.namespace }}/${{ user.entity.metadata.name }}
+          system: ${{ parameters.system }}
+    # - id: list-workspace
+    #   name: List Workspace
+    #   action: debug:log
+    #   input:
+    #     listWorkspace: true
+    # - id: read-file
+    #   name: Read File
+    #   action: ci4rail:fs:read
+    #   input:
+    #     path: ./releases/${{ parameters.name }}/catalog-info.yaml
+    # - id: log-message
+    #   name: Log Message
+    #   action: debug:log
+    #   input:
+    #     message: ${{ steps['read-file'].output.content }}
+
+    - id: pull-request
+      name: Persist changes on Github
+      action: publish:github:pull-request
+      input:
+        token: ${{ secrets.USER_OAUTH_TOKEN }}
+        repoUrl: ${{ steps['system-fetch'].output.entity.metadata.annotations['edgefarm.io/repo'] }}
+        branchName: add-release-${{ parameters.name }}-definition
+        title: Add release ${{ parameters.name }} definition
+        description: Adds a new release with name ${{ parameters.name }}
+        gitAuthorName: ${{ user.entity.metadata.name }}
+        gitAuthorEmail: ${{ user.entity.spec.profile.email }}
+
+  output:
+    links:
+      - title: Verify on Github
+        url: ${{ steps['pull-request'].output.remoteUrl }}

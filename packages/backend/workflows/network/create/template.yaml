@@ -1,0 +1,410 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: edgefarm-network-add
+  title: New Network
+  description: Add a new network to the edgefarm
+  tags:
+    - edgefarm
+    - network
+    - recommended
+    - streaming
+    - nats
+  links:
+    - title: Documentation
+      url: https://edgefarm.io/docs/networks
+  annotations:
+    edgefarm/visibility: public
+spec:
+  type: service
+  parameters:
+    - title: Specify some general parameters here
+      required:
+        - system
+        - name
+        - namespace
+      properties:
+        system:
+          title: Select your system
+          description:
+            Here you can select one of your existing systems. If you don't have
+            any, you need to create one first.
+          type: string
+          ui:field: EntityPicker
+          ui:options:
+            catalogFilter:
+              - kind: system
+            defaultKind: System
+        name:
+          title: Name of the network
+          type: string
+          maxLength: 253
+          pattern: ^[a-z0-9][a-z0-9-]*$
+          ui:autofocus: true
+          ui:options:
+            rows: 5
+        namespace:
+          title: Namespace of the network
+          type: string
+          maxLength: 253
+          pattern: ^[a-z0-9][a-z0-9-]*$
+          ui:options:
+            rows: 5
+    - title: Specify the subnetworks
+      required:
+        - subnetworks
+      properties:
+        subnetworks:
+          type: array
+          title: Subnetworks
+          description: Here you can add one or more subnetworks to the network.
+          minItems: 1
+          ui:options:
+            orderable: false
+          items:
+            type: object
+            required:
+              - name
+              - fileStorage
+              - inMemoryStorage
+            properties:
+              name:
+                type: string
+                title: Name of subnetwork
+                maxLength: 253
+                pattern: ^[a-z0-9][a-z0-9-]*$
+                description:
+                  The name of the subnetwork. This name will be used as a prefix for
+                  the subnetworks resources.
+                ui:autofocus: true
+              fileStorage:
+                type: string
+                default: 1G
+                pattern: ^\d+[GMKB]?$
+                title: Specify how much file storage the network should have. (e.g. 1G, 100M, ...)
+                description: The amount of file storage the sub-network is allowed to use.
+              inMemoryStorage:
+                type: string
+                default: 100M
+                pattern: ^\d+[GMKB]?$
+                title: Specify how much in-memory storage the network should have. (e.g. 1G, 100M, ...)
+                description: The amount of volatile memory the sub-network is allowed to use.
+              nodepoolSelector:
+                type: array
+                minItems: 1
+                title: Nodepool Label Selector
+                description: LabelSelector to identify targets for the sub-network. For more information about LabelSelectors see https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#resources-that-support-set-based-requirements
+                items:
+                  type: object
+                  required: [key, operator]
+                  dependencies:
+                    operator:
+                      oneOf:
+                        - properties:
+                            operator:
+                              enum: [In, NotIn]
+                            values:
+                              type: array
+                              title: Values
+                              minItems: 1
+                              items:
+                                type: string
+                                title: Value
+                          required:
+                            - values
+                        - properties:
+                            operator:
+                              enum: [Exists, DoesNotExist]
+                  properties:
+                    key:
+                      type: string
+                      title: Key
+                      maxLength: 253
+                      pattern: ^[a-z0-9][a-z0-9-]*$
+                    operator:
+                      type: string
+                      title: Operator
+                      enum: [Exists, DoesNotExist]
+                      default: Exists
+
+    - title: Specify the NATS streams
+      required:
+        - streams
+      properties:
+        streams:
+          title: Streams
+          type: array
+          minItems: 1
+          ui:options:
+            orderable: false
+          items:
+            type: object
+            required:
+              - name
+              - config
+            ui:options:
+              orderable: false
+            properties:
+              name:
+                type: string
+                title: Name of the Stream
+                maxLength: 253
+                pattern: ^[a-z0-9][a-z0-9-]*$
+                ui:autofocus: true
+              config:
+                type: object
+                title: Parameters
+                required:
+                  - storage
+                  - maxMsgs
+                  - maxBytes
+                  - discard
+                dependencies:
+                  streamType:
+                    oneOf:
+                      - properties:
+                          streamType:
+                            enum: [Standard]
+                          subjects:
+                            type: array
+                            title: Subjects (NATS)
+                            minItems: 1
+                            ui:options:
+                              orderable: false
+                            items:
+                              type: string
+                              title: Subject
+                            description: |
+                              The subjects of the stream. See https://docs.nats.io/nats-concepts/subjects for more information on the subject format.
+                        required:
+                          - subjects
+                      - properties:
+                          streamType:
+                            enum: [Aggregate]
+                          references:
+                            type: array
+                            title: Referenced Streams
+                            minItems: 1
+                            ui:options:
+                              orderable: false
+                            items:
+                              type: string
+                              title: Reference
+                            description: |
+                              The streams that are referenced by this stream.
+                        required:
+                          - references
+                properties:
+                  streamType:
+                    type: string
+                    title: Type
+                    enum: [Standard, Aggregate]
+                    description: |
+                      Standard: Creates a matching stream for each participating instance of sub networks.
+                      Aggregate: Creates a stream that can source from referenced stream references collecting data from those referenced streams.
+                    default: Standard
+                  subNetworkRef:
+                    type: string
+                    title: Subnetwork
+                    maxLength: 253
+                    pattern: ^[a-z0-9][a-z0-9-]*$
+                    description: |
+                      The subnetwork that the stream should be created in. Im not set, the stream will be created outside of any subnetwork.
+                  discard:
+                    type: string
+                    description: |
+                      Discard defines the behavior of discarding messages when any streams' limits have been reached.
+                      Old: This policy will delete the oldest messages in order to maintain the limit. For example, if MaxAge is set to one minute, the server will automatically delete messages older than one minute with this policy.
+                      New: This policy will reject new messages from being appended to the stream if it would exceed one of the limits. An extension to this policy is DiscardNewPerSubject which will apply this policy on a per-subject basis within the stream.
+                    title: Discard
+                    default: Old
+                    enum:
+                      - Old
+                      - New
+                      - All
+                    enumNames:
+                      - Old
+                      - New
+                      - All
+                  storage:
+                    type: string
+                    title: Storage
+                    enum: [File, Memory]
+                    description: |
+                      File: The stream will be stored on disk.
+                      Memory: The stream will be stored in memory.
+                    default: File
+                  maxMsgs:
+                    type: integer
+                    description: |
+                      How many messages may be in a Stream. ”-1” is unlimited.
+                    ui:widget: updown
+                    minimum: -1
+                    default: -1
+                  maxBytes:
+                    type: integer
+                    description: |
+                      How many bytes the Stream may contain. ”-1” is unlimited.
+                    ui:widget: updown
+                    minimum: -1
+                    default: -1
+                  maxAge:
+                    type: string
+                    title: Maximum Age Of Message
+                    description: |
+                      The maximum age of a message in the stream before it gets deleted automatically.
+                      Format is a string duration, e.g. 1h, 1m, 1s, 1h30m or 2h3m4s.
+                    pattern: ^[1-9][0-9]*(h|m|s)*$
+                  maxMsgsPerSubject:
+                    type: integer
+                    description: |
+                      The limits how many messages in the stream to retain per subject. ”-1” is unlimited.
+                    ui:widget: updown
+                    minimum: -1
+                    default: -1
+
+    - title: Specify the users
+      required:
+        - users
+      properties:
+        users:
+          type: array
+          title: Users
+          description: Here you can add one or more users to the network.
+          minItems: 1
+          ui:options:
+            orderable: false
+          items:
+            type: object
+            required: [name, limits]
+            properties:
+              name:
+                type: string
+                title: Unique name of the user
+                description:
+                  The name of the user. This name will be used as a prefix for the
+                  user's resources.
+                maxLength: 253
+                pattern: ^[a-z0-9][a-z0-9-]*$
+                ui:autofocus: true
+              limits:
+                type: object
+                properties:
+                  payload:
+                    type: integer
+                    title: Payload
+                    description: Specifies the maximum message payload. ”-1” is unlimited.
+                    default: -1
+                    minimum: -1
+                  data:
+                    type: integer
+                    title: Data
+                    description: Specifies the maximum number of bytes. ”-1” is unlimited.
+                    default: -1
+                    minimum: -1
+                  subscriptions:
+                    type: integer
+                    title: Subscriptions
+                    description: The maximum number of subscriptions. ”-1” is unlimited.
+                    default: -1
+                    minimum: -1
+              permissions:
+                type: object
+                properties:
+                  pub:
+                    type: object
+                    properties:
+                      allow:
+                        type: array
+                        title: Allow
+                        description: The list of subjects that are allowed to publish to the network.
+                        items:
+                          type: string
+                      deny:
+                        type: array
+                        title: Deny
+                        description:
+                          The list of subjects that are not allowed to publish to the
+                          network.
+                        items:
+                          type: string
+                  sub:
+                    type: object
+                    properties:
+                      allow:
+                        type: array
+                        title: Allow
+                        description: The list of subjects that are allowed to subscribe to the network.
+                        items:
+                          type: string
+                      deny:
+                        type: array
+                        title: Deny
+                        description:
+                          The list of subjects that are not allowed to subscribe to the
+                          network.
+                        items:
+                          type: string
+  steps:
+    - id: system-fetch
+      name: Fetch system entity
+      action: catalog:fetch
+      input:
+        entityRef: ${{ parameters.system }}
+    - id: fetch-base
+      name: Fetch Base
+      action: fetch:template
+      input:
+        url: ./content
+        targetPath: networks/${{ parameters.name }}
+        values:
+          clusterName: ${{ steps['system-fetch'].output.entity.metadata.annotations['edgefarm.io/cluster'] }}
+          name: ${{ parameters.name }}
+          namespace: ${{ parameters.namespace }}
+          subnetworks: ${{ parameters.subnetworks }}
+          streams: ${{ parameters.streams }}
+          users: ${{ parameters.users }}
+          owner: ${{ user.entity.metadata.namespace }}/${{ user.entity.metadata.name }}
+          system: ${{ parameters.system }}
+    # - id: list-workspace
+    #   name: List Workspace
+    #   action: debug:log
+    #   input:
+    #     listWorkspace: true
+    # - id: read-file
+    #   name: Read File
+    #   action: ci4rail:fs:read
+    #   input:
+    #     path: ./networks/${{ parameters.name }}/manifests/network.yaml
+    # - id: log-message
+    #   name: Log Message
+    #   action: debug:log
+    #   input:
+    #     message: ${{ steps['read-file'].output.content }}
+    # - id: read-file2
+    #   name: Read File
+    #   action: ci4rail:fs:read
+    #   input:
+    #     path: ./networks/${{ parameters.name }}/catalog-info.yaml
+    # - id: log-message2
+    #   name: Output catalog-info.yaml
+    #   action: debug:log
+    #   input:
+    #     message: ${{ steps['read-file2'].output.content }}
+
+    - id: pull-request
+      name: Persist changes on Github
+      action: publish:github:pull-request
+      input:
+        token: ${{ secrets.USER_OAUTH_TOKEN }}
+        repoUrl: ${{ steps['system-fetch'].output.entity.metadata.annotations['edgefarm.io/repo'] }}
+        branchName: add-network-${{ parameters.name }}-definition
+        title: Add network ${{ parameters.name }} definition
+        description: Adds a network with name ${{ parameters.name }}
+        gitAuthorName: ${{ user.entity.metadata.name }}
+        gitAuthorEmail: ${{ user.entity.spec.profile.email }}
+  output:
+    links:
+      - title: Verify on Github
+        description: foobar
+        url: ${{ steps['pull-request'].output.remoteUrl }}

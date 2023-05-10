@@ -1,0 +1,13 @@
+apiVersion: core.oam.dev/v1beta1
+kind: Application
+metadata:
+  name: ${{ values.name }}
+spec:
+  components:
+    {% for component in values.components -%}
+    - name: ${{ component.name }}
+      type: ${{ component.type }}
+      properties:
+        image: ${{ component.image }}
+        port: ${{ component.port }}
+    {% endfor -%}

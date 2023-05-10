@@ -1,0 +1,111 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: edgefarm-device-add
+  title: Register a Device
+  description: Register a new device to the edgefarm
+  tags:
+    - edgefarm
+    - device
+    - recommended
+    - kubernetes
+  links:
+    - title: Documentation
+      url: https://edgefarm.io/docs/devices
+spec:
+  type: service
+  parameters:
+    - title: Fill in some steps
+      required:
+        - name
+        - system
+      properties:
+        system:
+          title: Select your system
+          description: Here you can select one of your existing systems. If you don't have any, you need to create one first.
+          type: string
+          ui:field: EntityPicker
+          ui:options:
+            catalogFilter:
+              - kind: system
+            defaultKind: System
+        name:
+          title: Name of the device
+          type: string
+          description: Unique name of the kubernetes device
+          maxLength: 253 # DNS subdomain name rules: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#dns-subdomain-names
+          pattern: '^[a-z0-9][a-z0-9-]*$'
+          ui:autofocus: true
+          ui:options:
+            rows: 5
+
+  steps:
+    - id: system-fetch
+      name: Fetch system entity
+      action: catalog:fetch
+      input:
+        entityRef: ${{ parameters.system }}
+    - id: fetch-base
+      name: Fetch Base
+      action: fetch:template
+      input:
+        url: ./content
+        targetPath: devices/${{ parameters.name }}
+        values:
+          clusterName: ${{ steps['system-fetch'].output.entity.metadata.annotations['edgefarm.io/cluster'] }}
+          deviceName: ${{ parameters.name }}
+          owner: ${{ user.entity.metadata.namespace }}/${{ user.entity.metadata.name }}
+          system: ${{ parameters.system }}
+    - id: generate-token
+      name: Generate join token
+      action: catalog:fetch
+      input:
+        entityRef: group:edgefarm
+
+    # - id: list-workspace
+    #   name: List Workspace
+    #   action: debug:log
+    #   input:
+    #     listWorkspace: true
+    # - id: read-catalog-info
+    #   name: Read Catalog Info
+    #   action: ci4rail:fs:read
+    #   input:
+    #     path: ./devices/${{ parameters.name }}/catalog-info.yaml
+    # - id: log-catalog-info
+    #   name: Log Catalog Info
+    #   action: debug:log
+    #   input:
+    #     message: ${{ steps['read-catalog-info'].output.content }}
+    # - id: read-manifest
+    #   name: Read Manifest
+    #   action: ci4rail:fs:read
+    #   input:
+    #     path: ./devices/${{ parameters.name }}/manifests/manifest.yaml
+    # - id: log-manifest
+    #   name: Log Manifest
+    #   action: debug:log
+    #   input:
+    #     message: ${{ steps['read-manifest'].output.content }}
+    - id: pull-request
+      name: Persist changes on Github
+      action: publish:github:pull-request
+      input:
+        token: ${{ secrets.USER_OAUTH_TOKEN }}
+        repoUrl: ${{ steps['system-fetch'].output.entity.metadata.annotations['edgefarm.io/repo'] }}
+        branchName: add-device-${{ parameters.name }}-definition
+        title: Add device ${{ parameters.name }} definition
+        description: Adds a new device with name ${{ parameters.name }}
+        gitAuthorName: ${{ user.entity.metadata.name }}
+        gitAuthorEmail: ${{ user.entity.spec.profile.email }}
+
+    - id: log-next-step
+      name: Run this command next
+      action: debug:log
+      input:
+        message: yurtadm join 139.144.160.141:6443  --token="${{ steps['generate-token'].output.entity.metadata.annotations['edgefarm.io/demo-token'] }}" --node-type=edge --discovery-token-unsafe-skip-ca-verification --v=5
+
+  output:
+    links:
+      - title: Verify on Github
+        url: ${{ steps['pull-request'].output.remoteUrl }}

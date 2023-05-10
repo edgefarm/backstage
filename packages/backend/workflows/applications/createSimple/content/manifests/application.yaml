@@ -1,0 +1,51 @@
+apiVersion: core.oam.dev/v1beta1
+kind: Application
+metadata:
+  name: ${{ values.name }}
+spec:
+  components:
+    - name: ${{ values.component.name }}
+      type: edgefarm-applications
+      properties:
+        image: ${{ values.component.image }}
+        nodepoolSelector:
+          matchLabels:
+            {%- set varArray = values.component.target.split("=") %}
+            ${{ varArray[0] }}: ${{ varArray[1] }}
+        name: ${{ values.component.name }}
+        {% if values.component.command -%}
+        command:
+          - ${{ values.component.command }}
+        {% if values.component.args -%}
+        args:
+          - "${{ values.component.args | replace("\"", "\\\"") }}"
+        {%- endif %}
+        {%- endif %}
+        cpu: ${{ values.component.cpu }}
+        memory: ${{ values.component.memory }}
+        {% if values.component.envVars|length > 0 -%}
+        env:
+          {%- for envVar in values.component.envVars %}
+          {%- set varArray = envVar.split("=") %}
+          - name: ${{ varArray[0] }}
+            value: ${{ varArray[1] }}
+          {%- endfor %}
+        {%- endif %}
+      traits:
+        - type: edgefarm-network
+          properties:
+            network:
+              name: ${{ values.component.network.network }}
+              subnetwork: ${{ values.component.network.subnetwork }}
+              user: ${{ values.component.network.user }}
+        {% if values.component.storage.hostPaths|length > 0 -%}
+        - type: edgefarm-storage
+          properties:
+            hostPath:
+            {%- for hostPath in values.component.storage.hostPaths %}
+              - name: ${{ hostPath.name }}
+                path: ${{ hostPath.path }}
+                mountPath: ${{ hostPath.mountPath }}
+                type: ${{ hostPath.type }}
+            {% endfor %}
+        {%- endif %}

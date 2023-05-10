@@ -1,0 +1,15 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: ${{ values.name | dump }}
+  annotations:
+    'edgefarm.io/cluster': ${{ values.clusterName }}
+  links:
+    - url: https://www.ci4rail.com
+      title: Ci4Rail Website
+      icon: backstage
+spec:
+  type: application
+  owner: ${{ values.owner }}
+  lifecycle: production
+  system: ${{ values.system }}

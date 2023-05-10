@@ -1,0 +1,134 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: edgefarm-rollout-add
+  title: Plan a firmware rollout
+  description: Create e plan to rollout a specific firmware to a specific device.
+  tags:
+    - edgefarm
+    - rollout
+    - upgrade
+    - recommended
+  links:
+    - title: Documentation
+      url: https://edgefarm.io/docs/rollouts
+spec:
+  type: service
+  parameters:
+    - title: Fill in some steps
+      required:
+        - system
+        - release
+      properties:
+        system:
+          title: Select your system
+          description: Here you can select one of your existing systems. If you don't have any, you need to create one first.
+          type: string
+          ui:field: EntityPicker
+          ui:options:
+            catalogFilter:
+              kind: system
+            defaultKind: System
+        release:
+          title: Select your firmware
+          description: Here you can select one of your existing firmware releases. If you don't have any, you need to create one first.
+          type: string
+          ui:field: EntityPicker
+          ui:options:
+            catalogFilter:
+              kind: Component
+              spec.type: Release
+            defaultKind: Component
+    - title: Select your target device
+      required:
+        - target
+      properties:
+        target:
+          title: Select your target device
+          description: Here you can select one of your existing target devices.
+          type: string
+          ui:field: EntityPicker
+          ui:options:
+            catalogFilter:
+              kind: Component
+              spec.type: Device
+            defaultKind: Component
+
+  steps:
+    - id: system-fetch
+      name: Fetch system entity
+      action: catalog:fetch
+      input:
+        entityRef: ${{ parameters.system }}
+    - id: release-fetch
+      name: Fetch release entity
+      action: catalog:fetch
+      input:
+        entityRef: ${{ parameters.release }}
+    - id: device-fetch
+      name: Fetch device entity
+      action: catalog:fetch
+      input:
+        entityRef: ${{ parameters.target }}
+    - id: generate-name
+      name: Generate unique name
+      action: edgefarm:release:name:unique
+      input:
+        value: ${{ steps['release-fetch'].output.entity.metadata.annotations['edgefarm.io/release-image'] }}
+    - id: fetch-base
+      name: Fetch Base
+      action: fetch:template
+      input:
+        url: ./content
+        targetPath: releases/${{ steps['release-fetch'].output.entity.metadata.name }}/rollouts/${{ steps['generate-name'].output.content }}
+        values:
+          name: ${{ steps['generate-name'].output.content }}
+          clusterName: ${{ steps['system-fetch'].output.entity.metadata.annotations['edgefarm.io/cluster'] }}
+          image: ${{ steps['release-fetch'].output.entity.metadata.annotations['edgefarm.io/release-image'] }}
+          target: ${{ steps['device-fetch'].output.entity.metadata.name }}
+          releaseRef: ${{ parameters.release }}
+          owner: ${{ user.entity.metadata.namespace }}/${{ user.entity.metadata.name }}
+          system: ${{ parameters.system }}
+    # - id: list-workspace
+    #   name: List Workspace
+    #   action: debug:log
+    #   input:
+    #     listWorkspace: true
+    # - id: read-catalog-info
+    #   name: Read Catalog-info.yaml
+    #   action: ci4rail:fs:read
+    #   input:
+    #     path: ./releases/${{ steps['release-fetch'].output.entity.metadata.name }}/rollouts/${{ steps['generate-name'].output.content }}/catalog-info.yaml
+    # - id: log-message1
+    #   name: Log Catalog-info.yaml
+    #   action: debug:log
+    #   input:
+    #     message: ${{ steps['read-catalog-info'].output.content }}
+
+    # - id: read-manifest
+    #   name: Read manifest.yaml
+    #   action: ci4rail:fs:read
+    #   input:
+    #     path: ./releases/${{ steps['release-fetch'].output.entity.metadata.name }}/rollouts/${{ steps['generate-name'].output.content }}/manifests/plan.yaml
+    # - id: log-message2
+    #   name: Log manifest.yaml
+    #   action: debug:log
+    #   input:
+    #     message: ${{ steps['read-manifest'].output.content }}
+
+    - id: pull-request
+      name: Persist changes on Github
+      action: publish:github:pull-request
+      input:
+        token: ${{ secrets.USER_OAUTH_TOKEN }}
+        repoUrl: ${{ steps['system-fetch'].output.entity.metadata.annotations['edgefarm.io/repo'] }}
+        branchName: add-rollout-${{ steps['generate-name'].output.content }}-definition
+        title: Add rollout ${{ steps['generate-name'].output.content }} definition
+        description: Adds a new rollout with name ${{ steps['generate-name'].output.content }}
+        gitAuthorName: ${{ user.entity.metadata.name }}
+        gitAuthorEmail: ${{ user.entity.spec.profile.email }}
+
+  output:
+    links:
+      - title: Verify on Github
+        url: ${{ steps['pull-request'].output.remoteUrl }}

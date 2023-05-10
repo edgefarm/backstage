@@ -1,0 +1,13 @@
+apiVersion: backstage.io/v1alpha1
+kind: Location
+metadata:
+  name: edgefarm-workflows
+  description: Contains all backstage workflows provides by edgefarm team.
+spec:
+  targets:
+    - ./applications/createSimple/template.yaml
+    - ./rollouts/create/template.yaml
+    - ./devices/create/template.yaml
+    - ./network/create/template.yaml
+    - ./releases/create/template.yaml
+    - ./system/create/template.yaml
