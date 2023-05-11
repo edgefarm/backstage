@@ -58,7 +58,7 @@ spec:
           fileStorage: ${{ subnetwork.fileStorage }}
           inMemoryStorage: ${{ subnetwork.inMemoryStorage }}
         tolerations: []
-        nodeSelectorTerm:
+        nodepoolSelector:
           matchExpressions:
             {%- for labelSelector in subnetwork.nodepoolSelector %}
             - key: "${{ labelSelector.key }}"
