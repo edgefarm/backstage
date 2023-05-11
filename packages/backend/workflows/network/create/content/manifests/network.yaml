@@ -22,7 +22,7 @@ spec:
             {% else -%}
             allow:
             {% for value in user.permissions.pub.allow -%}
-              - ${{ value }}
+              - "${{ value }}"
             {% endfor -%}
             {% endif -%}
             {% if not user.permissions.pub.deny|length -%}
@@ -30,7 +30,7 @@ spec:
             {% else -%}
             deny:
             {% for value in user.permissions.pub.deny -%}
-              - ${{ value }}
+              - "${{ value }}"
             {% endfor -%}
             {%- endif %}
           sub:
@@ -39,7 +39,7 @@ spec:
             {% else -%}
             allow:
             {% for value in user.permissions.sub.allow -%}
-              - ${{ value }}
+              - "${{ value }}"
             {% endfor -%}
             {% endif -%}
             {% if not user.permissions.sub.deny|length -%}
@@ -47,7 +47,7 @@ spec:
             {% else -%}
             deny:
             {% for value in user.permissions.sub.deny -%}
-              - ${{ value }}
+              - "${{ value }}"
             {% endfor -%}
             {%- endif %}
     {% endfor -%}
