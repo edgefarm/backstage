@@ -76,7 +76,7 @@ spec:
           {% if stream.config.streamType == "Standard" -%}
           subjects:
           {% for subject in stream.config.subjects -%}
-            - ${{ subject }}
+            - "${{ subject }}"
           {% endfor %}
           {%- endif %}
           discard: ${{ stream.config.discard }}
