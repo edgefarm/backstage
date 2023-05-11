@@ -61,7 +61,7 @@ spec:
         nodeSelectorTerm:
           matchExpressions:
             {%- for labelSelector in subnetwork.nodepoolSelector %}
-            - key: ${{ labelSelector.key }}
+            - key: "${{ labelSelector.key }}"
               operator: ${{ labelSelector.operator }}
             {% endfor %}
     {% endfor -%}
