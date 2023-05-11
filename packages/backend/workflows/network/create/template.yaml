@@ -22,7 +22,6 @@ spec:
       required:
         - system
         - name
-        - namespace
       properties:
         system:
           title: Select your system
@@ -50,6 +49,7 @@ spec:
           pattern: ^[a-z0-9][a-z0-9-]*$
           ui:options:
             rows: 5
+          ui:widget: hidden
     - title: Specify the subnetworks
       required:
         - subnetworks
