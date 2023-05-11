@@ -3,7 +3,7 @@ kind: Node
 metadata:
   labels:
     kubernetes.io/hostname: ${{ values.deviceName }}
-    openyurt.io/is-edge-worker: 'true'
+    openyurt.io/is-edge-worker: "true"
     apps.openyurt.io/desired-nodepool: ${{ values.deviceName }}
   name: ${{ values.deviceName }}
 spec:
@@ -17,6 +17,7 @@ metadata:
   name: ${{ values.deviceName }}
   labels:
     ${{ values.deviceName }}: ""
+    monitor.edgefarm.io/metrics: default
 spec:
   selector:
     matchLabels:
