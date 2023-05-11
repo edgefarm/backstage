@@ -367,43 +367,43 @@ spec:
           users: ${{ parameters.users }}
           owner: ${{ user.entity.metadata.namespace }}/${{ user.entity.metadata.name }}
           system: ${{ parameters.system }}
-    - id: list-workspace
-      name: List Workspace
-      action: debug:log
-      input:
-        listWorkspace: true
-    - id: read-file
-      name: Read File
-      action: ci4rail:fs:read
-      input:
-        path: ./networks/${{ parameters.name }}/manifests/network.yaml
-    - id: log-message
-      name: Log Message
-      action: debug:log
-      input:
-        message: ${{ steps['read-file'].output.content }}
-    - id: read-file2
-      name: Read File
-      action: ci4rail:fs:read
-      input:
-        path: ./networks/${{ parameters.name }}/catalog-info.yaml
-    - id: log-message2
-      name: Output catalog-info.yaml
-      action: debug:log
-      input:
-        message: ${{ steps['read-file2'].output.content }}
-
-    # - id: pull-request
-    #   name: Persist changes on Github
-    #   action: publish:github:pull-request
+    # - id: list-workspace
+    #   name: List Workspace
+    #   action: debug:log
     #   input:
-    #     token: ${{ secrets.USER_OAUTH_TOKEN }}
-    #     repoUrl: ${{ steps['system-fetch'].output.entity.metadata.annotations['edgefarm.io/repo'] }}
-    #     branchName: add-network-${{ parameters.name }}-definition
-    #     title: Add network ${{ parameters.name }} definition
-    #     description: Adds a network with name ${{ parameters.name }}
-    #     gitAuthorName: ${{ user.entity.metadata.name }}
-    #     gitAuthorEmail: ${{ user.entity.spec.profile.email }}
+    #     listWorkspace: true
+    # - id: read-file
+    #   name: Read File
+    #   action: ci4rail:fs:read
+    #   input:
+    #     path: ./networks/${{ parameters.name }}/manifests/network.yaml
+    # - id: log-message
+    #   name: Log Message
+    #   action: debug:log
+    #   input:
+    #     message: ${{ steps['read-file'].output.content }}
+    # - id: read-file2
+    #   name: Read File
+    #   action: ci4rail:fs:read
+    #   input:
+    #     path: ./networks/${{ parameters.name }}/catalog-info.yaml
+    # - id: log-message2
+    #   name: Output catalog-info.yaml
+    #   action: debug:log
+    #   input:
+    #     message: ${{ steps['read-file2'].output.content }}
+
+    - id: pull-request
+      name: Persist changes on Github
+      action: publish:github:pull-request
+      input:
+        token: ${{ secrets.USER_OAUTH_TOKEN }}
+        repoUrl: ${{ steps['system-fetch'].output.entity.metadata.annotations['edgefarm.io/repo'] }}
+        branchName: add-network-${{ parameters.name }}-definition
+        title: Add network ${{ parameters.name }} definition
+        description: Adds a network with name ${{ parameters.name }}
+        gitAuthorName: ${{ user.entity.metadata.name }}
+        gitAuthorEmail: ${{ user.entity.spec.profile.email }}
   output:
     links:
       - title: Verify on Github
