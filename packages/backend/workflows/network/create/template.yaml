@@ -174,7 +174,7 @@ spec:
                             items:
                               type: string
                               title: Subject
-                              pattern: ^[a-zA-Z0-9\.\*>]+$
+                              pattern: ^\$?[a-zA-Z0-9\.\*>]+$
                             description: |
                               The subjects of the stream. See https://docs.nats.io/nats-concepts/subjects for more information on the subject format.
                         required:
