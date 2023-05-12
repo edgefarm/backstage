@@ -16,7 +16,8 @@ spec:
   drain:
     force: false
     disableEviction: true
-  version: bar
+  {%- set varArray = values.image.split(":") %}
+  version: "${{ varArray[1] }}"
   tolerations:
     - key: 'edgefarm.io'
       operator: 'Exists'

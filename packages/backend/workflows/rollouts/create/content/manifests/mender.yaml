@@ -6,7 +6,8 @@ metadata:
   namespace: system-upgrade
 spec:
   concurrency: 1
-  version: ${{ values.version }}
+  {%- set varArray = values.image.split(":") %}
+  version: "${{ varArray[1] }}"
   nodeSelector:
     matchExpressions:
       - {
