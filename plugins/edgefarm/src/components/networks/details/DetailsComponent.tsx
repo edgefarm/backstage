@@ -20,13 +20,14 @@ export const DetailsComponent = () => {
   const annotations = entity.metadata.annotations ?? {};
   const clusterName = annotations['edgefarm.io/cluster'] ?? '';
   const networkName = entity.metadata.name;
+  const systemName: string = (entity.spec?.system as string) ?? '';
 
   const [details, setDetails] = useState<NetworkDetails | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     const getNetworkDetails = async () => {
       const response = await fetch(
-        `${backendUrl}/api/edgefarm/${clusterName}/networks/${clusterName}/${networkName}`,
+        `${backendUrl}/api/edgefarm/${clusterName}/networks/${systemName.toLowerCase()}/${networkName}`,
       );
       if (response.status === 200) {
         const payload = await response.json();
@@ -35,7 +36,7 @@ export const DetailsComponent = () => {
       setIsLoading(false);
     };
     getNetworkDetails();
-  }, [backendUrl, clusterName, networkName]);
+  }, [backendUrl, clusterName, networkName, systemName]);
 
   return (
     <Grid container alignItems="stretch">
