@@ -18,13 +18,14 @@ export const DetailsComponent = () => {
   const annotations = entity.metadata.annotations ?? {};
   const clusterName = annotations['edgefarm.io/cluster'] ?? '';
   const appName = entity.metadata.name;
+  const systemName: string = (entity.spec?.system as string) ?? '';
 
   const [details, setDetails] = useState<ApplicationDetails | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     const getAppDDetails = async () => {
       const response = await fetch(
-        `${backendUrl}/api/edgefarm/${clusterName}/applications/${clusterName}/${appName}`,
+        `${backendUrl}/api/edgefarm/${clusterName}/applications/${systemName.toLowerCase()}/${appName}`,
       );
       if (response.status === 200) {
         const payload = await response.json();
@@ -33,7 +34,7 @@ export const DetailsComponent = () => {
       setIsLoading(false);
     };
     getAppDDetails();
-  }, [backendUrl, clusterName, appName]);
+  }, [backendUrl, clusterName, appName, systemName]);
 
   return (
     <Grid container alignItems="stretch">
