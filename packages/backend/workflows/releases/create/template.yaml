@@ -31,7 +31,7 @@ spec:
               - kind: system
             defaultKind: System
         name:
-          title: Name of the release
+          title: Specify a unique name for this Firmware
           type: string
           description: Unique name of the kubernetes device
           ui:autofocus: true
@@ -40,7 +40,7 @@ spec:
         image:
           title: Docker image of the Firmware
           type: string
-          description: Full path of the docker image which contains the release. e.g. registry.com/image:1.2.43
+          description: Full path of the docker image which contains the firmware. e.g. registry.com/image:1.2.43
 
   steps:
     - id: system-fetch
@@ -82,9 +82,9 @@ spec:
       input:
         token: ${{ secrets.USER_OAUTH_TOKEN }}
         repoUrl: ${{ steps['system-fetch'].output.entity.metadata.annotations['edgefarm.io/repo'] }}
-        branchName: add-release-${{ parameters.name }}-definition
-        title: Add release ${{ parameters.name }} definition
-        description: Adds a new release with name ${{ parameters.name }}
+        branchName: add-firmware-${{ parameters.name }}-definition
+        title: Add firmware ${{ parameters.name }} definition
+        description: Adds a new firmware with name ${{ parameters.name }}
         gitAuthorName: ${{ user.entity.metadata.name }}
         gitAuthorEmail: ${{ user.entity.spec.profile.email }}
 
