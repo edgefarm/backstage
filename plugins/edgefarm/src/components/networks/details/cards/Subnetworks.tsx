@@ -16,7 +16,7 @@ const Subnetworks = ({ items, isLoading }: Props) => {
     return (
       <WarningPanel
         title="Data is missing"
-        message="We were unable to find any data for this node."
+        message="We were unable to find any subnetwork for this network."
       />
     );
 
