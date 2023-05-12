@@ -129,7 +129,7 @@ interface StreamDto {
 interface SubnetworkDto {
   name: string;
   tolerations: string[];
-  nodeSelectorTerm: {
+  nodepoolSelector: {
     matchExpressions: {
       key: string;
       operator: string;
