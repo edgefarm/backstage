@@ -18,7 +18,10 @@ export const DetailsComponent = () => {
   const annotations = entity.metadata.annotations ?? {};
   const clusterName = annotations['edgefarm.io/cluster'] ?? '';
   const appName = entity.metadata.name;
-  const systemName: string = (entity.spec?.system as string) ?? '';
+  const systemName: string =
+    (entity.spec?.system as string).slice(
+      -(entity.spec?.system as string).lastIndexOf('/') + 3,
+    ) ?? '';
 
   const [details, setDetails] = useState<ApplicationDetails | null>(null);
   const [isLoading, setIsLoading] = useState(true);
