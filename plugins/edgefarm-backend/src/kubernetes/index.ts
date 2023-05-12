@@ -58,7 +58,7 @@ export class Client {
     const [url, requestInit] = this.prepareRequest(this.cluster);
 
     const ns = namespace ?? 'default';
-    url.pathname = `/apis/core.oam.dev/v1beta1/namespaces/${namespace}/applications/${appName}`;
+    url.pathname = `/apis/core.oam.dev/v1beta1/namespaces/${ns}/applications/${appName}`;
 
     const resp = await fetch(url, requestInit);
     const data = await resp.json();
