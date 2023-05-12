@@ -24,7 +24,7 @@ export const DetailsComponent = () => {
   useEffect(() => {
     const getAppDDetails = async () => {
       const response = await fetch(
-        `${backendUrl}/api/edgefarm/${clusterName}/applications/${appName}`,
+        `${backendUrl}/api/edgefarm/${clusterName}/applications/${clusterName}/${appName}`,
       );
       if (response.status === 200) {
         const payload = await response.json();
