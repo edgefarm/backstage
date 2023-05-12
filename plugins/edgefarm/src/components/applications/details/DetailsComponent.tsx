@@ -10,6 +10,7 @@ import { useApi, configApiRef } from '@backstage/core-plugin-api';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { ApplicationDetails } from '@internal/plugin-edgefarm-backend';
 import Components from './cards/Components';
+import { parseEntityRef } from '@backstage/catalog-model';
 
 export const DetailsComponent = () => {
   const config = useApi(configApiRef);
@@ -19,9 +20,7 @@ export const DetailsComponent = () => {
   const clusterName = annotations['edgefarm.io/cluster'] ?? '';
   const appName = entity.metadata.name;
   const systemName: string =
-    (entity.spec?.system as string).slice(
-      -(entity.spec?.system as string).lastIndexOf('/') + 3,
-    ) ?? '';
+    parseEntityRef(entity.spec?.system as string).name ?? '';
 
   const [details, setDetails] = useState<ApplicationDetails | null>(null);
   const [isLoading, setIsLoading] = useState(true);
