@@ -33,7 +33,7 @@ export interface Stream {
 export interface Subnetwork {
   name: string;
   tolerations: string[];
-  nodeSelectorTerm: {
+  nodepoolSelector: {
     matchExpressions: {
       key: string;
       operator: string;

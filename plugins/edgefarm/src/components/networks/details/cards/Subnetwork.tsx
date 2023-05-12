@@ -12,7 +12,7 @@ const SubnetworkDetails = ({ value }: Props) => {
   const metadata: { [index: string]: any } = {
     Name: value.name,
     Tolerations: value.tolerations.length > 0 ? value.tolerations : 'None',
-    nodeSelectors: value.nodeSelectorTerm.matchExpressions.map(
+    nodeSelectors: value.nodepoolSelector.matchExpressions.map(
       v => `${v.key} ${v.operator}`,
     ),
     'Max File Storage Size': value.limits.fileStorage,
