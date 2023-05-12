@@ -1,0 +1,55 @@
+---
+apiVersion: upgrade.cattle.io/v1
+kind: Plan
+metadata:
+  name: ${{ values.name }}
+  namespace: system-upgrade
+spec:
+  concurrency: 1
+  version: ${{ values.version }}
+  nodeSelector:
+    matchExpressions:
+      - {
+          key: kubernetes.io/hostname,
+          operator: In,
+          values: ['${{ values.target }}'],
+        }
+  serviceAccountName: system-upgrade
+  drain:
+    force: false
+    disableEviction: true
+  secrets:
+    - name: mender-upgrade
+      path: /secrets/mender
+  tolerations:
+    - key: 'edgefarm.io'
+      operator: 'Exists'
+      effect: 'NoSchedule'
+  upgrade:
+    image: '${{ values.image }}'
+    volumes:
+      - name: usr-share-mender
+        source: /usr/share/mender
+        destination: /usr/share/mender
+      - name: var-lib-mender
+        source: /var/lib/mender
+        destination: /var/lib/mender
+      - name: etc-mender
+        source: /etc/mender
+        destination: /etc/mender
+      - name: usr-bin-grub-mender-grubenv-print
+        source: /usr/bin/grub-mender-grubenv-print
+        destination: /usr/bin/grub-mender-grubenv-print
+      - name: usr-bin-grub-mender-grubenv-set
+        source: /usr/bin/grub-mender-grubenv-set
+        destination: /usr/bin/grub-mender-grubenv-set
+      - name: boot-efi
+        source: /boot/efi
+        destination: /boot/efi
+      - name: proc-sys-kernel-sysrq
+        source: /proc/sysrq-trigger
+        destination: /sysrq-trigger
+      - name: data-system-upgrade
+        source: /data/system-upgrade
+        destination: /data/system-upgrade
+    command: ["sh", "/secrets/mender/upgrade.sh"]
