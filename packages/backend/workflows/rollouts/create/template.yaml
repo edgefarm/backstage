@@ -53,6 +53,11 @@ spec:
               kind: Component
               spec.type: Device
             defaultKind: Component
+        type:
+          title: What kind of update should it be?
+          type: string
+          enum: ['Mender', 'Ubuntu']
+          default: 'Mender'
 
   steps:
     - id: system-fetch
@@ -89,6 +94,22 @@ spec:
           releaseRef: ${{ parameters.release }}
           owner: ${{ user.entity.metadata.namespace }}/${{ user.entity.metadata.name }}
           system: ${{ parameters.system }}
+    - id: delete-ubuntu-manifest
+      if: ${{ parameters.type != 'Ubuntu' }}
+      name: Cleanup Workspace
+      action: fs:delete
+      input:
+        files:
+        - ./releases/${{ steps['release-fetch'].output.entity.metadata.name }}/rollouts/${{ steps['generate-name'].output.content }}/manifests/ubuntu.yaml
+    - id: delete-mender-manifest
+      if: ${{ parameters.type != 'Mender' }}
+      name: Cleanup Workspace
+      action: fs:delete
+      input:
+        files:
+        - releases/${{ steps['release-fetch'].output.entity.metadata.name }}/rollouts/${{ steps['generate-name'].output.content }}/manifests/mender.yaml
+
+
     # - id: list-workspace
     #   name: List Workspace
     #   action: debug:log
@@ -105,16 +126,31 @@ spec:
     #   input:
     #     message: ${{ steps['read-catalog-info'].output.content }}
 
-    # - id: read-manifest
-    #   name: Read manifest.yaml
+    # - id: read-mender-manifest
+    #   if: ${{ parameters.type == 'Mender' }}
+    #   name: Read mender.yaml
     #   action: ci4rail:fs:read
     #   input:
-    #     path: ./releases/${{ steps['release-fetch'].output.entity.metadata.name }}/rollouts/${{ steps['generate-name'].output.content }}/manifests/plan.yaml
+    #     path: ./releases/${{ steps['release-fetch'].output.entity.metadata.name }}/rollouts/${{ steps['generate-name'].output.content }}/manifests/mender.yaml
     # - id: log-message2
-    #   name: Log manifest.yaml
+    #   if: ${{ parameters.type == 'Mender' }}
+    #   name: Log mender.yaml
     #   action: debug:log
     #   input:
-    #     message: ${{ steps['read-manifest'].output.content }}
+    #     message: ${{ steps['read-mender-manifest'].output.content }}
+
+    # - id: read-ubuntu-manifest
+    #   if: ${{ parameters.type == 'Ubuntu' }}
+    #   name: Read ubuntu.yaml
+    #   action: ci4rail:fs:read
+    #   input:
+    #     path: ./releases/${{ steps['release-fetch'].output.entity.metadata.name }}/rollouts/${{ steps['generate-name'].output.content }}/manifests/ubuntu.yaml
+    # - id: log-message3
+    #   if: ${{ parameters.type == 'Ubuntu' }}
+    #   name: Log ubuntu.yaml
+    #   action: debug:log
+    #   input:
+    #     message: ${{ steps['read-ubuntu-manifest'].output.content }}
 
     - id: pull-request
       name: Persist changes on Github

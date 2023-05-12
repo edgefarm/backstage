@@ -51,11 +51,14 @@ export class Client {
     return { memory, cpu };
   }
 
-  async getApplicationDetails(appName: string): Promise<ApplicationDetails> {
+  async getApplicationDetails(
+    appName: string,
+    namespace?: string,
+  ): Promise<ApplicationDetails> {
     const [url, requestInit] = this.prepareRequest(this.cluster);
 
-    const namespace = 'default';
-    url.pathname = `/apis/core.oam.dev/v1beta1/namespaces/${namespace}/applications/${appName}`;
+    const ns = namespace ?? 'default';
+    url.pathname = `/apis/core.oam.dev/v1beta1/namespaces/${ns}/applications/${appName}`;
 
     const resp = await fetch(url, requestInit);
     const data = await resp.json();
@@ -66,11 +69,14 @@ export class Client {
     );
   }
 
-  async getNetworkDetails(name: string): Promise<NetworkDetails> {
+  async getNetworkDetails(
+    name: string,
+    namespace?: string,
+  ): Promise<NetworkDetails> {
     const [url, requestInit] = this.prepareRequest(this.cluster);
 
-    const namespace = 'default';
-    url.pathname = `/apis/streams.network.edgefarm.io/v1alpha1/namespaces/${namespace}/networks/${name}`;
+    const ns = namespace ?? 'default';
+    url.pathname = `/apis/streams.network.edgefarm.io/v1alpha1/namespaces/${ns}/networks/${name}`;
 
     const resp = await fetch(url, requestInit);
     const data = await resp.json();

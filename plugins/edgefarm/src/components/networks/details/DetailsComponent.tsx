@@ -26,7 +26,7 @@ export const DetailsComponent = () => {
   useEffect(() => {
     const getNetworkDetails = async () => {
       const response = await fetch(
-        `${backendUrl}/api/edgefarm/${clusterName}/networks/${networkName}`,
+        `${backendUrl}/api/edgefarm/${clusterName}/networks/${clusterName}/${networkName}`,
       );
       if (response.status === 200) {
         const payload = await response.json();

@@ -64,51 +64,57 @@ export async function createRouter(
     }
   });
 
-  router.get('/:clusterName/applications/:appName', async (req, response) => {
-    const { appName, clusterName } = req.params;
+  router.get(
+    '/:clusterName/applications/:namespace/:appName',
+    async (req, response) => {
+      const { appName, namespace, clusterName } = req.params;
 
-    const clusterDetails = new ClusterLocator(config).getClusterDetails(
-      clusterName,
-    );
-    if (clusterDetails === undefined) {
-      response
-        .status(400)
-        .json({ error: `Cluster config for ${clusterName} not found` });
-      return;
-    }
+      const clusterDetails = new ClusterLocator(config).getClusterDetails(
+        clusterName,
+      );
+      if (clusterDetails === undefined) {
+        response
+          .status(400)
+          .json({ error: `Cluster config for ${clusterName} not found` });
+        return;
+      }
 
-    const api = new Client(clusterDetails);
+      const api = new Client(clusterDetails);
 
-    try {
-      const resp = await api.getApplicationDetails(appName);
-      response.json(resp);
-    } catch (e: any) {
-      response.status(500).json({ error: e.message });
-    }
-  });
+      try {
+        const resp = await api.getApplicationDetails(appName, namespace);
+        response.json(resp);
+      } catch (e: any) {
+        response.status(500).json({ error: e.message });
+      }
+    },
+  );
 
-  router.get('/:clusterName/networks/:name', async (req, response) => {
-    const { name, clusterName } = req.params;
+  router.get(
+    '/:clusterName/networks/:namespace/:name',
+    async (req, response) => {
+      const { name, namespace, clusterName } = req.params;
 
-    const clusterDetails = new ClusterLocator(config).getClusterDetails(
-      clusterName,
-    );
-    if (clusterDetails === undefined) {
-      response
-        .status(400)
-        .json({ error: `Cluster config for ${clusterName} not found` });
-      return;
-    }
+      const clusterDetails = new ClusterLocator(config).getClusterDetails(
+        clusterName,
+      );
+      if (clusterDetails === undefined) {
+        response
+          .status(400)
+          .json({ error: `Cluster config for ${clusterName} not found` });
+        return;
+      }
 
-    const api = new Client(clusterDetails);
+      const api = new Client(clusterDetails);
 
-    try {
-      const resp = await api.getNetworkDetails(name);
-      response.json(resp);
-    } catch (e: any) {
-      response.status(500).json({ error: e.message });
-    }
-  });
+      try {
+        const resp = await api.getNetworkDetails(name, namespace);
+        response.json(resp);
+      } catch (e: any) {
+        response.status(500).json({ error: e.message });
+      }
+    },
+  );
 
   router.get(
     '/:clusterName/rollouts/:rolloutName/status',
