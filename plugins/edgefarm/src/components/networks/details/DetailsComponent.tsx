@@ -20,7 +20,10 @@ export const DetailsComponent = () => {
   const annotations = entity.metadata.annotations ?? {};
   const clusterName = annotations['edgefarm.io/cluster'] ?? '';
   const networkName = entity.metadata.name;
-  const systemName: string = (entity.spec?.system as string) ?? '';
+  const systemName: string =
+    (entity.spec?.system as string).slice(
+      -(entity.spec?.system as string).lastIndexOf('/') + 3,
+    ) ?? '';
 
   const [details, setDetails] = useState<NetworkDetails | null>(null);
   const [isLoading, setIsLoading] = useState(true);
