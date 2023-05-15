@@ -3,7 +3,7 @@ kind: Template
 metadata:
   name: edgefarm-firmware-add
   title: Add a new Firmware
-  description: Add a new Firmware to the edgefarm. Later on you are able to create a upgrade plan for this Firmware.
+  description: Add a new Firmware to the edgefarm. Later on you are able to create a upgrade plan for this firmware.
   tags:
     - edgefarm
     - firmware
@@ -31,14 +31,14 @@ spec:
               - kind: system
             defaultKind: System
         name:
-          title: Specify a unique name for this Firmware
+          title: Name this firmware
           type: string
-          description: Unique name of the kubernetes device
+          description: Specify a unique name for this Firmware
           ui:autofocus: true
           maxLength: 63
           pattern: '^[a-z0-9A-Z-_.]+$'
         image:
-          title: Docker image of the Firmware
+          title: Docker image of this firmware
           type: string
           description: Full path of the docker image which contains the firmware. e.g. registry.com/image:1.2.43
 
