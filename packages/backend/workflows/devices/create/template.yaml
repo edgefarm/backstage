@@ -87,6 +87,7 @@ spec:
     #   action: debug:log
     #   input:
     #     message: ${{ steps['read-manifest'].output.content }}
+
     - id: pull-request
       name: Persist changes on Github
       action: publish:github:pull-request
@@ -103,7 +104,18 @@ spec:
       name: Run this command next
       action: debug:log
       input:
-        message: yurtadm join 139.144.160.141:6443  --token="${{ steps['generate-token'].output.entity.metadata.annotations['edgefarm.io/demo-token'] }}" --node-type=edge --discovery-token-unsafe-skip-ca-verification --v=5
+        message: |
+          |
+          |                                                                        &&&&&&&&&
+          |                                                                      &&&
+          |                                                                     &&
+          |                                                                    &  _____ ___________
+          |                                                                   II__|[] | |   I I   |
+          |                                                                  |        |_|_  I I  _|
+          |                                                                 < OO----OOO   OO---OO
+          ************************************************************************************************************************************************************************************************************************
+          yurtadm join 139.144.160.141:6443  --token="${{ steps['generate-token'].output.entity.metadata.annotations['edgefarm.io/demo-token'] }}" --node-type=edge --discovery-token-unsafe-skip-ca-verification --v=5
+          ************************************************************************************************************************************************************************************************************************
 
   output:
     links:
