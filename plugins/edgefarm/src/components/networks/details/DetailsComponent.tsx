@@ -74,10 +74,10 @@ export const DetailsComponent = () => {
       </Grid>
       <Grid item xs={12} md={6}>
         <SystemChildEntitiesLinkList
-          type="Node"
-          title="Nodes"
-          createUrl="/create/templates/default/edgefarm-node-add"
-          emptyTitle="No nodes found for this network"
+          type="Device"
+          title="Devices"
+          createUrl="/create/templates/default/edgefarm-device-add"
+          emptyTitle="No devices found for this network"
         />
       </Grid>
     </Grid>

@@ -1,5 +1,5 @@
 import { createTemplateAction } from '@backstage/plugin-scaffolder-node';
-import { v4 as uuidv4 } from 'uuid';
+import sha1 from 'crypto-js/sha1';
 
 export const uniqueReleaseNameAction = () => {
   return createTemplateAction<{ value: string }>({
@@ -18,11 +18,12 @@ export const uniqueReleaseNameAction = () => {
       },
     },
     async handler(ctx) {
-      const result = ctx.input.value.replace(
-        /[ &\/\\#,+()$~%.'":*?<>{}]/g,
-        '-',
-      );
-      ctx.output('content', `${result}-${uuidv4()}`);
+      let v = ctx.input.value;
+      if (v.indexOf('/') > 0) {
+        v = v.slice(v.lastIndexOf('/') + 1);
+      }
+      const result = v.replace(/[ &\/\\#,+()$~%.'":*?<>{}]/g, '-');
+      ctx.output('content', `${result}-${sha1(v).toString().slice(0, 5)}`);
     },
   });
 };

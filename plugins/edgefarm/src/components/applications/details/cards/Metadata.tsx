@@ -35,7 +35,7 @@ const Metadata = (props: {
     return (
       <WarningPanel
         title="Data is missing"
-        message="We were unable to find any data for this node."
+        message="We were unable to find any data for this application."
       />
     );
 

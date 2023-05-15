@@ -3,7 +3,7 @@ kind: Template
 metadata:
   name: edgefarm-firmware-add
   title: Add a new Firmware
-  description: Add a new Firmware to the edgefarm. Later on you are able to create a upgrade plan for this Firmware.
+  description: Add a new Firmware to the edgefarm. Later on you are able to create a upgrade plan for this firmware.
   tags:
     - edgefarm
     - firmware
@@ -31,16 +31,16 @@ spec:
               - kind: system
             defaultKind: System
         name:
-          title: Name of the release
+          title: Name this firmware
           type: string
-          description: Unique name of the kubernetes device
+          description: Specify a unique name for this Firmware
           ui:autofocus: true
           maxLength: 63
           pattern: '^[a-z0-9A-Z-_.]+$'
         image:
-          title: Docker image of the Firmware
+          title: Docker image of this firmware
           type: string
-          description: Full path of the docker image which contains the release. e.g. registry.com/image:1.2.43
+          description: Full path of the docker image which contains the firmware. e.g. registry.com/image:1.2.43
 
   steps:
     - id: system-fetch
@@ -82,9 +82,9 @@ spec:
       input:
         token: ${{ secrets.USER_OAUTH_TOKEN }}
         repoUrl: ${{ steps['system-fetch'].output.entity.metadata.annotations['edgefarm.io/repo'] }}
-        branchName: add-release-${{ parameters.name }}-definition
-        title: Add release ${{ parameters.name }} definition
-        description: Adds a new release with name ${{ parameters.name }}
+        branchName: add-firmware-${{ parameters.name }}-definition
+        title: Add firmware ${{ parameters.name }} definition
+        description: Adds a new firmware with name ${{ parameters.name }}
         gitAuthorName: ${{ user.entity.metadata.name }}
         gitAuthorEmail: ${{ user.entity.spec.profile.email }}
 

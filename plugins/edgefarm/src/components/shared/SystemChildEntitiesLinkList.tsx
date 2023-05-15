@@ -38,7 +38,11 @@ const SystemChildEntitiesLinkList = (props: EntityLinkListProps) => {
         await api.getEntitiesByRefs({
           entityRefs: hasPartComponents ?? [],
         })
-      ).items.filter(item => item?.spec?.type === props.type) as Entity[];
+      ).items.filter(
+        item =>
+          (item?.spec?.type as string).toLowerCase() ===
+          props.type.toLowerCase(),
+      ) as Entity[];
 
       setTableItems(
         networkEntities.map(item => {
