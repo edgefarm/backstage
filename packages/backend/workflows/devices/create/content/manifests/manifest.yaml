@@ -5,6 +5,8 @@ metadata:
     kubernetes.io/hostname: ${{ values.deviceName }}
     openyurt.io/is-edge-worker: "true"
     apps.openyurt.io/desired-nodepool: ${{ values.deviceName }}
+  annotations:
+    node.beta.openyurt.io/autonomy: "true"
   name: ${{ values.deviceName }}
 spec:
   taints:
