@@ -1,51 +1,168 @@
 # EdgeFarm Portal
 
-Diese Anwendung basiert auf der Anwendung Backstage von Spotify
-Relevante Docs sind
+This application is based on the Backstage application from Spotify
+Relevant docs are
 
 - https://backstage.io/docs/overview/what-is-backstage
 - https://github.com/backstage/backstage
 
 ## Directory Structure
 
-Diese Anwendung ist entstanden durch eine Art Boilerplate, welche die Backstage Entwickler zur Verfügung stellen. Siehe https://backstage.io/docs/getting-started/
-Jegliche Änderungen am Backstage, welches von Spotify kontinuierlich weiterentwickelt wird, sind nicht direkt in diese Portal Anwendung einzupflegen sondern über den yarn package Manager verwaltet. Spotify bietet hierzu einen Ausführlichen Upgrade Guide an: https://backstage.io/docs/getting-started/keeping-backstage-updated
+This application is created by a kind of boilerplate provided by the Backstage developers. See https://backstage.io/docs/getting-started/
+Any changes to Backstage, which is continuously developed by Spotify, are not to be implemented directly into this portal application but managed by the yarn package manager. Spotify offers a detailed upgrade guide for this: https://backstage.io/docs/getting-started/keeping-backstage-updated.
 
-Die Ordnerstruktur ist daher durch die Boilerplate entstanden.
+The folder structure is therefore created by the boilerplate.
 
 ```
 /
-  /node_modules # Beinhaltet alle dependencies, welche durch den package manager yarn installiert wurden
+  /node_modules # Contains all dependencies installed by the package manager yarn
   /packages
-    /app # Hier findest du alle notwendigen Dateien für das Frontend
-      /public # Dateien die jederzeit im Browser zugänglich sind
-      /src # Alle relevanten Dateien in denen entwickelt wird
-    /backend # Hier findest du alle notwendigen Dateien für das Frontend
-  /plugins # Potenzieller Ort um Plugins zu entwickeln. Die Idee hinter einem Plugin ist die wiederverwendbarkeit auf modulare Art.
-    /edgefarm # Ein Plugin welches alle Erweiterungen im Frontend beinhaltet
-    /edgefarm-backend # Ein Plugin welches alle Erweiterungen im Backend beinhaltet. Insbesondere die Kubernetes Anbindung.
+    /app # Here you find all necessary files for the frontend
+      /public # Files that are always accessible in the browser
+      /src # All relevant files where development is done
+    /backend # Here you can find all necessary files for the frontend
+  /plugins # Potential place to develop plugins. The idea behind a plugin is reusability in a modular way.
+    /edgefarm # A plugin which contains all extensions in the frontend
+    /edgefarm-backend # A plugin which includes all extensions in the backend. Especially the Kubernetes connection.
 ```
 
-Weitere Details zu der struktur findest du hier: https://backstage.io/docs/getting-started/project-structure
+More details about the structure can be found here: https://backstage.io/docs/getting-started/project-structure
 
 ## Tooling
 
 ### Package Manager
 
-Als Package Manager wird `yarn` verwendet. Mittels yarn lassen sich alle Dependencies installieren die in der package.json definiert sind. Man unterscheidet dort zwischen dependencies und dev-dependencies. Letztere werden bei der ausfuehrung `yarn install --production` nicht mit installiert.
+As package manager `yarn` is used. With yarn you can install all dependencies that are defined in the package.json. A distinction is made between dependencies and dev-dependencies. The latter are not installed with the execution `yarn install --production`.
 
-Als alternative hierzu gaebe es den Package Manager `npm`, welcher Stand heute keine Vorteile oder Nachteile bringt, aber SPotify hatte sich fuer yarn entschieden, daher wird dieser auch hier verwendet.
+As an alternative, there is the package manager `npm`, which has no advantages or disadvantages, but SPotify decided to use yarn, so it is used here as well.
 
 ### Building Tools
 
-Das Typescript muss in Javascript umbewandelt werden und das Javascript buendelt man in der Regel in eine oder teils mehrere groessere Dateien. Hierfuer ist Webpack und Rollup zustaendig.
-In der Backstage Doku steht hierzu folgendes: `Under the hood the CLI uses Webpack for bundling, Rollup for building packages, Jest for testing, and eslint for linting.`
-Siehe auch https://backstage.io/docs/local-dev/cli-overview/#introduction
+The typescript must be converted to javascript and the javascript is usually bundled into one or sometimes several larger files. Webpack and Rollup are responsible for this.
+The Backstage documentation says: `Under the hood the CLI uses Webpack for bundling, Rollup for building packages, Jest for testing, and eslint for linting.`
+See also https://backstage.io/docs/local-dev/cli-overview/#introduction
 
 ### Run application locally
 
-`yarn dev` startet sowohl Fronend als auch Backend ohne Debugger
-`yarn start` startet nur das Frontend. Debuggung erfolgt ueber die Entwicklerkonsole im Browser.
-`yarn start-backend` startet nur das Backend. Startet man das Backend mit `yarn start-backend --inspect` ueber VSCode wird ein Debugger attached.
+Before you start, make sure that you've got a github application registered and created a client secret as well as a valid github personal access token.
 
-Weitere Informationen dazu findest du hier https://backstage.io/docs/local-dev/debugging
+Define the following environment variables before starting:
+
+- GITHUB_TOKEN (classic token with all capabilities in repo, workflow and notifications)
+- GITHUB_CLIENT_ID
+- GITHUB_CLIENT_SECRET
+- K8S_URL
+- K8S_SA_TOKEN
+- ARGOCD_BASEURL
+- ARGOCD_AUTH_TOKEN
+- ARGOCD_USERNAME
+- ARGOCD_PASSWORD
+
+For now, argocd values can be any dummy values as the argocd functionality isn't finished in the project. 
+
+```sh
+export GITHUB_TOKEN=<token>
+export GITHUB_CLIENT_ID=<gh applications client id>
+export GITHUB_CLIENT_SECRET=<gh applications client secret>
+export K8S_URL=<api server address with http schema>
+export K8S_SA_TOKEN=<admin service account token>
+export ARGOCD_BASEURL=http://dummy
+export ARGOCD_AUTH_TOKEN=dummy
+export ARGOCD_USERNAME=dummy
+export ARGOCD_PASSWORD=dummy
+
+copy app-config.local.example.yaml app-config.local.yaml
+```
+
+See this example `app-config.local.example.yaml`.
+
+```yaml
+app:
+  baseUrl: http://localhost:3000
+backend:
+  baseUrl: http://localhost:7007
+  listen:
+    port: "7007"
+  csp:
+    connect-src: ["'self'", "http:", "https:"]
+    img-src: ["'self'", "data:", "avatars.githubusercontent.com"]
+    frame-src: ["https://grafana.edgefarm.dev"]
+
+  database:
+    client: better-sqlite3
+    connection: ":memory:"
+
+integrations:
+  github:
+    - host: github.com
+      # This is a Personal Access Token or PAT from GitHub. You can find out how to generate this token, and more information
+      # about setting up the GitHub integration here: https://backstage.io/docs/getting-started/configuration#setting-up-a-github-integration
+      token: ${GITHUB_TOKEN}
+
+auth:
+  # see https://backstage.io/docs/auth/ to learn about auth providers
+  environment: development
+  providers:
+    github:
+      development:
+        clientId: ${GITHUB_CLIENT_ID}
+        clientSecret: ${GITHUB_SECRET}
+
+catalog:
+  # Overrides the default list locations from app-config.yaml as these contain example data.
+  # See https://backstage.io/docs/features/software-catalog/software-catalog-overview#adding-components-to-the-catalog for more details
+  # on how to get entities into the catalog.
+  locations:
+    - type: file
+      target: ./workflows/all.yaml
+      rules:
+        - allow: [Template]
+    - type: file
+      target: ../../../backstage-user/ci4rail.yaml
+      rules:
+        - allow: [User, Group]
+#    - type: url
+#      target: https://github.com/edgefarm-hands-on/backstage-user/blob/main/ci4rail.yaml
+#      rules:
+#        - allow: [User, Group]
+
+proxy:
+  "/argocd/api":
+    target: ${ARGOCD_BASEURL}/api/v1/
+    changeOrigin: true
+    # only if your argocd api has self-signed cert
+    secure: true
+    headers:
+      Cookie: argocd.token=${ARGOCD_AUTH_TOKEN}
+
+kubernetes:
+  serviceLocatorMethod:
+    type: "multiTenant"
+  clusterLocatorMethods:
+    - type: "config"
+      clusters:
+        - url: ${K8S_URL}
+          name: default
+          authProvider: "serviceAccount"
+          skipTLSVerify: true
+          skipMetricsLookup: true
+          serviceAccountToken: ${K8S_SA_TOKEN}
+
+argocd:
+  baseUrl: ${ARGOCD_BASEURL}
+  username: ${ARGOCD_USERNAME}
+  password: ${ARGOCD_PASSWORD}
+  waitCycles: 25
+  appLocatorMethods:
+    - type: "config"
+      instances:
+        - name: argocd
+          url: ${ARGOCD_BASEURL}
+          token: ${ARGOCD_AUTH_TOKEN}
+```
+
+`yarn dev` starts both frontend and backend without debugger
+yarn start` starts only the frontend. Debugging is done via the developer console in the browser.
+`yarn start-backend` starts only the backend. If you start the backend with `yarn start-backend --inspect` via VSCode, a debugger is attached.
+
+You can find more information here https://backstage.io/docs/local-dev/debugging

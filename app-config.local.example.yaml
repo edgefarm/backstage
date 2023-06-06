@@ -1,0 +1,109 @@
+app:
+  # Should be the same as backend.baseUrl when using the `app-backend` plugin.
+  baseUrl: http://localhost:3000
+
+backend:
+  # Note that the baseUrl should be the URL that the browser and other clients
+  # should use when communicating with the backend, i.e. it needs to be
+  # reachable not just from within the backend host, but from all of your
+  # callers. When its value is "http://localhost:7007", it's strictly private
+  # and can't be reached by others.
+  baseUrl: http://localhost:7007
+  # The listener can also be expressed as a single <host>:<port> string. In this case we bind to
+  # all interfaces, the most permissive setting. The right value depends on your specific deployment.
+  listen:
+    port: "7007"
+  csp:
+    connect-src: ["'self'", "http:", "https:"]
+    img-src: ["'self'", "data:", "avatars.githubusercontent.com"]
+    frame-src: ["https://grafana.edgefarm.dev"]
+
+  # config options: https://node-postgres.com/api/client
+  database:
+    client: better-sqlite3
+    connection: ":memory:"
+#  database:
+#    client: pg
+#    connection:
+#      host: ${POSTGRES_HOST}
+#      port: ${POSTGRES_PORT}
+#      user: ${POSTGRES_USER}
+#      password: ${POSTGRES_PASSWORD}
+# https://node-postgres.com/features/ssl
+# you can set the sslmode configuration option via the `PGSSLMODE` environment variable
+# see https://www.postgresql.org/docs/current/libpq-ssl.html Table 33.1. SSL Mode Descriptions (e.g. require)
+# ssl:
+#   ca: # if you have a CA file and want to verify it you can uncomment this section
+#     $file: <file-path>/ca/server.crt
+
+integrations:
+  github:
+    - host: github.com
+      # This is a Personal Access Token or PAT from GitHub. You can find out how to generate this token, and more information
+      # about setting up the GitHub integration here: https://backstage.io/docs/getting-started/configuration#setting-up-a-github-integration
+      token: ${GITHUB_TOKEN}
+
+auth:
+  # see https://backstage.io/docs/auth/ to learn about auth providers
+  environment: development
+  providers:
+    github:
+      development:
+        clientId: ${GITHUB_CLIENT_ID}
+        clientSecret: ${GITHUB_SECRET}
+
+catalog:
+  # Overrides the default list locations from app-config.yaml as these contain example data.
+  # See https://backstage.io/docs/features/software-catalog/software-catalog-overview#adding-components-to-the-catalog for more details
+  # on how to get entities into the catalog.
+  locations:
+    - type: file
+      target: ./workflows/all.yaml
+      rules:
+        - allow: [Template]
+    - type: file
+      target: ../../../backstage-user/ci4rail.yaml
+      rules:
+        - allow: [User, Group]
+#    - type: url
+#      target: https://github.com/edgefarm-hands-on/backstage-user/blob/main/ci4rail.yaml
+#      rules:
+#        - allow: [User, Group]
+
+proxy:
+  "/argocd/api":
+    target: ${ARGOCD_BASEURL}/api/v1/
+    changeOrigin: true
+    # only if your argocd api has self-signed cert
+    secure: true
+    headers:
+      Cookie: argocd.token=${ARGOCD_AUTH_TOKEN}
+
+kubernetes:
+  serviceLocatorMethod:
+    type: "multiTenant"
+  clusterLocatorMethods:
+    - type: "config"
+      clusters:
+        - url: ${K8S_URL}
+          name: default
+          authProvider: "serviceAccount"
+          skipTLSVerify: true
+          skipMetricsLookup: true
+          serviceAccountToken: ${K8S_SA_TOKEN}
+          # dashboardUrl: http://127.0.0.1:64713 # url copied from running the command: minikube service kubernetes-dashboard -n kubernetes-dashboard
+          # dashboardApp: standard
+          # caData: ${K8S_CONFIG_CA_DATA}
+          # caFile: '' # local path to CA file
+
+argocd:
+  baseUrl: ${ARGOCD_BASEURL}
+  username: ${ARGOCD_USERNAME}
+  password: ${ARGOCD_PASSWORD}
+  waitCycles: 25
+  appLocatorMethods:
+    - type: "config"
+      instances:
+        - name: argocd
+          url: ${ARGOCD_BASEURL}
+          token: ${ARGOCD_AUTH_TOKEN}
