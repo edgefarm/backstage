@@ -50,7 +50,7 @@ Define the following environment variables before starting:
 
 - GITHUB_TOKEN (classic token with all capabilities in repo, workflow and notifications)
 - GITHUB_CLIENT_ID
-- GITHUB_CLIENT_SECRET
+- GITHUB_SECRET
 - K8S_URL
 - K8S_SA_TOKEN
 - ARGOCD_BASEURL
@@ -63,7 +63,7 @@ For now, argocd values can be any dummy values as the argocd functionality isn't
 ```sh
 export GITHUB_TOKEN=<token>
 export GITHUB_CLIENT_ID=<gh applications client id>
-export GITHUB_CLIENT_SECRET=<gh applications client secret>
+export GITHUB_SECRET=<gh applications client secret>
 export K8S_URL=<api server address with http schema>
 export K8S_SA_TOKEN=<admin service account token>
 export ARGOCD_BASEURL=http://dummy
