@@ -6,7 +6,7 @@ metadata:
     openyurt.io/is-edge-worker: "true"
     apps.openyurt.io/desired-nodepool: ${{ values.deviceName }}
   annotations:
-    node.beta.openyurt.io/autonomy: "true"
+    apps.openyurt.io/binding: "true"
   name: ${{ values.deviceName }}
 spec:
   taints:
