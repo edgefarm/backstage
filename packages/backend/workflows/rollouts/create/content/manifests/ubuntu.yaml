@@ -1,7 +1,28 @@
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ${{ values.name }}-secret
+  namespace: system-upgrade
+type: Opaque
+stringData:
+  curl: 7.58.0-2ubuntu3.14
+  openssl: 1.1.1-1ubuntu2.1~18.04.13
+  upgrade.sh: |
+    #!/bin/sh
+    set -e
+    secrets=$(dirname $0)
+    apt-get --assume-yes update
+    apt-get --assume-yes install \
+      curl=$(cat $secrets/curl) \
+      libcurl4=$(cat $secrets/curl) \
+      libssl1.1=$(cat $secrets/openssl) \
+      openssl=$(cat $secrets/openssl)
+---
 apiVersion: upgrade.cattle.io/v1
 kind: Plan
 metadata:
-  name: ${{ values.name }}
+   name: ${{ values.name }}
   namespace: system-upgrade
 spec:
   concurrency: 1
@@ -13,6 +34,9 @@ spec:
           values: ['${{ values.target }}'],
         }
   serviceAccountName: system-upgrade
+  secrets:
+    - name: ${{ values.name }}-secret
+      path: /host/run/system-upgrade/secrets/ubuntu
   drain:
     force: false
     disableEviction: true
@@ -24,9 +48,6 @@ spec:
       effect: 'NoSchedule'
   upgrade:
     image: ${{ values.image }}
-    command: ['/entrypoint.sh']
-    args: ['/tmp/concurrent', 'bar', '/tmp/successfile']
-    volumes:
-      - name: tmp
-        source: /tmp
-        destination: /tmp
+    command: ["chroot", "/host"]
+    args: ["sh", "/run/system-upgrade/secrets/ubuntu/upgrade.sh"]
+
