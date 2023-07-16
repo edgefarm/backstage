@@ -58,7 +58,41 @@ spec:
           type: string
           enum: ['Mender', 'Ubuntu']
           default: 'Mender'
+      dependencies:
+        type:
+          oneOf:
+            - properties:
+                type:
+                  enum: ['Mender']
+            - properties:
+                type:
+                  enum: ['Ubuntu']
+                script:
+                  type: string
+                  title: Update Script
+                  default: |
+                    #!/bin/sh
+                    set -e
 
+                    # package versions
+                    curl=7.58.0-2ubuntu3.14
+                    openssl=1.1.1-1ubuntu2.1~18.04.13
+
+                    # update package index
+                    apt-get --assume-yes update
+
+                    # install packages
+                    apt-get --assume-yes install \
+                      curl=$(curl) \
+                      libcurl4=$(curl) \
+                      libssl1.1=$(openssl) \
+                      openssl=$(openssl)
+
+                  description: |
+                    Here you can modify the update script. The script will be executed on the selected node(s).
+                  ui:widget: textarea
+                  ui:options:
+                    rows: 20
   steps:
     - id: system-fetch
       name: Fetch system entity
@@ -94,6 +128,7 @@ spec:
           releaseRef: ${{ parameters.release }}
           owner: ${{ user.entity.metadata.namespace }}/${{ user.entity.metadata.name }}
           system: ${{ parameters.system }}
+          script: ${{ parameters.script }}
     - id: delete-ubuntu-manifest
       if: ${{ parameters.type != 'Ubuntu' }}
       name: Cleanup Workspace
