@@ -12,7 +12,7 @@ stringData:
 apiVersion: upgrade.cattle.io/v1
 kind: Plan
 metadata:
-   name: ${{ values.name }}
+  name: ${{ values.name }}
   namespace: system-upgrade
 spec:
   concurrency: 1
