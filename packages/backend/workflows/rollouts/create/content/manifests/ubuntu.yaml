@@ -27,9 +27,9 @@ spec:
   secrets:
     - name: ${{ values.name }}-secret
       path: /host/run/system-upgrade/secrets/ubuntu
-  drain:
-    force: false
-    disableEviction: true
+  # drain:
+  #   force: false
+  #   disableEviction: true
   {%- set varArray = values.image.split(":") %}
   version: "${{ varArray[1] }}"
   tolerations:
