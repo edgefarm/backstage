@@ -3,3 +3,6 @@ dist-types
 coverage
 .vscode
 packages/backend/workflows
+app-config.local.example.yaml
+app-config.local.yaml
+README.md
