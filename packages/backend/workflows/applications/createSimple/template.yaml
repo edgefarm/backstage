@@ -163,16 +163,16 @@ spec:
     #   action: debug:log
     #   input:
     #     message: ${{ steps['read-catalog-info'].output.content }}
-    - id: read-manifest
-      name: Read generated manifest
-      action: ci4rail:fs:read
-      input:
-        path: ./applications/${{ parameters.name }}/manifests/application.yaml
-    - id: log-manifest
-      name: Log  generated manifest
-      action: debug:log
-      input:
-        message: ${{ steps['read-manifest'].output.content }}
+    # - id: read-manifest
+    #   name: Read generated manifest
+    #   action: ci4rail:fs:read
+    #   input:
+    #     path: ./applications/${{ parameters.name }}/manifests/application.yaml
+    # - id: log-manifest
+    #   name: Log  generated manifest
+    #   action: debug:log
+    #   input:
+    #     message: ${{ steps['read-manifest'].output.content }}
 
     - id: pull-request
       name: Persist changes on Github
