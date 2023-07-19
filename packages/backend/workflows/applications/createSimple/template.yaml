@@ -2,8 +2,7 @@ apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
   name: edgefarm-application-add
-  title: Register your Application
-  description: Register your application to the edgefarm
+  title: Add an Application
   tags:
     - edgefarm
     - application
