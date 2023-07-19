@@ -12,7 +12,7 @@ spec:
           matchLabels:
             {%- set varArray = values.component.target.split("=") %}
             ${{ varArray[0] }}: "${{ varArray[1] }}"
-        name: ${{ values.component.name }}
+        name: ${{ values.component.name -}}
         {% if values.component.command -%}
         command:
           - ${{ values.component.command }}
@@ -22,7 +22,7 @@ spec:
         {%- endif %}
         {%- endif %}
         cpu: ${{ values.component.cpu }}
-        memory: ${{ values.component.memory }}
+        memory: ${{ values.component.memory -}}
         {% if values.component.envVars|length > 0 -%}
         env:
           {%- for envVar in values.component.envVars %}
@@ -32,13 +32,15 @@ spec:
           {%- endfor %}
         {%- endif %}
       traits:
+        {%- if values.enableNetwork %}
         - type: edgefarm-network
           properties:
             network:
-              name: ${{ values.component.network.network }}
-              subnetwork: ${{ values.component.network.subnetwork }}
-              user: ${{ values.component.network.user }}
-        {% if values.component.storage.hostPaths|length > 0 -%}
+              name: ${{ values.networkSettings.network }}
+              subnetwork: ${{ values.networkSettings.subnetwork }}
+              user: ${{ values.networkSettings.user }}
+        {%- endif %}
+        {%- if values.component.storage.hostPaths|length > 0 %}
         - type: edgefarm-storage
           properties:
             hostPath:
@@ -48,4 +50,7 @@ spec:
                 mountPath: ${{ hostPath.mountPath }}
                 type: ${{ hostPath.type }}
             {% endfor %}
+        {%- endif %}
+        {%- if not values.enableNetwork and values.component.storage.hostPaths|length == 0 %}
+        []
         {%- endif %}

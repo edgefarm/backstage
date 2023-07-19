@@ -16,7 +16,7 @@ metadata:
 spec:
   type: service
   parameters:
-    - title: Fill in some steps
+    - title: General
       required:
         - name
         - system
@@ -31,38 +31,37 @@ spec:
               - kind: system
             defaultKind: System
         name:
-          title: Name of the application
+          title: Name your application
           type: string
-          description: Unique name of the kubernetes application
+          description: Unique name of the application within the system
           maxLength: 253 # DNS subdomain name rules: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#dns-subdomain-names
-          pattern: '^[a-z0-9][a-z0-9-]*$'
+          pattern: "^[a-z0-9][a-z0-9-]*$"
           ui:autofocus: true
           ui:options:
             rows: 5
 
-    - title: Application component
+    - title: Application
       required:
         - component
       properties:
         component:
           type: object
-          title: Component
-          description: Define the component of this application
+          title: Configuration
           required:
             - name
             - image
             - target
             - cpu
             - memory
-            - network
           properties:
             name:
               type: string
-              title: Name of component
+              title: Name of container
               ui:autofocus: true
             image:
               type: string
-              description: Full path if an docker image location
+              title: OCI image
+              description: Location of the OCI image, e.g. "foo", "foo:latest", "ghcr.io/foo/bar:latest", "docker.io/foo/bar:latest"
             target:
               type: string
               title: Target Label Selector
@@ -71,47 +70,64 @@ spec:
             command:
               type: string
               title: Container startup command
-              description: 'Give your container a special command to start.'
+              description: "Give your container a special command to start."
               ui:widget: hidden
             args:
               type: string
               title: Command arguments
-              description: 'Give your container command some arguments to start with.'
+              description: "Give your container command some arguments to start with."
               ui:widget: hidden
             cpu:
               type: string
               title: CPU
-              description: 'Specify the amount of cpu for requests and limits. E.g.: 0.4'
-              default: '0.25'
+              description: "Specify the amount of cpu for requests and limits, e.g.: 0.4"
+              default: "0.25"
               ui:widget: hidden
             memory:
               type: string
               title: Memory
-              description: 'Specify the amount of memory for requests and limits. E.g.: 512Mi'
-              pattern: '^([1-9][0-9]{0,63})(E|P|T|G|M|K|Ei|Pi|Ti|Gi|Mi|Ki)$'
-              default: '256Mi'
+              description: "Specify the amount of memory for requests and limits e.g.: 512Mi"
+              pattern: "^([1-9][0-9]{0,63})(E|P|T|G|M|K|Ei|Pi|Ti|Gi|Mi|Ki)$"
+              default: "256Mi"
               ui:widget: hidden
-            network:
-              type: object
-              title: Network
-              description: 'Specify where the component should connect to.'
-              required:
-                - network
-                - subnetwork
-                - user
-              properties:
-                network:
-                  type: string
-                  title: Network
-                  description: 'Define the network name to connect to.'
-                subnetwork:
-                  type: string
-                  title: Subnetwork
-                  description: 'Define the subnetwork within the network to use.'
-                user:
-                  type: string
-                  title: Username
-                  description: 'Define the username within your network your component uses.'
+
+    - title: Network
+      properties:
+        enableNetwork:
+          title: Network used?
+          description: Select if the application uses an EdgeFarm.network
+          type: boolean
+          default: false
+          ui:widget: checkbox
+      dependencies:
+        enableNetwork:
+          oneOf:
+            - properties:
+                enableNetwork:
+                  const: false
+            - properties:
+                enableNetwork:
+                  const: true
+                networkSettings:
+                  type: object
+                  title: Configuration
+                  properties:
+                    network:
+                      type: string
+                      title: Network
+                      description: "Define the network name to connect to."
+                    subnetwork:
+                      type: string
+                      title: Sub-Network
+                      description: "Define the sub-network within the network to use."
+                    user:
+                      type: string
+                      title: User
+                      description: "Define the user within your network your application uses."
+                  required:
+                    - network
+                    - subnetwork
+                    - user
   steps:
     - id: system-fetch
       name: Fetch system entity
@@ -128,6 +144,8 @@ spec:
           clusterName: ${{ steps['system-fetch'].output.entity.metadata.annotations['edgefarm.io/cluster'] }}
           name: ${{ parameters.name }}
           component: ${{ parameters.component }}
+          enableNetwork: ${{ parameters.enableNetwork }}
+          networkSettings: ${{ parameters.networkSettings }}
           owner: ${{ user.entity.metadata.namespace }}/${{ user.entity.metadata.name }}
           system: ${{ parameters.system }}
     # - id: list-workspace
