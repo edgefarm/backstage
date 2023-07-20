@@ -53,7 +53,7 @@ spec:
           properties:
             name:
               type: string
-              title: Name of the component
+              title: Name of the component, e.g. "foo"
               ui:autofocus: true
             image:
               type: string
@@ -62,7 +62,7 @@ spec:
             target:
               type: string
               title: Nodepool selector
-              description: A selector that addresses target nodepools. e.g. "app=my-app"
+              description: A selector that addresses target nodepools. e.g. "foo=bar", "foo="
               pattern: ^([a-z0-9][a-z0-9\-\.]{0,252}\/)?[a-z0-9A-Z][a-z0-9A-Z\-\_\.]{0,62}=([a-z0-9A-Z][a-z0-9A-Z\-\_\.]{0,62})?$
             enableAdvanced:
               title: Expand/collapse advanced configuration view
@@ -103,7 +103,7 @@ spec:
                           type: string
                           title: Memory limit
                           description: "Specify the amount of memory for requests and limits e.g.: 512Mi"
-                          pattern: "^([1-9][0-9]{0,63})(E|P|T|G|M|K|Ei|Pi|Ti|Gi|Mi|Ki)$"
+                          pattern: "^([1-9][0-9]{0,63})(Ei|Pi|Ti|Gi|Mi|Ki)$"
                           default: "256Mi"
 
     - title: Network
