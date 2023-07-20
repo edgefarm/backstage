@@ -45,7 +45,7 @@ spec:
       properties:
         basic:
           type: object
-          title: Basic Configuration
+          title: Basic configuration
           required:
             - name
             - image
@@ -53,7 +53,7 @@ spec:
           properties:
             name:
               type: string
-              title: Name of container
+              title: Name of the component
               ui:autofocus: true
             image:
               type: string
@@ -61,7 +61,7 @@ spec:
               description: Location of the OCI image, e.g. "foo", "foo:latest", "ghcr.io/foo/bar:latest", "docker.io/foo/bar:latest"
             target:
               type: string
-              title: Target Label Selector
+              title: Nodepool selector
               description: The target label selector for this component. e.g. "app=my-app"
               pattern: ^([a-z0-9][a-z0-9\-\.]{0,252}\/)?[a-z0-9A-Z][a-z0-9A-Z\-\_\.]{0,62}=([a-z0-9A-Z][a-z0-9A-Z\-\_\.]{0,62})?$
             enableAdvanced:
@@ -81,7 +81,7 @@ spec:
                       const: true
                     advanced:
                       type: object
-                      title: Advanced Configuration
+                      title: Advanced configuration
                       required:
                         - cpu
                         - memory
