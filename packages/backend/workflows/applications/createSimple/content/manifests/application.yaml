@@ -4,48 +4,54 @@ metadata:
   name: ${{ values.name }}
 spec:
   components:
-    - name: ${{ values.component.name }}
+    - name: ${{ values.basic.name }}
       type: edgefarm-applications
       properties:
-        image: ${{ values.component.image }}
+        image: ${{ values.basic.image }}
         nodepoolSelector:
           matchLabels:
-            {%- set varArray = values.component.target.split("=") %}
+            {%- set varArray = values.basic.target.split("=") %}
             ${{ varArray[0] }}: "${{ varArray[1] }}"
-        name: ${{ values.component.name }}
-        {% if values.component.command -%}
+        name: ${{ values.basic.name }}
+        {% if values.advanced.command -%}
         command:
-          - ${{ values.component.command }}
-        {% if values.component.args -%}
+          {%- for cmd in values.advancedCommand %}
+            - ${{ cmd }}
+          {%- endfor %}
+        {%- endif %}
+        {% if values.advanced.args -%}
         args:
-          - "${{ values.component.args | replace("\"", "\\\"") }}"
+          {%- for arg in values.advancedArgs %}
+            - ${{ arg }}
+          {%- endfor %}
         {%- endif %}
-        {%- endif %}
-        cpu: ${{ values.component.cpu }}
-        memory: ${{ values.component.memory }}
-        {% if values.component.envVars|length > 0 -%}
+        cpu: ${{ values.advanced.cpu }}
+        memory: ${{ values.advanced.memory -}}
+        {% if values.advanced.envVars|length > 0 -%}
         env:
-          {%- for envVar in values.component.envVars %}
+          {%- for envVar in values.advanced.envVars %}
           {%- set varArray = envVar.split("=") %}
           - name: ${{ varArray[0] }}
             value: ${{ varArray[1] }}
           {%- endfor %}
         {%- endif %}
       traits:
+        {%- if values.enableNetwork %}
         - type: edgefarm-network
           properties:
             network:
-              name: ${{ values.component.network.network }}
-              subnetwork: ${{ values.component.network.subnetwork }}
-              user: ${{ values.component.network.user }}
-        {% if values.component.storage.hostPaths|length > 0 -%}
+              name: ${{ values.networkSettings.network }}
+              subnetwork: ${{ values.networkSettings.subnetwork }}
+              user: ${{ values.networkSettings.user }}
+        {%- endif %}
+        {%- if values.advanced.storage.hostPaths|length > 0 %}
         - type: edgefarm-storage
           properties:
             hostPath:
-            {%- for hostPath in values.component.storage.hostPaths %}
+            {%- for hostPath in values.advanced.storage.hostPaths %}
               - name: ${{ hostPath.name }}
-                path: ${{ hostPath.path }}
-                mountPath: ${{ hostPath.mountPath }}
-                type: ${{ hostPath.type }}
-            {% endfor %}
+            {%- endfor %}
         {%- endif %}
+        {% if not values.enableNetwork and not values.advanced.storage.hostPaths|length > 0 -%}
+        []
+        {% endif %}

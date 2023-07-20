@@ -10,6 +10,7 @@ import { ScmIntegrations } from '@backstage/integration';
 import {
   createReadFileAction,
   createUniqueReleaseNameAction,
+  createEdgefarmApplicationsCommandTokenize,
 } from '@internal/plugin-edgefarm-backend';
 
 export default async function createPlugin(
@@ -31,6 +32,7 @@ export default async function createPlugin(
     createArgoCdResources(env.config, env.logger),
     createReadFileAction(),
     createUniqueReleaseNameAction(),
+    createEdgefarmApplicationsCommandTokenize(),
     ...builtInActions,
   ];
 

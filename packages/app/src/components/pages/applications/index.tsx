@@ -85,7 +85,7 @@ export const ApplicationListPage = () => {
       <Content>
         <ContentHeader title="">
           <CreateButton
-            title="Register an Application"
+            title="Add Application"
             to="/create/templates/default/edgefarm-application-add"
           />
         </ContentHeader>

@@ -2,8 +2,7 @@ apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
   name: edgefarm-application-add
-  title: Register your Application
-  description: Register your application to the edgefarm
+  title: Add an Application
   tags:
     - edgefarm
     - application
@@ -16,7 +15,7 @@ metadata:
 spec:
   type: service
   parameters:
-    - title: Fill in some steps
+    - title: General
       required:
         - name
         - system
@@ -31,93 +30,138 @@ spec:
               - kind: system
             defaultKind: System
         name:
-          title: Name of the application
+          title: Name your application
           type: string
-          description: Unique name of the kubernetes application
+          description: Unique name of the application within the system
           maxLength: 253 # DNS subdomain name rules: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#dns-subdomain-names
-          pattern: '^[a-z0-9][a-z0-9-]*$'
+          pattern: "^[a-z0-9][a-z0-9-]*$"
           ui:autofocus: true
           ui:options:
             rows: 5
 
-    - title: Application component
+    - title: Application
       required:
-        - component
+        - basic
       properties:
-        component:
+        basic:
           type: object
-          title: Component
-          description: Define the component of this application
+          title: Basic configuration
           required:
             - name
             - image
             - target
-            - cpu
-            - memory
-            - network
           properties:
             name:
               type: string
-              title: Name of component
+              title: Name of the component, e.g. "foo"
               ui:autofocus: true
             image:
               type: string
-              description: Full path if an docker image location
+              title: OCI image
+              description: Location of the OCI image, e.g. "foo", "foo:latest", "ghcr.io/foo/bar:latest", "docker.io/foo/bar:latest"
             target:
               type: string
-              title: Target Label Selector
-              description: The target label selector for this component. e.g. "app=my-app"
+              title: Nodepool selector
+              description: A selector that addresses target nodepools. e.g. "foo=bar", "foo="
               pattern: ^([a-z0-9][a-z0-9\-\.]{0,252}\/)?[a-z0-9A-Z][a-z0-9A-Z\-\_\.]{0,62}=([a-z0-9A-Z][a-z0-9A-Z\-\_\.]{0,62})?$
-            command:
-              type: string
-              title: Container startup command
-              description: 'Give your container a special command to start.'
-              ui:widget: hidden
-            args:
-              type: string
-              title: Command arguments
-              description: 'Give your container command some arguments to start with.'
-              ui:widget: hidden
-            cpu:
-              type: string
-              title: CPU
-              description: 'Specify the amount of cpu for requests and limits. E.g.: 0.4'
-              default: '0.25'
-              ui:widget: hidden
-            memory:
-              type: string
-              title: Memory
-              description: 'Specify the amount of memory for requests and limits. E.g.: 512Mi'
-              pattern: '^([1-9][0-9]{0,63})(E|P|T|G|M|K|Ei|Pi|Ti|Gi|Mi|Ki)$'
-              default: '256Mi'
-              ui:widget: hidden
-            network:
-              type: object
-              title: Network
-              description: 'Specify where the component should connect to.'
-              required:
-                - network
-                - subnetwork
-                - user
-              properties:
-                network:
-                  type: string
-                  title: Network
-                  description: 'Define the network name to connect to.'
-                subnetwork:
-                  type: string
-                  title: Subnetwork
-                  description: 'Define the subnetwork within the network to use.'
-                user:
-                  type: string
-                  title: Username
-                  description: 'Define the username within your network your component uses.'
+            enableAdvanced:
+              title: Expand/collapse advanced configuration view
+              description: Advanced configurations like command, args, cpu and memory.
+              type: boolean
+              default: false
+              ui:widget: checkbox
+          dependencies:
+            enableAdvanced:
+              oneOf:
+                - properties:
+                    enableAdvanced:
+                      const: false
+                - properties:
+                    enableAdvanced:
+                      const: true
+                    advanced:
+                      type: object
+                      title: Advanced configuration
+                      required:
+                        - cpu
+                        - memory
+                      properties:
+                        command:
+                          type: string
+                          title: Container startup command
+                          description: "If needed, define the executable to run when the container starts."
+                        args:
+                          type: string
+                          title: Arguments for startup command
+                          description: "If needed, define the args for the startup executable."
+                        cpu:
+                          type: string
+                          title: CPU limit
+                          description: "Specify the amount of cpu for requests and limits, e.g.: 0.4"
+                          default: "0.25"
+                        memory:
+                          type: string
+                          title: Memory limit
+                          description: "Specify the amount of memory for requests and limits e.g.: 512Mi"
+                          pattern: "^([1-9][0-9]{0,63})(Ei|Pi|Ti|Gi|Mi|Ki)$"
+                          default: "256Mi"
+
+    - title: Network
+      properties:
+        enableNetwork:
+          title: Network used?
+          description: Select if the application uses an EdgeFarm.network
+          type: boolean
+          default: false
+          ui:widget: checkbox
+      dependencies:
+        enableNetwork:
+          oneOf:
+            - properties:
+                enableNetwork:
+                  const: false
+            - properties:
+                enableNetwork:
+                  const: true
+                networkSettings:
+                  type: object
+                  title: Configuration
+                  properties:
+                    network:
+                      type: string
+                      title: Network
+                      description: "Define the network name to connect to."
+                    subnetwork:
+                      type: string
+                      title: Sub-Network
+                      description: "Define the sub-network within the network to use."
+                    user:
+                      type: string
+                      title: User
+                      description: "Define the user within your network your application uses."
+                  required:
+                    - network
+                    - subnetwork
+                    - user
   steps:
     - id: system-fetch
       name: Fetch system entity
       action: catalog:fetch
       input:
         entityRef: ${{ parameters.system }}
+
+    - id: toknizeCommand
+      action: edgefarm:applications:command:tokenize
+      name: Prepare application command
+      input:
+        inputString: ${{ parameters.basic.advanced.command }}
+
+    - id: toknizeArgs
+      action: edgefarm:applications:command:tokenize
+      name: Prepare application command args
+      input:
+        inputString: ${{ parameters.basic.advanced.args }}
+
     - id: fetch-base
       name: Fetch Base
       action: fetch:template
@@ -127,7 +171,12 @@ spec:
         values:
           clusterName: ${{ steps['system-fetch'].output.entity.metadata.annotations['edgefarm.io/cluster'] }}
           name: ${{ parameters.name }}
-          component: ${{ parameters.component }}
+          basic: ${{ parameters.basic }}
+          advanced: ${{ parameters.basic.advanced }}
+          advancedCommand: ${{ steps['toknizeCommand'].output.tokenizedData }}
+          advancedArgs: ${{ steps['toknizeArgs'].output.tokenizedData }}
+          enableNetwork: ${{ parameters.enableNetwork }}
+          networkSettings: ${{ parameters.networkSettings }}
           owner: ${{ user.entity.metadata.namespace }}/${{ user.entity.metadata.name }}
           system: ${{ parameters.system }}
     # - id: list-workspace
