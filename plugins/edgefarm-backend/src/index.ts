@@ -9,3 +9,4 @@ export {
 export type { NodeQuota } from './kubernetes/nodeQuota';
 export { readFileAction as createReadFileAction } from './scaffolder/actions/ci4rail-fs-read';
 export { uniqueReleaseNameAction as createUniqueReleaseNameAction } from './scaffolder/actions/edgefarm-unique-release-name';
+export { edgefarmApplicationsCommandTokenize as createEdgefarmApplicationsCommandTokenize } from './scaffolder/actions/edgefarm-applications-command-tokenize';

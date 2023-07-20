@@ -41,17 +41,15 @@ spec:
 
     - title: Application
       required:
-        - component
+        - basic
       properties:
-        component:
+        basic:
           type: object
-          title: Configuration
+          title: Basic Configuration
           required:
             - name
             - image
             - target
-            - cpu
-            - memory
           properties:
             name:
               type: string
@@ -66,29 +64,47 @@ spec:
               title: Target Label Selector
               description: The target label selector for this component. e.g. "app=my-app"
               pattern: ^([a-z0-9][a-z0-9\-\.]{0,252}\/)?[a-z0-9A-Z][a-z0-9A-Z\-\_\.]{0,62}=([a-z0-9A-Z][a-z0-9A-Z\-\_\.]{0,62})?$
-            command:
-              type: string
-              title: Container startup command
-              description: "Give your container a special command to start."
-              ui:widget: hidden
-            args:
-              type: string
-              title: Command arguments
-              description: "Give your container command some arguments to start with."
-              ui:widget: hidden
-            cpu:
-              type: string
-              title: CPU
-              description: "Specify the amount of cpu for requests and limits, e.g.: 0.4"
-              default: "0.25"
-              ui:widget: hidden
-            memory:
-              type: string
-              title: Memory
-              description: "Specify the amount of memory for requests and limits e.g.: 512Mi"
-              pattern: "^([1-9][0-9]{0,63})(E|P|T|G|M|K|Ei|Pi|Ti|Gi|Mi|Ki)$"
-              default: "256Mi"
-              ui:widget: hidden
+            enableAdvanced:
+              title: Expand/collapse advanced configuration view
+              description: Advanced configurations like command, args, cpu and memory.
+              type: boolean
+              default: false
+              ui:widget: checkbox
+          dependencies:
+            enableAdvanced:
+              oneOf:
+                - properties:
+                    enableAdvanced:
+                      const: false
+                - properties:
+                    enableAdvanced:
+                      const: true
+                    advanced:
+                      type: object
+                      title: Advanced Configuration
+                      required:
+                        - cpu
+                        - memory
+                      properties:
+                        command:
+                          type: string
+                          title: Container startup command
+                          description: "If needed, define the executable to run when the container starts."
+                        args:
+                          type: string
+                          title: Arguments for startup command
+                          description: "If needed, define the args for the startup executable."
+                        cpu:
+                          type: string
+                          title: CPU limit
+                          description: "Specify the amount of cpu for requests and limits, e.g.: 0.4"
+                          default: "0.25"
+                        memory:
+                          type: string
+                          title: Memory limit
+                          description: "Specify the amount of memory for requests and limits e.g.: 512Mi"
+                          pattern: "^([1-9][0-9]{0,63})(E|P|T|G|M|K|Ei|Pi|Ti|Gi|Mi|Ki)$"
+                          default: "256Mi"
 
     - title: Network
       properties:
@@ -133,6 +149,19 @@ spec:
       action: catalog:fetch
       input:
         entityRef: ${{ parameters.system }}
+
+    - id: toknizeCommand
+      action: edgefarm:applications:command:tokenize
+      name: Prepare application command
+      input:
+        inputString: ${{ parameters.basic.advanced.command }}
+
+    - id: toknizeArgs
+      action: edgefarm:applications:command:tokenize
+      name: Prepare application command args
+      input:
+        inputString: ${{ parameters.basic.advanced.args }}
+
     - id: fetch-base
       name: Fetch Base
       action: fetch:template
@@ -142,7 +171,10 @@ spec:
         values:
           clusterName: ${{ steps['system-fetch'].output.entity.metadata.annotations['edgefarm.io/cluster'] }}
           name: ${{ parameters.name }}
-          component: ${{ parameters.component }}
+          basic: ${{ parameters.basic }}
+          advanced: ${{ parameters.basic.advanced }}
+          advancedCommand: ${{ steps['toknizeCommand'].output.tokenizedData }}
+          advancedArgs: ${{ steps['toknizeArgs'].output.tokenizedData }}
           enableNetwork: ${{ parameters.enableNetwork }}
           networkSettings: ${{ parameters.networkSettings }}
           owner: ${{ user.entity.metadata.namespace }}/${{ user.entity.metadata.name }}
