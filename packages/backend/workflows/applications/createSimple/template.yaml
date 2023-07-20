@@ -88,11 +88,11 @@ spec:
                       properties:
                         command:
                           type: string
-                          title: Container startup command
+                          title: container startup command (optional)
                           description: "If needed, define the executable to run when the container starts."
                         args:
                           type: string
-                          title: Arguments for startup command
+                          title: Arguments for startup command (optional)
                           description: "If needed, define the args for the startup executable."
                         cpu:
                           type: string
