@@ -1,0 +1,41 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: "app1"
+  annotations:
+    'edgefarm.io/cluster': default
+spec:
+  type: application
+  owner: default/MBeer2605
+  lifecycle: production
+  system: system:default/demo-1
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: "app2"
+  annotations:
+    'edgefarm.io/cluster': default
+spec:
+  type: application
+  owner: default/MBeer2605
+  lifecycle: production
+  system: system:default/demo-1
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: "app1-edge-module"
+  annotations:
+    'edgefarm.io/cluster': default
+spec:
+  type: application-module
+  owner: default/MBeer2605
+  lifecycle: production
+  subcomponentOf: default/app1
+  dependsOn:
+    - resource:default/sparrow
+    - resource:default/colibri
+    - resource:default/network-1
+
+  

@@ -1,0 +1,47 @@
+apiVersion: backstage.io/v1alpha1
+kind: Resource
+metadata:
+  name: parrot
+  annotations:
+    'edgefarm.io/cluster': default
+spec:
+  type: Edge-Worker
+  owner: default/KlausPopp
+  lifecycle: production
+  system: system:default/demo-1
+---
+apiVersion: backstage.io/v1alpha1
+kind: Resource
+metadata:
+  name: sparrow
+  annotations:
+    'edgefarm.io/cluster': default
+spec:
+  type: Edge-Worker
+  owner: default/KlausPopp
+  lifecycle: production
+  system: system:default/demo-1
+---
+apiVersion: backstage.io/v1alpha1
+kind: Resource
+metadata:
+  name: colibri
+  annotations:
+    'edgefarm.io/cluster': default
+spec:
+  type: Edge-Worker
+  owner: default/KlausPopp
+  lifecycle: production
+  system: system:default/demo-1
+---
+apiVersion: backstage.io/v1alpha1
+kind: Resource
+metadata:
+  name: cloud
+  annotations:
+    'edgefarm.io/cluster': default
+spec:
+  type: Cloud-Worker
+  owner: default/KlausPopp
+  lifecycle: production
+  system: system:default/demo-1

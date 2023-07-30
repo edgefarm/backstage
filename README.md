@@ -165,4 +165,4 @@ argocd:
 yarn start` starts only the frontend. Debugging is done via the developer console in the browser.
 `yarn start-backend` starts only the backend. If you start the backend with `yarn start-backend --inspect` via VSCode, a debugger is attached.
 
-You can find more information here https://backstage.io/docs/local-dev/debugging
+You can find more information here https://www.youtube.com/watch?v=3srSf_-89OA

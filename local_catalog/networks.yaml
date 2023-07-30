@@ -1,0 +1,11 @@
+apiVersion: backstage.io/v1alpha1
+kind: Resource
+metadata:
+  name: "network-1"
+  annotations:
+    'edgefarm.io/cluster': default
+spec:
+  type: network
+  owner: default/siredmar
+  lifecycle: production
+  system: system:default/demo-1

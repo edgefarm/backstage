@@ -23,8 +23,8 @@ export const DeviceListPage = () => {
       const items: object[] = [];
       const response = await catalogApi.getEntities({
         filter: {
-          kind: 'Component',
-          'spec.type': 'device',
+          kind: 'Resource',
+          'spec.type': 'Edge-Worker',
         },
       });
       if (response) {
