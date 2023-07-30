@@ -29,7 +29,6 @@ import { Root } from './components/Root';
 
 import {
   AlertDisplay,
-  IdentityProviders,
   OAuthRequestDialog,
 } from '@backstage/core-components';
 import { createApp } from '@backstage/app-defaults';
@@ -37,7 +36,6 @@ import { AppRouter, FlatRoutes } from '@backstage/core-app-api';
 import { CatalogGraphPage } from '@backstage/plugin-catalog-graph';
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import { catalogEntityCreatePermission } from '@backstage/plugin-catalog-common/alpha';
-import { githubAuthApiRef } from '@backstage/core-plugin-api';
 import { SignInPage } from '@backstage/core-components';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import LightIcon from '@material-ui/icons/WbSunny';
@@ -50,25 +48,23 @@ import { DeviceListPage } from './components/pages/devices';
 import { ApplicationListPage } from './components/pages/applications';
 import { ReleaseListPage } from './components/pages/releases';
 import { NetworkListPage } from './components/pages/networks';
+import { keyCloakOIDCAuthApiRef } from './apis';
 
-function identityProvider(): IdentityProviders {
-  const providers: IdentityProviders = [
-    {
-      id: 'github-auth-provider',
-      title: 'GitHub',
-      message: 'Sign in using GitHub',
-      apiRef: githubAuthApiRef,
-    },
-  ];
-
-  return providers;
-}
 
 const app = createApp({
   apis,
   components: {
     SignInPage: props => (
-      <SignInPage {...props} auto providers={identityProvider()} />
+      <SignInPage 
+        {...props} 
+        auto
+        provider={{
+          id: 'github-auth-provider',
+          title: 'Keycloak',
+          message: 'Sign in using Keycloak',
+          apiRef: keyCloakOIDCAuthApiRef,
+        }} 
+      />
     ),
   },
   bindRoutes({ bind }) {
