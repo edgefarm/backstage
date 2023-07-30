@@ -52,10 +52,6 @@ import {
 import { TechDocsAddons } from '@backstage/plugin-techdocs-react';
 import { ReportIssue } from '@backstage/plugin-techdocs-module-addons-contrib';
 import { EntityKubernetesContent } from '@backstage/plugin-kubernetes';
-import {
-  EntityArgoCDOverviewCard,
-  isArgocdAvailable,
-} from '@roadiehq/backstage-plugin-argo-cd';
 import { deviceEntityPage } from './pages/device';
 import { EntityWarningContentComponent } from '@internal/plugin-edgefarm';
 import { applicationEntityPage } from './pages/application';
@@ -114,13 +110,6 @@ const overviewContent = (
     <Grid item md={8} xs={12}>
       <EntityHasSubcomponentsCard variant="gridItem" />
     </Grid>
-    <EntitySwitch>
-      <EntitySwitch.Case if={e => Boolean(isArgocdAvailable(e))}>
-        <Grid item md={4} xs={12}>
-          <EntityArgoCDOverviewCard />
-        </Grid>
-      </EntitySwitch.Case>
-    </EntitySwitch>
   </Grid>
 );
 

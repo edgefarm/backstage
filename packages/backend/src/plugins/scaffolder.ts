@@ -3,7 +3,6 @@ import {
   createRouter,
   createBuiltinActions,
 } from '@backstage/plugin-scaffolder-backend';
-import { createArgoCdResources } from '@roadiehq/scaffolder-backend-argocd';
 import { Router } from 'express';
 import type { PluginEnvironment } from '../types';
 import { ScmIntegrations } from '@backstage/integration';
@@ -28,7 +27,6 @@ export default async function createPlugin(
   });
 
   const actions = [
-    createArgoCdResources(env.config, env.logger),
     createReadFileAction(),
     createUniqueReleaseNameAction(),
     ...builtInActions,
@@ -42,6 +40,6 @@ export default async function createPlugin(
     catalogClient,
     identity: env.identity,
     actions: actions,
-    //???permissions: env.permissions,
+    permissions: env.permissions,
   });
 }

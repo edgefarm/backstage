@@ -23,9 +23,9 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
-    "@backstage/backend-common": "^0.18.3",
-    "@backstage/config": "^1.0.7",
-    "@backstage/plugin-scaffolder-node": "^0.1.1",
+    "@backstage/backend-common": "^0.19.2-next.0",
+    "@backstage/config": "^1.0.8",
+    "@backstage/plugin-scaffolder-node": "^0.1.6-next.0",
     "@kubernetes/client-node": "^0.18.1",
     "@types/express": "*",
     "crypto-js": "^4.1.1",
@@ -39,7 +39,7 @@
     "yn": "^4.0.0"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.22.5",
+    "@backstage/cli": "^0.22.10-next.0",
     "@types/crypto-js": "^4.1.1",
     "@types/fs-extra": "^11.0.1",
     "@types/supertest": "^2.0.12",
