@@ -42,5 +42,6 @@ export default async function createPlugin(
     catalogClient,
     identity: env.identity,
     actions: actions,
+    //???permissions: env.permissions,
   });
 }
