@@ -13,20 +13,20 @@ spec:
             {%- set varArray = values.basic.target.split("=") %}
             ${{ varArray[0] }}: "${{ varArray[1] }}"
         name: ${{ values.basic.name }}
-        {% if values.advanced.command -%}
+        {%- if values.advanced.command %}
         command:
           {%- for cmd in values.advancedCommand %}
             - ${{ cmd }}
           {%- endfor %}
         {%- endif %}
-        {% if values.advanced.args -%}
+        {%- if values.advanced.args %}
         args:
           {%- for arg in values.advancedArgs %}
             - ${{ arg }}
           {%- endfor %}
         {%- endif %}
-        cpu: ${{ values.advanced.cpu }}
-        memory: ${{ values.advanced.memory -}}
+        cpu: ${{ values.advancedCpu }}
+        memory: ${{ values.advancedMemory -}}
         {% if values.advanced.envVars|length > 0 -%}
         env:
           {%- for envVar in values.advanced.envVars %}

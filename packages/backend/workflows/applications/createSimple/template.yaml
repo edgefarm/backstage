@@ -173,6 +173,8 @@ spec:
           name: ${{ parameters.name }}
           basic: ${{ parameters.basic }}
           advanced: ${{ parameters.basic.advanced }}
+          advancedCpu: ${{ parameters.basic.advanced.cpu | default('0.25', true) }}
+          advancedMemory: ${{ parameters.basic.advanced.memory | default('256Mi', true) }}
           advancedCommand: ${{ steps['toknizeCommand'].output.tokenizedData }}
           advancedArgs: ${{ steps['toknizeArgs'].output.tokenizedData }}
           enableNetwork: ${{ parameters.enableNetwork }}
@@ -194,28 +196,28 @@ spec:
     #   action: debug:log
     #   input:
     #     message: ${{ steps['read-catalog-info'].output.content }}
-    # - id: read-manifest
-    #   name: Read generated manifest
-    #   action: ci4rail:fs:read
-    #   input:
-    #     path: ./applications/${{ parameters.name }}/manifests/application.yaml
-    # - id: log-manifest
-    #   name: Log  generated manifest
-    #   action: debug:log
-    #   input:
-    #     message: ${{ steps['read-manifest'].output.content }}
-
-    - id: pull-request
-      name: Persist changes on Github
-      action: publish:github:pull-request
+    - id: read-manifest
+      name: Read generated manifest
+      action: ci4rail:fs:read
       input:
-        token: ${{ secrets.USER_OAUTH_TOKEN }}
-        repoUrl: ${{ steps['system-fetch'].output.entity.metadata.annotations['edgefarm.io/repo'] }}
-        branchName: add-application-${{ parameters.name }}-definition
-        title: Add application ${{ parameters.name }} definition
-        description: Adds a new application with name ${{ parameters.name }}
-        gitAuthorName: ${{ user.entity.metadata.name }}
-        gitAuthorEmail: ${{ user.entity.spec.profile.email }}
+        path: ./applications/${{ parameters.name }}/manifests/application.yaml
+    - id: log-manifest
+      name: Log  generated manifest
+      action: debug:log
+      input:
+        message: ${{ steps['read-manifest'].output.content }}
+
+    # - id: pull-request
+    #   name: Persist changes on Github
+    #   action: publish:github:pull-request
+    #   input:
+    #     token: ${{ secrets.USER_OAUTH_TOKEN }}
+    #     repoUrl: ${{ steps['system-fetch'].output.entity.metadata.annotations['edgefarm.io/repo'] }}
+    #     branchName: add-application-${{ parameters.name }}-definition
+    #     title: Add application ${{ parameters.name }} definition
+    #     description: Adds a new application with name ${{ parameters.name }}
+    #     gitAuthorName: ${{ user.entity.metadata.name }}
+    #     gitAuthorEmail: ${{ user.entity.spec.profile.email }}
 
   output:
     links:
