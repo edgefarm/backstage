@@ -28,10 +28,10 @@ export const edgefarmApplicationsCommandTokenize = () => {
         },
 
         async handler(ctx) {
-            const inputStr = ctx.input.inputString;
+            const inputStr = (ctx.input.inputString || "").trim();
 
-            if (!inputStr || typeof inputStr !== 'string') {
-                throw new Error('Required parameter "inputString" is missing or not a string');
+            if (typeof inputStr !== 'string') {
+                throw new Error('Required parameter "inputString" is not a string');
             }
 
             // function to split string
