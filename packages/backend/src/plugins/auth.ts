@@ -13,7 +13,7 @@ import {
 export default async function createPlugin(
   env: PluginEnvironment,
 ): Promise<Router> {
-  return await createRouter({
+  const router = await createRouter({
     logger: env.logger,
     config: env.config,
     database: env.database,
@@ -41,4 +41,6 @@ export default async function createPlugin(
     },
     // ..
   })
+  console.log("auth ts router: ", router);
+  return router;
 };

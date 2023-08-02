@@ -47,20 +47,18 @@ export const apis: AnyApiFactory[] = [
           title: 'Keycloak',
           icon: () => null,
         },
-        environment: configApi.getOptionalString('auth.environment'),
+        // environment: configApi.getOptionalString('auth.environment'),
         defaultScopes: ['openid', 'profile', 'email'],
         popupOptions: {
           // optional, used to customize login in popup size
+          // size: {
+          //   fullscreen: true,
+          // },
+          // or specify popup width and height
           size: {
-            fullscreen: true,
-          },
-          /**
-           * or specify popup width and height
-           * size: {
               width: 1000,
               height: 1000,
-            }
-           */
+          },
         },
       }),
     }),
