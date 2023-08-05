@@ -26,7 +26,7 @@ export default async function createPlugin(
           resolver(info, ctx) {
             const userRef = stringifyEntityRef({
               kind: 'User',
-              name: info.result.userinfo.sub,
+              name: info.result.userinfo.name ?? "guest",
               namespace: DEFAULT_NAMESPACE,
             });
             return ctx.issueToken({
