@@ -58,7 +58,7 @@ Define the following environment variables before starting:
 - ARGOCD_USERNAME
 - ARGOCD_PASSWORD
 
-For now, argocd values can be any dummy values as the argocd functionality isn't finished in the project. 
+For now, argocd values can be any dummy values as the argocd functionality isn't finished in the project.
 
 ```sh
 export GITHUB_TOKEN=<token>
@@ -82,15 +82,15 @@ app:
 backend:
   baseUrl: http://localhost:7007
   listen:
-    port: "7007"
+    port: '7007'
   csp:
-    connect-src: ["'self'", "http:", "https:"]
-    img-src: ["'self'", "data:", "avatars.githubusercontent.com"]
-    frame-src: ["https://grafana.edgefarm.dev"]
+    connect-src: ["'self'", 'http:', 'https:']
+    img-src: ["'self'", 'data:', 'avatars.githubusercontent.com']
+    frame-src: ['https://grafana.edgefarm.dev']
 
   database:
     client: better-sqlite3
-    connection: ":memory:"
+    connection: ':memory:'
 
 integrations:
   github:
@@ -127,7 +127,7 @@ catalog:
 #        - allow: [User, Group]
 
 proxy:
-  "/argocd/api":
+  '/argocd/api':
     target: ${ARGOCD_BASEURL}/api/v1/
     changeOrigin: true
     # only if your argocd api has self-signed cert
@@ -137,13 +137,13 @@ proxy:
 
 kubernetes:
   serviceLocatorMethod:
-    type: "multiTenant"
+    type: 'multiTenant'
   clusterLocatorMethods:
-    - type: "config"
+    - type: 'config'
       clusters:
         - url: ${K8S_URL}
           name: default
-          authProvider: "serviceAccount"
+          authProvider: 'serviceAccount'
           skipTLSVerify: true
           skipMetricsLookup: true
           serviceAccountToken: ${K8S_SA_TOKEN}
@@ -154,7 +154,7 @@ argocd:
   password: ${ARGOCD_PASSWORD}
   waitCycles: 25
   appLocatorMethods:
-    - type: "config"
+    - type: 'config'
       instances:
         - name: argocd
           url: ${ARGOCD_BASEURL}
@@ -162,7 +162,6 @@ argocd:
 ```
 
 `yarn dev` starts both frontend and backend without debugger
-yarn start` starts only the frontend. Debugging is done via the developer console in the browser.
-`yarn start-backend` starts only the backend. If you start the backend with `yarn start-backend --inspect` via VSCode, a debugger is attached.
+yarn start`starts only the frontend. Debugging is done via the developer console in the browser.`yarn start-backend`starts only the backend. If you start the backend with`yarn start-backend --inspect` via VSCode, a debugger is attached.
 
 You can find more information here https://www.youtube.com/watch?v=3srSf_-89OA

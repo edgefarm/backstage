@@ -11,3 +11,4 @@ spec:
     - ./network/create/template.yaml
     - ./releases/create/template.yaml
     - ./system/create/template.yaml
+    - ./debug/create/template.yaml

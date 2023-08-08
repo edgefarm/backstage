@@ -27,10 +27,7 @@ import { entityPage } from './components/catalog/EntityPage';
 import { searchPage } from './components/search/SearchPage';
 import { Root } from './components/Root';
 
-import {
-  AlertDisplay,
-  OAuthRequestDialog,
-} from '@backstage/core-components';
+import { AlertDisplay, OAuthRequestDialog } from '@backstage/core-components';
 import { createApp } from '@backstage/app-defaults';
 import { AppRouter, FlatRoutes } from '@backstage/core-app-api';
 import { CatalogGraphPage } from '@backstage/plugin-catalog-graph';
@@ -50,20 +47,19 @@ import { ReleaseListPage } from './components/pages/releases';
 import { NetworkListPage } from './components/pages/networks';
 import { keyCloakOIDCAuthApiRef } from './apis';
 
-
 const app = createApp({
   apis,
   components: {
     SignInPage: props => (
-      <SignInPage 
-        {...props} 
+      <SignInPage
+        {...props}
         auto
         provider={{
           id: 'github-auth-provider',
           title: 'Keycloak',
           message: 'Sign in using Keycloak',
           apiRef: keyCloakOIDCAuthApiRef,
-        }} 
+        }}
       />
     ),
   },
@@ -71,14 +67,14 @@ const app = createApp({
     bind(catalogPlugin.externalRoutes, {
       createComponent: scaffolderPlugin.routes.root,
       viewTechDoc: techdocsPlugin.routes.docRoot,
-      createFromTemplate: scaffolderPlugin.routes.selectedTemplate
+      createFromTemplate: scaffolderPlugin.routes.selectedTemplate,
     });
     bind(apiDocsPlugin.externalRoutes, {
       registerApi: catalogImportPlugin.routes.importPage,
     });
     bind(scaffolderPlugin.externalRoutes, {
       registerComponent: catalogImportPlugin.routes.importPage,
-      viewTechDoc: techdocsPlugin.routes.docRoot
+      viewTechDoc: techdocsPlugin.routes.docRoot,
     });
     bind(orgPlugin.externalRoutes, {
       catalogIndex: catalogPlugin.routes.catalogIndex,

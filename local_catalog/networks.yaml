@@ -1,7 +1,7 @@
 apiVersion: backstage.io/v1alpha1
 kind: Resource
 metadata:
-  name: "network-1"
+  name: 'network-1'
   annotations:
     'edgefarm.io/cluster': default
 spec:

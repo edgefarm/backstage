@@ -5,10 +5,6 @@ import {
 } from '@backstage/plugin-auth-backend';
 import { Router } from 'express';
 import { PluginEnvironment } from '../types';
-import {
-  DEFAULT_NAMESPACE,
-  stringifyEntityRef,
-} from '@backstage/catalog-model';
 
 export default async function createPlugin(
   env: PluginEnvironment,
@@ -24,23 +20,17 @@ export default async function createPlugin(
       'keycloak-auth-provider': providers.oidc.create({
         signIn: {
           resolver(info, ctx) {
-            const userRef = stringifyEntityRef({
-              kind: 'User',
-              name: info.result.userinfo.sub,
-              namespace: DEFAULT_NAMESPACE,
-            });
-            return ctx.issueToken({
-              claims: {
-                sub: userRef, // The user's own identity
-                ent: [userRef], // A list of identities that the user claims ownership through
-              },
+            const name = info.result.userinfo.preferred_username ?? 'guest';
+            console.log('auth ts resolver: signing in user name', name);
+
+            return ctx.signInWithCatalogUser({
+              entityRef: { name },
             });
           },
         },
-     }),
+      }),
     },
     // ..
-  })
-  console.log("auth ts router: ", router);
+  });
   return router;
-};
+}

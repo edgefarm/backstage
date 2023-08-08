@@ -44,14 +44,24 @@ integrations:
       token: ${GITHUB_TOKEN}
 
 auth:
-  # see https://backstage.io/docs/auth/ to learn about auth providers
+  # # see https://backstage.io/docs/auth/ to learn about auth providers
+  # environment: development
+  # providers:
+  #   github:
+  #     development:
+  #       clientId: ${GITHUB_CLIENT_ID}
+  #       clientSecret: ${GITHUB_SECRET}
   environment: development
+  ### Providing an auth.session.secret will enable session support in the auth-backend
+  session:
+    secret: session-secret
   providers:
-    github:
+    keycloak-auth-provider:
       development:
-        clientId: ${GITHUB_CLIENT_ID}
-        clientSecret: ${GITHUB_SECRET}
-
+        metadataUrl: http://localhost:8080/realms/edgefarm/.well-known/openid-configuration
+        clientId: ${KEYCLOAK_CLIENTID}
+        clientSecret: ${KEYCLOAK_CLIENTSECRET}
+        prompt: login
 catalog:
   # Overrides the default list locations from app-config.yaml as these contain example data.
   # See https://backstage.io/docs/features/software-catalog/software-catalog-overview#adding-components-to-the-catalog for more details
@@ -62,14 +72,29 @@ catalog:
       rules:
         - allow: [Template]
     - type: file
-      target: ../../../backstage-user/ci4rail.yaml
+      target: ../../local_catalog/catalog-info.yaml
       rules:
         - allow: [User, Group]
-#    - type: url
-#      target: https://github.com/edgefarm-hands-on/backstage-user/blob/main/ci4rail.yaml
-#      rules:
-#        - allow: [User, Group]
-
+    # - type: url
+    #   target: https://github.com/edgefarm-hands-on/backstage-user/blob/main/ci4rail.yaml
+    #   rules:
+    #     - allow: [User, Group]
+    # - type: url
+    #   target: https://github.com/edgefarm-hands-on/demo-colibri/blob/main/catalog-info.yaml
+  providers:
+    keycloakOrg:
+      default:
+        baseUrl: http://localhost:8080
+        loginRealm: ${KEYCLOAK_REALM}
+        realm: ${KEYCLOAK_REALM}
+        clientId: ${KEYCLOAK_CLIENTID}
+        clientSecret: ${KEYCLOAK_CLIENTSECRET}
+        schedule: # optional; same options as in TaskScheduleDefinition
+          # supports cron, ISO duration, "human duration" as used in code
+          frequency: { minutes: 1 }
+          # supports ISO duration, "human duration" as used in code
+          timeout: { minutes: 1 }
+          initialDelay: { seconds: 15 }
 proxy:
   '/argocd/api':
     target: ${ARGOCD_BASEURL}/api/v1/
