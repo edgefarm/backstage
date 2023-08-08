@@ -20,17 +20,17 @@ export default async function createPlugin(
       'keycloak-auth-provider': providers.oidc.create({
         signIn: {
           resolver(info, ctx) {
-            const name = info.result.userinfo.preferred_username ?? "guest";
-            console.log("auth ts resolver: signing in user name", name);
+            const name = info.result.userinfo.preferred_username ?? 'guest';
+            console.log('auth ts resolver: signing in user name', name);
 
             return ctx.signInWithCatalogUser({
               entityRef: { name },
             });
           },
         },
-     }),
+      }),
     },
     // ..
-  })
+  });
   return router;
-};
+}

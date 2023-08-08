@@ -7,8 +7,8 @@ metadata:
     - edgefarm
     - project
   annotations:
-    "edgefarm.io/cluster": default
-    "edgefarm.io/repo": github.com?owner=edgefarm-hands-on&repo=demo-colibri
+    'edgefarm.io/cluster': default
+    'edgefarm.io/repo': github.com?owner=edgefarm-hands-on&repo=demo-colibri
 spec:
   lifecycle: production
   owner: default/KlausPopp

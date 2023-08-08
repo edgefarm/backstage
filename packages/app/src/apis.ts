@@ -14,10 +14,9 @@ import {
   SessionApi,
   ApiRef,
   discoveryApiRef,
-  oauthRequestApiRef 
+  oauthRequestApiRef,
 } from '@backstage/core-plugin-api';
 import { OAuth2 } from '@backstage/core-app-api';
-
 
 export const keyCloakOIDCAuthApiRef: ApiRef<
   OpenIdConnectApi & ProfileInfoApi & BackstageIdentityApi & SessionApi
@@ -56,12 +55,11 @@ export const apis: AnyApiFactory[] = [
           // },
           // or specify popup width and height
           size: {
-              width: 1000,
-              height: 1000,
+            width: 1000,
+            height: 1000,
           },
         },
       }),
-    }),
+  }),
   ScmAuth.createDefaultApiFactory(),
 ];
-

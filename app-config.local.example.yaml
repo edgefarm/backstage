@@ -12,16 +12,16 @@ backend:
   # The listener can also be expressed as a single <host>:<port> string. In this case we bind to
   # all interfaces, the most permissive setting. The right value depends on your specific deployment.
   listen:
-    port: "7007"
+    port: '7007'
   csp:
-    connect-src: ["'self'", "http:", "https:"]
-    img-src: ["'self'", "data:", "avatars.githubusercontent.com"]
-    frame-src: ["https://grafana.edgefarm.dev"]
+    connect-src: ["'self'", 'http:', 'https:']
+    img-src: ["'self'", 'data:', 'avatars.githubusercontent.com']
+    frame-src: ['https://grafana.edgefarm.dev']
 
   # config options: https://node-postgres.com/api/client
   database:
     client: better-sqlite3
-    connection: ":memory:"
+    connection: ':memory:'
 #  database:
 #    client: pg
 #    connection:
@@ -71,7 +71,7 @@ catalog:
 #        - allow: [User, Group]
 
 proxy:
-  "/argocd/api":
+  '/argocd/api':
     target: ${ARGOCD_BASEURL}/api/v1/
     changeOrigin: true
     # only if your argocd api has self-signed cert
@@ -81,13 +81,13 @@ proxy:
 
 kubernetes:
   serviceLocatorMethod:
-    type: "multiTenant"
+    type: 'multiTenant'
   clusterLocatorMethods:
-    - type: "config"
+    - type: 'config'
       clusters:
         - url: ${K8S_URL}
           name: default
-          authProvider: "serviceAccount"
+          authProvider: 'serviceAccount'
           skipTLSVerify: true
           skipMetricsLookup: true
           serviceAccountToken: ${K8S_SA_TOKEN}
@@ -102,7 +102,7 @@ argocd:
   password: ${ARGOCD_PASSWORD}
   waitCycles: 25
   appLocatorMethods:
-    - type: "config"
+    - type: 'config'
       instances:
         - name: argocd
           url: ${ARGOCD_BASEURL}

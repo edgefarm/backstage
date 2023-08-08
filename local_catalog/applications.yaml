@@ -1,7 +1,7 @@
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: "app1"
+  name: 'app1'
   annotations:
     'edgefarm.io/cluster': default
 spec:
@@ -13,7 +13,7 @@ spec:
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: "app2"
+  name: 'app2'
   annotations:
     'edgefarm.io/cluster': default
 spec:
@@ -25,7 +25,7 @@ spec:
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: "app1-edge-module"
+  name: 'app1-edge-module'
   annotations:
     'edgefarm.io/cluster': default
 spec:
@@ -37,5 +37,3 @@ spec:
     - resource:default/sparrow
     - resource:default/colibri
     - resource:default/network-1
-
-  
