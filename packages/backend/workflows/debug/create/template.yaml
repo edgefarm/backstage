@@ -1,0 +1,50 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: edgefarm-debug
+  title: Show variables
+  description: |
+    Show variables
+  tags:
+    - edgefarm
+    - project
+    - recommended
+    - git
+spec:
+  type: service
+  parameters:
+    - title: Fill in some steps
+      required:
+        - name
+        - system
+      properties:
+        system:
+          title: Select your system
+          description: Here you can select one of your existing systems. If you don't have any, you need to create one first.
+          type: string
+          ui:field: EntityPicker
+          ui:options:
+            catalogFilter:
+              - kind: system
+            defaultKind: System
+        name:
+          title: Name of the device
+          type: string
+          description: Unique name of the kubernetes device
+          maxLength: 253 # DNS subdomain name rules: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#dns-subdomain-names
+          pattern: '^[a-z0-9][a-z0-9-]*$'
+          ui:autofocus: true
+          ui:options:
+            rows: 5
+
+  steps:
+    - id: log-user
+      name: Log Current User
+      action: debug:log
+      input:
+        message: "current user: ${{ user.entity.metadata.namespace }}/${{ user.entity.metadata.name }}"
+
+  output:
+    links:
+      - title: Verify on Github
+        url: bla
