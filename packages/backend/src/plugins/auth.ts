@@ -23,17 +23,6 @@ export default async function createPlugin(
             const name = info.result.userinfo.preferred_username ?? "guest";
             console.log("auth ts resolver: signing in user name", name);
 
-            // const userRef = stringifyEntityRef({
-            //   kind: 'User',
-            //   name: info.result.userinfo.name ?? "guest",
-            //   namespace: DEFAULT_NAMESPACE,
-            // });
-            // return ctx.issueToken({
-            //   claims: {
-            //     sub: userRef, // The user's own identity
-            //     ent: [userRef], // A list of identities that the user claims ownership through
-            //   },
-            // });
             return ctx.signInWithCatalogUser({
               entityRef: { name },
             });
@@ -43,6 +32,5 @@ export default async function createPlugin(
     },
     // ..
   })
-  //console.log("auth ts router: ", router);
   return router;
 };
