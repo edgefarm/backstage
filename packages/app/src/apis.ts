@@ -38,7 +38,7 @@ export const apis: AnyApiFactory[] = [
       oauthRequestApi: oauthRequestApiRef,
       configApi: configApiRef,
     },
-    factory: ({ discoveryApi, oauthRequestApi, configApi }) =>
+    factory: ({ discoveryApi, oauthRequestApi }) =>
       OAuth2.create({
         discoveryApi,
         oauthRequestApi,
