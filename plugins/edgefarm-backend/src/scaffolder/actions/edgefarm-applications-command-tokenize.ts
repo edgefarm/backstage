@@ -40,8 +40,9 @@ export const edgefarmApplicationsCommandTokenize = () => {
             }
 
             const tokenizedData = tokenize(inputStr);
+            const quotedTokens = (tokenizedData || []).map(token => `"${token}"`);
 
-            ctx.output('tokenizedData', tokenizedData);
+            ctx.output('tokenizedData', quotedTokens);
         },
     });
 };
