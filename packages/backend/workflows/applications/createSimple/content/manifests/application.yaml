@@ -35,7 +35,9 @@ spec:
             value: ${{ varArray[1] }}
           {%- endfor %}
         {%- endif %}
+      {% if values.enableNetwork or values.advanced.storage.hostPaths|length > 0 -%}
       traits:
+      {%- endif %}
         {%- if values.enableNetwork %}
         - type: edgefarm-network
           properties:
@@ -52,6 +54,3 @@ spec:
               - name: ${{ hostPath.name }}
             {%- endfor %}
         {%- endif %}
-        {% if not values.enableNetwork and not values.advanced.storage.hostPaths|length > 0 -%}
-        []
-        {% endif %}
