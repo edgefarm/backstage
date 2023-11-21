@@ -3,7 +3,7 @@ kind: Template
 metadata:
   name: edgefarm-network-add
   title: New Network
-  description: Add a new network to the edgefarm
+  description: Add a new network.
   tags:
     - edgefarm
     - network

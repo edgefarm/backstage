@@ -3,7 +3,7 @@ kind: Template
 metadata:
   name: edgefarm-device-add
   title: Register a Device
-  description: Register a new device to the edgefarm
+  description: Register a new device.
   tags:
     - edgefarm
     - device
@@ -34,7 +34,7 @@ spec:
           type: string
           description: Unique name of the kubernetes device
           maxLength: 253 # DNS subdomain name rules: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#dns-subdomain-names
-          pattern: '^[a-z0-9][a-z0-9-]*$'
+          pattern: "^[a-z0-9][a-z0-9-]*$"
           ui:autofocus: true
           ui:options:
             rows: 5

@@ -3,7 +3,7 @@ kind: Template
 metadata:
   name: edgefarm-rollout-add
   title: Plan a firmware rollout
-  description: Create e plan to rollout a specific firmware to a specific device.
+  description: Create a plan to roll out a specific firmware to a specific device.
   tags:
     - edgefarm
     - rollout
@@ -56,17 +56,17 @@ spec:
         type:
           title: What kind of update should it be?
           type: string
-          enum: ['Mender', 'Ubuntu']
-          default: 'Mender'
+          enum: ["Mender", "Ubuntu"]
+          default: "Mender"
       dependencies:
         type:
           oneOf:
             - properties:
                 type:
-                  enum: ['Mender']
+                  enum: ["Mender"]
             - properties:
                 type:
-                  enum: ['Ubuntu']
+                  enum: ["Ubuntu"]
                 script:
                   type: string
                   title: Update Script
@@ -135,15 +135,14 @@ spec:
       action: fs:delete
       input:
         files:
-        - ./releases/${{ steps['release-fetch'].output.entity.metadata.name }}/rollouts/${{ steps['generate-name'].output.content }}/manifests/ubuntu.yaml
+          - ./releases/${{ steps['release-fetch'].output.entity.metadata.name }}/rollouts/${{ steps['generate-name'].output.content }}/manifests/ubuntu.yaml
     - id: delete-mender-manifest
       if: ${{ parameters.type != 'Mender' }}
       name: Cleanup Workspace
       action: fs:delete
       input:
         files:
-        - releases/${{ steps['release-fetch'].output.entity.metadata.name }}/rollouts/${{ steps['generate-name'].output.content }}/manifests/mender.yaml
-
+          - releases/${{ steps['release-fetch'].output.entity.metadata.name }}/rollouts/${{ steps['generate-name'].output.content }}/manifests/mender.yaml
 
     # - id: list-workspace
     #   name: List Workspace

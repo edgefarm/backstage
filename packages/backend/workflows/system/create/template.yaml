@@ -4,9 +4,8 @@ metadata:
   name: edgefarm-system-add
   title: New System
   description: |
-    Create a new EdgeFarm system. This will then be registered here in the catalog. The process will also create a new Git repository.
-
-    This is the entry point for every new EdgeFarm. A system is like a workspace, where all your configurations lives.
+    Create a new EdgeFarm system. A system is like a workspace where all your configurations live.
+    This creates a new Git repository.
   tags:
     - edgefarm
     - project
@@ -28,13 +27,13 @@ spec:
           enum:
             - default
           enumNames:
-            - 'Default'
+            - "Default"
         name:
           title: Name of the system
           type: string
           description: Unique name of the EdgeFarm system
           maxLength: 63
-          pattern: '^[a-z0-9A-Z-_.]+$'
+          pattern: "^[a-z0-9A-Z-_.]+$"
           ui:autofocus: true
           ui:options:
             rows: 5
@@ -69,7 +68,7 @@ spec:
       name: Create a new repository
       action: publish:github
       input:
-        allowedHosts: ['github.com']
+        allowedHosts: ["github.com"]
         token: ${{ secrets.USER_OAUTH_TOKEN }}
         description: This is ${{ parameters.name }}
         repoUrl: ${{ parameters.repoUrl }}
@@ -86,7 +85,7 @@ spec:
       action: catalog:register
       input:
         repoContentsUrl: ${{ steps['publish'].output.repoContentsUrl }}
-        catalogInfoPath: '/catalog-info.yaml'
+        catalogInfoPath: "/catalog-info.yaml"
 
   output:
     links:

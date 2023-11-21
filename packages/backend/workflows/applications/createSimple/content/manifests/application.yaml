@@ -27,15 +27,27 @@ spec:
         {%- endif %}
         cpu: ${{ values.advancedCpu }}
         memory: ${{ values.advancedMemory -}}
-        {% if values.advanced.envVars|length > 0 -%}
+        {% if values.advancedEnvs | length > 0 %}
         env:
-          {%- for envVar in values.advanced.envVars %}
-          {%- set varArray = envVar.split("=") %}
-          - name: ${{ varArray[0] }}
-            value: ${{ varArray[1] }}
+          {%- for env in values.advancedEnvs %}
+          - name: ${{ env.name }}
+            value: ${{ env.value }}
           {%- endfor %}
         {%- endif %}
-      {% if values.enableNetwork or values.advanced.storage.hostPaths|length > 0 -%}
+        {% if values.advancedPorts | length > 0 -%}
+        ports:
+          {%- for mapping in values.advancedPorts %}
+          - containerPort: ${{ mapping.containerPort }}
+            hostPort: ${{ mapping.hostPort }}
+            {% if mapping.protocol | length > 0 -%}
+            protocol: ${{ mapping.protocol }}
+            {%- endif %}
+            {% if mapping.name | length > 0 -%}
+            name: ${{ mapping.name }}
+             {%- endif %}
+          {%- endfor %}
+        {%- endif %}
+      {%- if values.enableNetwork or values.advanced.storage.hostPaths|length > 0 %}
       traits:
       {%- endif %}
         {%- if values.enableNetwork %}

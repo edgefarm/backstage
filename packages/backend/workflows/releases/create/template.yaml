@@ -2,8 +2,8 @@ apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
   name: edgefarm-firmware-add
-  title: Add a new Firmware
-  description: Add a new Firmware to the edgefarm. Later on you are able to create a upgrade plan for this firmware.
+  title: New Firmware
+  description: Add a new Firmware. Later on you are able to create a upgrade plan for this.
   tags:
     - edgefarm
     - firmware
@@ -36,7 +36,7 @@ spec:
           description: Specify a unique name for this Firmware
           ui:autofocus: true
           maxLength: 63
-          pattern: '^[a-z0-9A-Z-_.]+$'
+          pattern: "^[a-z0-9A-Z-_.]+$"
         image:
           title: Docker image of this firmware
           type: string

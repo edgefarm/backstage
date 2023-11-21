@@ -3,7 +3,7 @@ kind: Template
 metadata:
   name: edgefarm-application-add
   title: New Application
-  description: Add a new application to the edgefarm
+  description: Add a new application
   tags:
     - edgefarm
     - application
@@ -35,7 +35,7 @@ spec:
           type: string
           description: Unique name of the kubernetes application
           maxLength: 253 # DNS subdomain name rules: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#dns-subdomain-names
-          pattern: '^[a-z0-9][a-z0-9-]*$'
+          pattern: "^[a-z0-9][a-z0-9-]*$"
           ui:autofocus: true
           ui:options:
             rows: 5
